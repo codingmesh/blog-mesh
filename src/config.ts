@@ -1,4 +1,7 @@
-/** Site identity and locale. Page templates read copy from here so it stays consistent. */
+/**
+ * Site identity, locale, and feature switches. Templates read copy from here so it changes in one place.
+ * Secrets and per-environment ids live in environment variables, not here.
+ */
 export const site = {
   name: 'Mikey',
   wordmark: 'mikey',
@@ -9,4 +12,10 @@ export const site = {
   tagline: 'Writing code and thinking things through.',
   focus: 'Software, AI, and reading notes.',
   themeColor: { light: '#f3f2ee', dark: '#0e0f11' },
-};
+  repo: 'codingmesh/blog-mesh',
+} as const;
+
+export const features = {
+  /** Vercel Web Analytics, injected by the adapter when deployed on Vercel. */
+  analytics: true,
+} as const;
