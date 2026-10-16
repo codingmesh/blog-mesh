@@ -1,20 +1,20 @@
 ---
-title: "Reliable automation starts with visible failures"
-description: "When an agent runs quietly in the background, how do we know it actually finished the job?"
+title: Reliable automation starts with visible failures
+description: >-
+  When an agent runs quietly in the background, how do we know it actually
+  finished the job?
 date: 2026-10-14
-kind: article
-format: reading
-tags: ["Agent engineering"]
-featured: true
+tags:
+  - Agent engineering
+draft: false
 sample: true
+format: reading
+featured: true
 source:
-  title: "Building effective agent automations"
+  title: Building effective agent automations
   url: https://claude.dev/blog/building-effective-agent-automations/
-  author: "Lance Martin and CJ Avilla"
+  author: Lance Martin and CJ Avilla
 ---
-
-import StateDiagram from '../../components/StateDiagram.astro';
-
 ## What the article says
 
 1. The example keeps a separate cursor for each source instead of relying on a fixed time window, reducing the chance of missing or repeating items.
@@ -53,7 +53,7 @@ function describe(result: CheckResult): string {
 }
 ```
 
-<StateDiagram />
+<OutcomeExplorer />
 
 The interface can reflect these states directly. Readers should be able to tell whether an empty page means there is nothing new or something went wrong.
 

@@ -1,21 +1,15 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
-import { z } from 'astro/zod';
+import { articleSchema, noteSchema } from './lib/schema';
 
-const writing = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/writing' }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    date: z.coerce.date(),
-    kind: z.enum(['article', 'note']).default('article'),
-    format: z.enum(['essay', 'reading']).default('essay'),
-    tags: z.array(z.string()).default([]),
-    featured: z.boolean().default(false),
-    draft: z.boolean().default(false),
-    sample: z.boolean().default(false),
-    source: z.object({ title: z.string(), url: z.url(), author: z.string() }).optional(),
-  }),
+const articles = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/articles' }),
+  schema: ({ image }) => articleSchema(image),
 });
 
-export const collections = { writing };
+const notes = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/notes' }),
+  schema: noteSchema,
+});
+
+export const collections = { articles, notes };

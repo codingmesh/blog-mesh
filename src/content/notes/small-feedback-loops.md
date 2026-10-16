@@ -1,8 +1,7 @@
 ---
 title: "Build something you can discuss"
 description: "Turn a big question into a small, observable result that helps you make the next decision."
-date: 2026-10-14
-kind: note
+date: "2026-10-14"
 tags: ["Development practice"]
 sample: true
 ---

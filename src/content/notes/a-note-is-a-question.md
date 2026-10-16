@@ -1,8 +1,7 @@
 ---
 title: "A useful note starts with a good question"
 description: "A reading note does not need a finished conclusion. An unresolved question can be worth keeping."
-date: 2026-10-14
-kind: note
+date: "2026-10-14"
 tags: ["Writing and thinking"]
 sample: true
 ---
