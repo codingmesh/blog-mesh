@@ -1,0 +1,13 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDate, readingTime } from '../lib/content';
+/** One entry in a feed. Articles show a summary and reading time; notes show the title and date only. */
+interface Props { post: CollectionEntry<'writing'>; variant?: 'article' | 'note'; heading?: 'h2' | 'h3'; }
+const { post, variant = 'article', heading = 'h2' } = Astro.props;
+const Heading = heading;
+---
+<li class:list={['feed-item', 'archive-item', `feed-${variant}`]} data-tags={JSON.stringify(post.data.tags)}>
+  <Heading class="feed-title"><a href={`/writing/${post.id}/`}><span>{post.data.title}</span></a></Heading>
+  {variant === 'article' && <p class="feed-summary">{post.data.description}</p>}
+  <p class="feed-meta"><time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>{variant === 'article' && <span>{readingTime(post.body)} min read</span>}</p>
+</li>

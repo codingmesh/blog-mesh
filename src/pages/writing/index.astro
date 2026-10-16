@@ -1,0 +1,51 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostRow from '../../components/PostRow.astro';
+import { getWriting } from '../../lib/content';
+const posts = (await getWriting()).filter((post) => post.data.kind === 'article');
+const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
+const years = [...new Set(posts.map((post) => post.data.date.getUTCFullYear()))];
+---
+<Base title="Writing" active="writing">
+  <div class="page-width archive-page">
+    <header class="page-intro"><h1>Writing</h1><p>Technical essays and reading notes. <span id="post-count">{posts.length}</span> <span id="post-noun">{posts.length === 1 ? 'article' : 'articles'}</span>, newest first.</p></header>
+    <div class="archive-tools" role="group" aria-label="Filter by topic">
+      <button class="filter-button" data-tag="" aria-pressed="true">All</button>
+      {tags.map((tag) => <button class="filter-button" data-tag={tag} aria-pressed="false">{tag}</button>)}
+    </div>
+    <p id="filter-status" class="sr-only" role="status"></p>
+    <div id="filter-empty" hidden><p id="filter-empty-message"></p><button type="button" class="text-button" id="filter-reset">View all writing</button></div>
+    {years.map((year) => <section class="archive-group" aria-label={`${year} archive`}><h2 class="archive-year">{year}</h2><ol class="feed" role="list">{posts.filter((post) => post.data.date.getUTCFullYear() === year).map((post) => <PostRow post={post} heading="h3" />)}</ol></section>)}
+    <p class="reading-disclosure">These sample reading notes were prepared with AI assistance. Each article identifies its sources and separates the summary from further reflection.</p>
+  </div>
+  <script>
+    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-tag]');
+    const items = document.querySelectorAll<HTMLElement>('[data-tags]');
+    const count = document.querySelector('#post-count')!;
+    const status = document.querySelector('#filter-status')!;
+    const noun = document.querySelector('#post-noun')!;
+    const empty = document.querySelector<HTMLElement>('#filter-empty')!;
+    const emptyMessage = document.querySelector('#filter-empty-message')!;
+    function filter(tag: string) {
+      let visible = 0;
+      buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.tag === tag)));
+      items.forEach((item) => { const tags = JSON.parse(item.dataset.tags || '[]') as string[]; item.hidden = !!tag && !tags.includes(tag); if (!item.hidden) visible++; });
+      document.querySelectorAll<HTMLElement>('.archive-group').forEach((group) => { group.hidden = !group.querySelector('.archive-item:not([hidden])'); });
+      count.textContent = String(visible);
+      noun.textContent = visible === 1 ? 'article' : 'articles';
+      status.textContent = `${tag || 'All topics'}: ${visible} ${visible === 1 ? 'article' : 'articles'}`;
+      empty.hidden = visible > 0;
+      emptyMessage.textContent = tag ? `No articles about “${tag}” yet.` : 'New articles are on the way.';
+    }
+    const currentTag = () => new URL(location.href).searchParams.get('tag') || '';
+    function select(tag: string) {
+      if (tag === currentTag()) return;
+      const url = new URL(location.href); if (tag) url.searchParams.set('tag', tag); else url.searchParams.delete('tag');
+      history.pushState({}, '', url); filter(tag);
+    }
+    buttons.forEach((button) => button.addEventListener('click', () => select(button.dataset.tag || '')));
+    document.querySelector('#filter-reset')!.addEventListener('click', () => select(''));
+    window.addEventListener('popstate', () => filter(currentTag()));
+    filter(currentTag());
+  </script>
+</Base>

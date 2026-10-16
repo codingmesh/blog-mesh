@@ -1,0 +1,64 @@
+---
+title: "Reliable automation starts with visible failures"
+description: "When an agent runs quietly in the background, how do we know it actually finished the job?"
+date: 2026-10-14
+kind: article
+format: reading
+tags: ["Agent engineering"]
+featured: true
+sample: true
+source:
+  title: "Building effective agent automations"
+  url: https://claude.dev/blog/building-effective-agent-automations/
+  author: "Lance Martin and CJ Avilla"
+---
+
+import StateDiagram from '../../components/StateDiagram.astro';
+
+## What the article says
+
+1. The example keeps a separate cursor for each source instead of relying on a fixed time window, reducing the chance of missing or repeating items.
+2. When a source cannot be read, it preserves the cursor and reports the failure. An unavailable source must not be treated as a source with no updates.
+3. It records delivery and advances cursors only after publication is confirmed. User preferences and runtime state are stored separately, with limits on access and per-run costs.
+
+These points summarize the [original reference implementation](https://claude.dev/blog/building-effective-agent-automations/).
+
+## What I take from it
+
+An automated summary can look complete even when it silently skips an important source. A reader sees a polished daily report, with little way to tell whether it covered everything it was supposed to check.
+
+I would treat the amount of new content and the completeness of the check as separate signals. Even when nothing deserves a notification, the run should record what it checked and whether each check succeeded.
+
+For a blog-reading assistant, I would start with three outcomes: checked with updates, checked without updates, and not checked successfully. All three can appear on the same page, but they should not all become an empty array in the data. Otherwise, a network problem can look exactly like an author who stopped publishing.
+
+I would also give each article a stable identifier and track discovery, reading, drafting, and publication separately. Finding a link does not mean the full article was read. Producing a summary does not mean it is ready to publish. Explicit states make those distinctions easier to inspect.
+
+## A small example
+
+This type sketch extends that idea; it is not code from the original article. The highlighted union is the point: the result describes what happened, rather than returning only an array of articles.
+
+```typescript {2-4}
+type CheckResult =
+  | { status: 'updated'; articles: Article[] }
+  | { status: 'unchanged'; checkedAt: Date }
+  | { status: 'failed'; reason: string };
+
+// An empty result and a failed check are different outcomes.
+function describe(result: CheckResult): string {
+  switch (result.status) {
+    case 'updated': return `Articles found: ${result.articles.length}`;
+    case 'unchanged': return 'Check complete. No updates.';
+    case 'failed': return `Check failed: ${result.reason}`;
+  }
+}
+```
+
+<StateDiagram />
+
+The interface can reflect these states directly. Readers should be able to tell whether an empty page means there is nothing new or something went wrong.
+
+## What still needs testing
+
+This is an engineering reference from a product team, not a reliability proof. Before adopting it, I would test three interruptions: a source becoming unavailable, a successful delivery with a lost acknowledgment, and a run stopping partway through.
+
+The questions are whether the system can recover, whether it creates duplicates, and whether the user can understand its progress. This reading note does not report results from running those tests.

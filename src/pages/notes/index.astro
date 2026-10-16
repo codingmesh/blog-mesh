@@ -1,0 +1,14 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostRow from '../../components/PostRow.astro';
+import { getWriting } from '../../lib/content';
+const notes = (await getWriting()).filter((post) => post.data.kind === 'note');
+---
+<Base title="Notes" active="notes">
+  <div class="page-width archive-page">
+    <header class="page-intro"><h1>Notes</h1><p>Short notes and ideas still taking shape.</p></header>
+    <ol class="feed" role="list">{notes.map((post) => <PostRow post={post} />)}</ol>
+    {!notes.length && <p class="empty-copy">No notes yet.</p>}
+    <p class="reading-disclosure">These sample notes demonstrate the reading experience. They can be replaced with your own writing.</p>
+  </div>
+</Base>

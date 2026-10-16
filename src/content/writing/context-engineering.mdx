@@ -1,0 +1,38 @@
+---
+title: "Project instructions need editing, too"
+description: "A closer look at where project rules belong, what they prevent, and when to remove them."
+date: 2026-10-14
+kind: article
+format: reading
+tags: ["Context engineering"]
+featured: false
+sample: true
+source:
+  title: "The new rules of context engineering for Claude 5 generation models"
+  url: https://claude.dev/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models/
+  author: "Thariq Shihipar"
+---
+
+## What the article says
+
+1. The author reports that the team removed more than 80% of its system prompt for a particular new model without a measured regression on its internal coding evaluations.
+2. Instructions spread across system prompts, skills, and project files can duplicate or contradict each other.
+3. The article recommends concise project instructions, specialized guidance loaded when needed, and concrete tools and references to communicate requirements.
+
+These are claims and recommendations from the [original article](https://claude.dev/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models/), not findings from an experiment conducted for this note.
+
+## What I take from it
+
+Project instructions tend to grow one incident at a time. A naming mistake adds a rule. An overly broad change adds another. Each addition has a reason, but the collection can lose its boundaries.
+
+I want to know why a rule exists, which failure it addresses, and what would justify removing it. Instructions have a maintenance cost, even when that cost never shows up as a compiler error.
+
+For a blog repository, I would give each requirement a clear home. Stable editorial conventions belong in the project overview. Article structure belongs in a content template. Publishing steps belong in a dedicated guide. The argument of the article being written belongs in the current task. The overview helps readers find the details without repeating them everywhere.
+
+Some rules deserve to stay explicit, including traceable citations and a ban on invented firsthand experience. Editing should make the requirements clearer. A long rule that prevents a recurring mistake may still earn its place.
+
+## What still needs testing
+
+The article describes experience with particular products and models. It does not establish that every model benefits from fewer instructions.
+
+Before adopting a shorter version, I would keep the original and compare both on representative tasks, looking for omissions, misunderstandings, and extra human rework. This note does not include a controlled comparison.

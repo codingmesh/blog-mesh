@@ -1,0 +1,60 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import ReadingTools from '../../components/ReadingTools.astro';
+import { getWriting, formatDate, readingTime, formatLabel } from '../../lib/content';
+export async function getStaticPaths() {
+  const posts = await getWriting();
+  return posts.map((post) => {
+    const candidates = posts.filter((candidate) => candidate.id !== post.id && candidate.data.kind === post.data.kind);
+    const next = candidates.find((candidate) => candidate.data.tags.some((tag) => post.data.tags.includes(tag))) || candidates[0];
+    return { params: { id: post.id }, props: { post, next } };
+  });
+}
+interface Props { post: CollectionEntry<'writing'>; next?: CollectionEntry<'writing'>; }
+const { post, next } = Astro.props;
+const { Content, headings } = await render(post);
+const toc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const isNote = post.data.kind === 'note';
+const label = formatLabel(post);
+---
+<Base title={post.data.title} description={post.data.description} active={isNote ? 'notes' : 'writing'} article publishedAt={post.data.date}>
+  <article class="article-container" data-pagefind-body>
+    <div class="article-topline"><a class="quiet-link article-back" href={isNote ? '/notes/' : '/writing/'} data-pagefind-ignore><Icon name="arrow" size={16} />{isNote ? 'All notes' : 'All writing'}</a>{post.data.tags[0] && <span class="category-label">{post.data.tags[0]}</span>}</div>
+    <header class="article-header">
+      <h1 data-pagefind-meta="title">{post.data.title}</h1>
+      <p class="article-description" data-pagefind-meta="description">{post.data.description}</p>
+      <div class="post-meta"><time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time><span>{readingTime(post.body)} min read</span><span>{post.data.sample ? 'Sample ' : ''}{label}</span></div>
+    </header>
+    <div class="article-grid">
+      <div>
+        {post.data.source && <p class="source-line" data-pagefind-ignore>Source: <a href={post.data.source.url} target="_blank" rel="noopener noreferrer">{post.data.source.title}<span class="sr-only"> (opens in a new tab)</span></a> by {post.data.source.author}, {new URL(post.data.source.url).hostname}</p>}
+        {toc.length > 1 && <details class="mobile-toc" data-pagefind-ignore><summary>Contents <span class="toc-count">{toc.length} sections</span></summary><ol>{toc.map((heading) => <li><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></details>}
+        <div class="prose"><Content /></div>
+        <ReadingTools />
+        <footer class="article-end" data-pagefind-ignore>
+          <div class="tags">{post.data.tags.map((tag) => isNote ? <span># {tag}</span> : <a href={`/writing/?tag=${encodeURIComponent(tag)}`}># {tag}</a>)}</div>
+          {post.data.sample && <p>This is an AI-assisted sample {label}. {post.data.source && 'Source summaries and additional reflections are labeled separately. '}It does not represent firsthand experience or original experimental results.</p>}
+          <div class="article-actions"><a href={isNote ? '/notes/' : '/writing/'} class="quiet-link">Back to {isNote ? 'notes' : 'writing'} <Icon name="arrow" size={16} /></a><a href="#main" class="quiet-link">Back to top ↑</a></div>
+          {next && next.id !== post.id && <a class="related-post" href={`/writing/${next.id}/`}><span>Read next</span><h2>{next.data.title}</h2></a>}
+        </footer>
+      </div>
+      {toc.length > 1 && <nav class="article-toc" aria-label="Table of contents" data-pagefind-ignore><h2>On this page</h2><ol>{toc.map((heading) => <li class:list={{ 'toc-sub': heading.depth === 3 }}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav>}
+    </div>
+  </article>
+  <script>
+    const links = [...document.querySelectorAll<HTMLAnchorElement>('.article-toc a')];
+    const headings = links.map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1)))).filter((h): h is HTMLElement => !!h);
+    if (headings.length) {
+      const update = () => {
+        let current = headings[0].id;
+        for (const h of headings) { if (h.getBoundingClientRect().top <= 150) current = h.id; }
+        links.forEach((link) => { if (decodeURIComponent(link.hash.slice(1)) === current) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current'); });
+      };
+      let scheduled = false;
+      window.addEventListener('scroll', () => { if (!scheduled) { scheduled = true; requestAnimationFrame(() => { update(); scheduled = false; }); } }, { passive: true });
+      update();
+    }
+  </script>
+</Base>
