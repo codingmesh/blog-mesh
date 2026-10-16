@@ -7,8 +7,25 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const ignoredDirectories = new Set(['node_modules', '.git', 'dist', '.astro']);
 const ignoredFiles = new Set(['package-lock.json', '.DS_Store']);
 const textExtensions = new Set([
-  '.md', '.mdx', '.astro', '.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs',
-  '.json', '.css', '.html', '.xml', '.svg', '.txt', '.yml', '.yaml', '.toml', '.csv',
+  '.md',
+  '.mdx',
+  '.astro',
+  '.ts',
+  '.tsx',
+  '.js',
+  '.jsx',
+  '.mjs',
+  '.cjs',
+  '.json',
+  '.css',
+  '.html',
+  '.xml',
+  '.svg',
+  '.txt',
+  '.yml',
+  '.yaml',
+  '.toml',
+  '.csv',
 ]);
 const textFilenames = new Set(['.gitignore', '.env.example', '.editorconfig', '.npmrc', 'Dockerfile']);
 // Detect the scripts used by the previous content and common East Asian punctuation.
@@ -52,8 +69,11 @@ async function walk(directory) {
         if (legacyLocale.test(line)) issues.push(`${name}:${index + 1}: use the project locale`);
       });
       if (extname(entry.name) === '.json' && !nonEnglishText.test(text)) {
-        try { inspectJson(JSON.parse(text), name); }
-        catch { issues.push(`${name}: invalid JSON; language inspection could not finish`); }
+        try {
+          inspectJson(JSON.parse(text), name);
+        } catch {
+          issues.push(`${name}: invalid JSON; language inspection could not finish`);
+        }
       }
     }
   }

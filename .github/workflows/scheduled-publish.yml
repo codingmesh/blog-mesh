@@ -1,0 +1,22 @@
+# Rebuilds the site once a day so future-dated entries publish on schedule.
+# Inert until the VERCEL_DEPLOY_HOOK repository secret is set.
+name: Scheduled publish
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  trigger-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call the Vercel deploy hook
+        env:
+          HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "VERCEL_DEPLOY_HOOK is not set; nothing to trigger."
+            exit 0
+          fi
+          curl --fail --silent --show-error -X POST "$HOOK"
