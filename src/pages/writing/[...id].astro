@@ -68,10 +68,10 @@ const source = note ? undefined : post.data.source;
           {label}
         </span>
       </div>
+      {source && <SourceLine source={source} />}
     </header>
     <div class="article-grid">
       <div>
-        {source && <SourceLine source={source} />}
         {toc.length > 1 && <TableOfContents headings={toc} variant="inline" />}
         <div class="prose">
           <Content components={mdxComponents} />
@@ -139,21 +139,32 @@ const source = note ? undefined : post.data.source;
     letter-spacing: -0.03em;
     line-height: 1.06;
     color: var(--accent);
-    margin: 0 0 16px;
+    margin: 0 0 14px;
     overflow-wrap: anywhere;
   }
   .article-description {
     font-size: 20px;
     line-height: 1.45;
-    margin: 0 0 14px;
+    margin: 0 0 16px;
     max-width: 50ch;
+  }
+  .article-header :global(.source-line) {
+    margin: 18px 0 0;
+  }
+  .article-header::after {
+    content: '';
+    display: block;
+    width: 28px;
+    height: 2px;
+    background: var(--accent);
+    margin-top: 28px;
   }
   .article-grid {
     display: grid;
     width: calc(100% + 220px);
     grid-template-columns: minmax(0, 1fr) 180px;
     gap: 40px;
-    margin-top: 36px;
+    margin-top: 30px;
     align-items: start;
   }
   .article-end {

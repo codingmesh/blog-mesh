@@ -11,7 +11,7 @@ export const site = {
   description: 'Writing code and thinking things through. Notes on software engineering, AI, and what I am learning.',
   tagline: 'Writing code and thinking things through.',
   focus: 'Software, AI, and reading notes.',
-  themeColor: { light: '#f3f2ee', dark: '#0e0f11' },
+  themeColor: { light: '#f5f2ea', dark: '#0e0f11' },
   repo: 'codingmesh/blog-mesh',
 } as const;
 

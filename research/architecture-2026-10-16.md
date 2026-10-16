@@ -66,3 +66,15 @@ A review of the captures found two bugs and a set of finish details, all fixed a
 - The source citation puts the attribution on its own line so names no longer break mid-way.
 - Code blocks get thin themed scrollbars; figures and captions have styles ready for images.
 - Prose CSS is imported only by the article and About pages, so list pages ship one stylesheet.
+
+## Visible refinement pass
+
+The owner asked for changes they could see, and chose all four candidates. Before captures are in `artifacts/architecture-2026-10-16/`, after captures in `artifacts/polish-2026-10-16/`.
+
+- **Homepage rhythm.** A one-line mono kicker (the focus line from config) gives the feed a top, and the newest entry is set at up to 50px with a 20px summary; later entries stay at 38px. Three titles still fit a 1280×800 first screen; two fit 720.
+- **Article header.** The source citation moved into the header stack under the meta row, and a 28px accent rule separates the header from the body. The phone body now starts at about 575px, inside the 560 to 600 target.
+- **Code windows.** The bar is transparent with a hairline, dots are 7px, labels 11.5px, and the copy control sits at 70% opacity until the block is hovered or the control focused.
+- **Light theme.** Warm paper `#f5f2ea`, ink `#1a1a1a`, muted `#5f5c55`, accent `#b03a0e`; accent contrast 5.43:1 on the page and 4.92:1 on panels.
+- **Motion.** Navigation links animate an underline in on hover and settle in accent on the current page; the table-of-contents marker fades in; both use the shared 120 to 160ms easing and are disabled under reduced motion.
+
+Checks after the pass: 0 diagnostics, 10 tests, 20 of 20 overflow combinations clean, accessibility audit 0 violations in both themes.

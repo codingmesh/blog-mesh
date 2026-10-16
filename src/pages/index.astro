@@ -4,11 +4,13 @@ import Feed from '../components/content/Feed.astro';
 import PostRow from '../components/content/PostRow.astro';
 import Icon from '../components/Icon.astro';
 import { getArticles, getNotes } from '../lib/content';
+import { site } from '../config';
 const [articles, notes] = await Promise.all([getArticles(), getNotes()]);
 ---
 
 <Base home>
   <div class="home column">
+    <p class="home-kicker">{site.focus}</p>
     <Feed class="home-feed">
       {articles.slice(0, 6).map((post) => (
         <PostRow post={post} />
@@ -46,8 +48,24 @@ const [articles, notes] = await Promise.all([getArticles(), getNotes()]);
 </Base>
 
 <style>
+  .home-kicker {
+    font: 500 13px/1.6 var(--mono);
+    color: var(--muted);
+    margin-top: 44px;
+  }
   .home :global(.home-feed) {
-    margin-top: 36px;
+    margin-top: 26px;
+  }
+  .home :global(.home-feed > :first-child .feed-title) {
+    font-size: clamp(34px, 4.6vw, 50px);
+    letter-spacing: -0.032em;
+  }
+  .home :global(.home-feed > :first-child .feed-summary) {
+    font-size: 20px;
+    max-width: 50ch;
+  }
+  .home :global(.home-feed > :first-child) {
+    padding-bottom: 10px;
   }
   .feed-section {
     margin-top: 88px;
@@ -62,8 +80,17 @@ const [articles, notes] = await Promise.all([getArticles(), getNotes()]);
     margin-top: 36px;
   }
   @media (max-width: 540px) {
+    .home-kicker {
+      margin-top: 24px;
+    }
     .home :global(.home-feed) {
-      margin-top: 20px;
+      margin-top: 18px;
+    }
+    .home :global(.home-feed > :first-child .feed-title) {
+      font-size: 33px;
+    }
+    .home :global(.home-feed > :first-child .feed-summary) {
+      font-size: 18px;
     }
     .feed-section {
       margin-top: 64px;

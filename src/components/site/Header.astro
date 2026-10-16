@@ -82,16 +82,21 @@ const { active, home = false } = Astro.props;
   nav a {
     font: 500 15px/44px var(--sans);
     color: var(--muted);
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+    transition:
+      color 120ms var(--ease),
+      text-decoration-color 160ms var(--ease);
   }
   nav a:hover {
     color: var(--ink);
+    text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
   }
   nav a[aria-current='page'] {
     color: var(--ink);
-    text-decoration: underline;
     text-decoration-color: var(--accent);
-    text-decoration-thickness: 2px;
-    text-underline-offset: 6px;
   }
   .header-tools {
     gap: 0;

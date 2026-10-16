@@ -18,13 +18,13 @@
   color-scheme: dark;
 }
 :root[data-theme='light'] {
-  --bg: #f3f2ee;
-  --ink: #17181a;
-  --muted: #5e5f5b;
-  --accent: #b8390f;
-  --line: #dcdad3;
-  --soft: #e9e7e1;
-  --surface: #ffffff;
+  --bg: #f5f2ea;
+  --ink: #1a1a1a;
+  --muted: #5f5c55;
+  --accent: #b03a0e;
+  --line: #ddd8cc;
+  --soft: #ebe7dc;
+  --surface: #fbf9f4;
   color-scheme: light;
 }
 @media (max-width: 540px) {
