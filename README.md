@@ -29,7 +29,7 @@ research/, artifacts/     design and architecture records; not served
 
 ## Run locally
 
-Use Node.js 22.12 or later (see `.nvmrc`). Dependencies are locked in `package-lock.json`.
+Use Node.js 22.18 or later (see `.nvmrc`); it runs the TypeScript tests and scripts without a build step. Dependencies are locked in `package-lock.json`.
 
 ```sh
 npm ci
