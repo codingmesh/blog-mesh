@@ -93,6 +93,26 @@ const { headings, variant } = Astro.props;
     color: var(--accent);
     min-height: 44px;
     align-content: center;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .mobile-toc summary::-webkit-details-marker {
+    display: none;
+  }
+  .mobile-toc summary::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform 120ms var(--ease);
+    flex-shrink: 0;
+  }
+  .mobile-toc[open] summary::before {
+    transform: rotate(45deg);
   }
   .toc-count {
     margin-left: 8px;

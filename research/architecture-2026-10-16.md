@@ -54,3 +54,15 @@ Date: October 16, 2026. After two visual redesigns the same day, the owner asked
 ![Keystatic: articles collection](/Users/mikey/Projects/personal/blog-mesh/artifacts/architecture-2026-10-16/keystatic-articles.jpg)
 
 ![Keystatic: editing an article](/Users/mikey/Projects/personal/blog-mesh/artifacts/architecture-2026-10-16/keystatic-entry.jpg)
+
+## Detail pass, later the same day
+
+A review of the captures found two bugs and a set of finish details, all fixed and re-verified (overflow 20 of 20, accessibility audit 0 violations, Lighthouse 100 across all four categories on the homepage and an article before the pass):
+
+- The archive intro rendered "3articles" after formatting removed a space between two spans; the space is now explicit.
+- The prose list rule leaked into the outcome explorer, pushing its second and third buttons 8px lower than the first; the island resets it.
+- The theme toggle now shows the destination mode: a sun while dark, a moon while light.
+- The collapsed table of contents uses an accent chevron that rotates open instead of the native triangle.
+- The source citation puts the attribution on its own line so names no longer break mid-way.
+- Code blocks get thin themed scrollbars; figures and captions have styles ready for images.
+- Prose CSS is imported only by the article and About pages, so list pages ship one stylesheet.

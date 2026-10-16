@@ -7,12 +7,16 @@ const { source } = Astro.props;
 ---
 
 <p class="source-line" data-pagefind-ignore>
-  Source:{' '}
-  <a href={source.url} target="_blank" rel="noopener noreferrer">
-    {source.title}
-    <span class="sr-only"> (opens in a new tab)</span>
-  </a>{' '}
-  by {source.author}, {new URL(source.url).hostname}
+  <span class="source-title">
+    Source:{' '}
+    <a href={source.url} target="_blank" rel="noopener noreferrer">
+      {source.title}
+      <span class="sr-only"> (opens in a new tab)</span>
+    </a>
+  </span>
+  <span class="source-by">
+    {source.author}, {new URL(source.url).hostname}
+  </span>
 </p>
 
 <style>
@@ -21,6 +25,13 @@ const { source } = Astro.props;
     color: var(--muted);
     margin-bottom: 32px;
     overflow-wrap: anywhere;
+  }
+  .source-title,
+  .source-by {
+    display: block;
+  }
+  .source-by {
+    opacity: 0.85;
   }
   .source-line a {
     color: var(--accent);

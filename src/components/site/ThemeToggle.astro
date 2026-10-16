@@ -33,11 +33,11 @@ import Icon from '../Icon.astro';
     color: var(--ink);
     background: var(--soft);
   }
-  .theme-sun,
-  :global([data-theme='light']) .theme-moon {
+  .theme-moon,
+  :global([data-theme='light']) .theme-sun {
     display: none;
   }
-  :global([data-theme='light']) .theme-sun {
+  :global([data-theme='light']) .theme-moon {
     display: block;
   }
 </style>

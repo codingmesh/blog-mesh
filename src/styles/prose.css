@@ -90,11 +90,22 @@
   height: auto;
   border-radius: var(--radius);
 }
+.prose figure {
+  margin: 0;
+}
+.prose figcaption {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+  margin-top: 10px;
+}
 
 /* Code blocks and the window chrome added by src/scripts/code-windows.ts */
 .prose pre {
   max-width: 100%;
   overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: var(--code-pad);

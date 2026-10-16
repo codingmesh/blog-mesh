@@ -43,6 +43,7 @@ import Island from '../islands/OutcomeExplorer';
     margin: 22px 0 0;
     border-top: 1px solid var(--accent);
   }
+  .prose .outcome-list li,
   .outcome-list li {
     position: relative;
     margin: 0;
@@ -69,6 +70,9 @@ import Island from '../islands/OutcomeExplorer';
   }
   .outcome-list button:hover {
     border-color: var(--accent);
+  }
+  .outcome-list button:active {
+    transform: translateY(1px);
   }
   .outcome-list button[aria-pressed='true'] {
     background: var(--accent);
