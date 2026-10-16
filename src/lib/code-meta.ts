@@ -16,7 +16,10 @@ export function parseCodeMeta(raw = ''): CodeMeta {
 }
 
 type HastElement = { properties: Record<string, unknown> };
-type TransformerContext = { options: { meta?: { __raw?: string } }; addClassToHast: (node: HastElement, className: string) => void };
+type TransformerContext = {
+  options: { meta?: { __raw?: string } };
+  addClassToHast: (node: HastElement, className: string) => void;
+};
 
 /** Shiki transformer used by astro.config.mjs for Markdown and MDX fences. */
 export function codeMetaTransformer() {

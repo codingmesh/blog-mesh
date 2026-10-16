@@ -11,6 +11,9 @@ test('drafts and scheduled posts are excluded from every public content consumer
     entry('scheduled', '2026-10-15'),
     entry('today', '2026-10-14'),
   ];
-  assert.deepEqual(publishedEntries(entries, now).map(({ id }) => id), ['today', 'older']);
+  assert.deepEqual(
+    publishedEntries(entries, now).map(({ id }) => id),
+    ['today', 'older'],
+  );
   assert.equal(entries[0].id, 'older', 'content loader output must not be reordered in place');
 });
