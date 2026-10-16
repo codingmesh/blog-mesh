@@ -1,60 +1,276 @@
 ---
-import { render, type CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Icon from '../../components/Icon.astro';
-import ReadingTools from '../../components/ReadingTools.astro';
-import { getWriting, formatDate, readingTime, formatLabel } from '../../lib/content';
+import CodeWindows from '../../components/content/CodeWindows.astro';
+import Comments from '../../components/content/Comments.astro';
+import SourceLine from '../../components/content/SourceLine.astro';
+import TableOfContents from '../../components/content/TableOfContents.astro';
+import { mdxComponents } from '../../components/content/mdx-components';
+import { formatDate, formatLabel, getAllWriting, isNote, postUrl, readingTime, type Post } from '../../lib/content';
+
 export async function getStaticPaths() {
-  const posts = await getWriting();
+  const posts = await getAllWriting();
+  const seen = new Map<string, string>();
+  for (const post of posts) {
+    const owner = seen.get(post.id);
+    if (owner && owner !== post.collection)
+      throw new Error(`Article and note share the id "${post.id}". Rename one of them.`);
+    seen.set(post.id, post.collection);
+  }
   return posts.map((post) => {
-    const candidates = posts.filter((candidate) => candidate.id !== post.id && candidate.data.kind === post.data.kind);
-    const next = candidates.find((candidate) => candidate.data.tags.some((tag) => post.data.tags.includes(tag))) || candidates[0];
+    const siblings = posts.filter((candidate) => candidate.collection === post.collection && candidate.id !== post.id);
+    const next =
+      siblings.find((candidate) => candidate.data.tags.some((tag) => post.data.tags.includes(tag))) || siblings[0];
     return { params: { id: post.id }, props: { post, next } };
   });
 }
-interface Props { post: CollectionEntry<'writing'>; next?: CollectionEntry<'writing'>; }
+
+interface Props {
+  post: Post;
+  next?: Post;
+}
 const { post, next } = Astro.props;
 const { Content, headings } = await render(post);
 const toc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
-const isNote = post.data.kind === 'note';
+const note = isNote(post);
 const label = formatLabel(post);
+const listHref = note ? '/notes/' : '/writing/';
+const source = note ? undefined : post.data.source;
 ---
-<Base title={post.data.title} description={post.data.description} active={isNote ? 'notes' : 'writing'} article publishedAt={post.data.date}>
-  <article class="article-container" data-pagefind-body>
-    <div class="article-topline"><a class="quiet-link article-back" href={isNote ? '/notes/' : '/writing/'} data-pagefind-ignore><Icon name="arrow" size={16} />{isNote ? 'All notes' : 'All writing'}</a>{post.data.tags[0] && <span class="category-label">{post.data.tags[0]}</span>}</div>
+
+<Base
+  title={post.data.title}
+  description={post.data.description}
+  active={note ? 'notes' : 'writing'}
+  article
+  publishedAt={post.data.date}
+>
+  <article class="article column" data-pagefind-body>
+    <div class="article-topline">
+      <a class="quiet-link article-back" href={listHref} data-pagefind-ignore>
+        <Icon name="arrow" size={16} />
+        {note ? 'All notes' : 'All writing'}
+      </a>
+      {post.data.tags[0] && <span class="category-label">{post.data.tags[0]}</span>}
+    </div>
     <header class="article-header">
       <h1 data-pagefind-meta="title">{post.data.title}</h1>
-      <p class="article-description" data-pagefind-meta="description">{post.data.description}</p>
-      <div class="post-meta"><time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time><span>{readingTime(post.body)} min read</span><span>{post.data.sample ? 'Sample ' : ''}{label}</span></div>
+      <p class="article-description" data-pagefind-meta="description">
+        {post.data.description}
+      </p>
+      <div class="post-meta">
+        <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+        <span>{readingTime(post.body)} min read</span>
+        <span>
+          {post.data.sample ? 'Sample ' : ''}
+          {label}
+        </span>
+      </div>
     </header>
     <div class="article-grid">
       <div>
-        {post.data.source && <p class="source-line" data-pagefind-ignore>Source: <a href={post.data.source.url} target="_blank" rel="noopener noreferrer">{post.data.source.title}<span class="sr-only"> (opens in a new tab)</span></a> by {post.data.source.author}, {new URL(post.data.source.url).hostname}</p>}
-        {toc.length > 1 && <details class="mobile-toc" data-pagefind-ignore><summary>Contents <span class="toc-count">{toc.length} sections</span></summary><ol>{toc.map((heading) => <li><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></details>}
-        <div class="prose"><Content /></div>
-        <ReadingTools />
+        {source && <SourceLine source={source} />}
+        {toc.length > 1 && <TableOfContents headings={toc} variant="inline" />}
+        <div class="prose">
+          <Content components={mdxComponents} />
+        </div>
+        <CodeWindows />
         <footer class="article-end" data-pagefind-ignore>
-          <div class="tags">{post.data.tags.map((tag) => isNote ? <span># {tag}</span> : <a href={`/writing/?tag=${encodeURIComponent(tag)}`}># {tag}</a>)}</div>
-          {post.data.sample && <p>This is an AI-assisted sample {label}. {post.data.source && 'Source summaries and additional reflections are labeled separately. '}It does not represent firsthand experience or original experimental results.</p>}
-          <div class="article-actions"><a href={isNote ? '/notes/' : '/writing/'} class="quiet-link">Back to {isNote ? 'notes' : 'writing'} <Icon name="arrow" size={16} /></a><a href="#main" class="quiet-link">Back to top ↑</a></div>
-          {next && next.id !== post.id && <a class="related-post" href={`/writing/${next.id}/`}><span>Read next</span><h2>{next.data.title}</h2></a>}
+          <div class="tags">
+            {post.data.tags.map((tag) =>
+              note ? <span># {tag}</span> : <a href={`/writing/?tag=${encodeURIComponent(tag)}`}># {tag}</a>,
+            )}
+          </div>
+          {post.data.sample && (
+            <p>
+              This is an AI-assisted sample {label}.{' '}
+              {source && 'Source summaries and additional reflections are labeled separately. '}It does not represent
+              firsthand experience or original experimental results.
+            </p>
+          )}
+          <div class="article-actions">
+            <a href={listHref} class="quiet-link">
+              Back to {note ? 'notes' : 'writing'} <Icon name="arrow" size={16} />
+            </a>
+            <a href="#main" class="quiet-link">
+              Back to top ↑
+            </a>
+          </div>
+          {next && (
+            <a class="related-post" href={postUrl(next)}>
+              <span>Read next</span>
+              <h2>{next.data.title}</h2>
+            </a>
+          )}
         </footer>
+        <Comments />
       </div>
-      {toc.length > 1 && <nav class="article-toc" aria-label="Table of contents" data-pagefind-ignore><h2>On this page</h2><ol>{toc.map((heading) => <li class:list={{ 'toc-sub': heading.depth === 3 }}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav>}
+      {toc.length > 1 && <TableOfContents headings={toc} variant="side" />}
     </div>
   </article>
-  <script>
-    const links = [...document.querySelectorAll<HTMLAnchorElement>('.article-toc a')];
-    const headings = links.map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1)))).filter((h): h is HTMLElement => !!h);
-    if (headings.length) {
-      const update = () => {
-        let current = headings[0].id;
-        for (const h of headings) { if (h.getBoundingClientRect().top <= 150) current = h.id; }
-        links.forEach((link) => { if (decodeURIComponent(link.hash.slice(1)) === current) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current'); });
-      };
-      let scheduled = false;
-      window.addEventListener('scroll', () => { if (!scheduled) { scheduled = true; requestAnimationFrame(() => { update(); scheduled = false; }); } }, { passive: true });
-      update();
-    }
-  </script>
 </Base>
+
+<style>
+  .article {
+    padding-top: 24px;
+  }
+  .article-back {
+    margin: 0;
+  }
+  .article-back :global(svg) {
+    transform: rotate(180deg);
+  }
+  .article-topline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin-bottom: 28px;
+  }
+  .category-label {
+    color: var(--muted);
+    font: 500 13px/1.6 var(--mono);
+  }
+  .article-header h1 {
+    font-size: clamp(32px, 4.4vw, 46px);
+    letter-spacing: -0.03em;
+    line-height: 1.06;
+    color: var(--accent);
+    margin: 0 0 16px;
+    overflow-wrap: anywhere;
+  }
+  .article-description {
+    font-size: 20px;
+    line-height: 1.45;
+    margin: 0 0 14px;
+    max-width: 50ch;
+  }
+  .article-grid {
+    display: grid;
+    width: calc(100% + 220px);
+    grid-template-columns: minmax(0, 1fr) 180px;
+    gap: 40px;
+    margin-top: 36px;
+    align-items: start;
+  }
+  .article-end {
+    margin-top: 64px;
+  }
+  .tags {
+    display: flex;
+    gap: 6px 18px;
+    flex-wrap: wrap;
+  }
+  .tags a,
+  .tags > span {
+    font: 500 13px/1.6 var(--mono);
+    color: var(--accent);
+  }
+  .tags a:hover {
+    text-decoration: underline;
+  }
+  .article-end > p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin: 20px 0 24px;
+    max-width: 56ch;
+  }
+  .article-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .related-post {
+    display: block;
+    margin-top: 56px;
+  }
+  .related-post > span {
+    color: var(--muted);
+    font: 500 13px/1.6 var(--mono);
+  }
+  .related-post h2 {
+    margin-top: 8px;
+    font-size: 28px;
+    letter-spacing: -0.025em;
+    color: var(--accent);
+  }
+  .related-post:hover h2 {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 5px;
+  }
+  /* The side table of contents only fits in the empty right space of wide screens. */
+  .article-grid > :global(.article-toc) {
+    display: none;
+  }
+  .article-grid :global(.mobile-toc) {
+    display: block;
+  }
+  @media (min-width: 1100px) {
+    .article-grid > :global(.article-toc) {
+      display: block;
+    }
+    .article-grid :global(.mobile-toc) {
+      display: none;
+    }
+  }
+  @media (max-width: 1099px) {
+    .article-grid {
+      width: 100%;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+  }
+  @media (max-width: 800px) {
+    .article-grid {
+      margin-top: 24px;
+    }
+  }
+  @media (max-width: 540px) {
+    .article {
+      padding-top: 16px;
+    }
+    .article-topline {
+      margin-bottom: 18px;
+    }
+    .article-header h1 {
+      font-size: 31px;
+      line-height: 1.08;
+      margin-bottom: 12px;
+    }
+    .article-description {
+      font-size: 17px;
+      margin-bottom: 10px;
+    }
+    .article-grid {
+      margin-top: 22px;
+    }
+    .related-post h2 {
+      font-size: 24px;
+    }
+  }
+  @media (max-width: 360px) {
+    .article-header h1 {
+      font-size: 28px;
+    }
+  }
+  @media print {
+    .article {
+      width: 100%;
+      padding: 0;
+    }
+    .article-back,
+    .article-end {
+      display: none !important;
+    }
+    .article-grid {
+      display: block;
+      width: 100%;
+    }
+  }
+</style>

@@ -1,0 +1,33 @@
+---
+/** Vertical list of PostRow entries. Spacing is the only separator; there are no hairlines. */
+interface Props {
+  compact?: boolean;
+  class?: string;
+}
+const { compact = false, class: className } = Astro.props;
+---
+
+<ol class:list={['feed', { compact }, className]} role="list">
+  <slot />
+</ol>
+
+<style>
+  .feed {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 56px;
+  }
+  .feed.compact {
+    gap: 26px;
+  }
+  @media (max-width: 540px) {
+    .feed {
+      gap: 40px;
+    }
+    .feed.compact {
+      gap: 22px;
+    }
+  }
+</style>

@@ -1,0 +1,44 @@
+---
+/** One-line citation for reading notes: title, author, and domain. */
+interface Props {
+  source: { title: string; url: string; author: string };
+}
+const { source } = Astro.props;
+---
+
+<p class="source-line" data-pagefind-ignore>
+  Source:{' '}
+  <a href={source.url} target="_blank" rel="noopener noreferrer">
+    {source.title}
+    <span class="sr-only"> (opens in a new tab)</span>
+  </a>{' '}
+  by {source.author}, {new URL(source.url).hostname}
+</p>
+
+<style>
+  .source-line {
+    font: 13px/1.7 var(--mono);
+    color: var(--muted);
+    margin-bottom: 32px;
+    overflow-wrap: anywhere;
+  }
+  .source-line a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+  .source-line a:hover {
+    text-decoration-color: var(--accent);
+  }
+  @media (max-width: 540px) {
+    .source-line {
+      font-size: 12.5px;
+      margin-bottom: 20px;
+    }
+  }
+  @media print {
+    .source-line {
+      break-inside: avoid;
+    }
+  }
+</style>

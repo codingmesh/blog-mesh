@@ -1,0 +1,93 @@
+---
+import { formatDate, postUrl, readingTime, type Post } from '../../lib/content';
+/** One entry in a feed. Articles show a summary and reading time; notes show the title and date only. */
+interface Props {
+  post: Post;
+  variant?: 'article' | 'note';
+  heading?: 'h2' | 'h3';
+}
+const { post, variant = 'article', heading = 'h2' } = Astro.props;
+const Heading = heading;
+---
+
+<li class:list={['feed-item', 'archive-item', `feed-${variant}`]} data-tags={JSON.stringify(post.data.tags)}>
+  <Heading class="feed-title">
+    <a href={postUrl(post)}>
+      <span>{post.data.title}</span>
+    </a>
+  </Heading>
+  {variant === 'article' && <p class="feed-summary">{post.data.description}</p>}
+  <p class="feed-meta">
+    <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+    {variant === 'article' && <span>{readingTime(post.body)} min read</span>}
+  </p>
+</li>
+
+<style>
+  /* Titles carry the identity: large, accent, filled solid on hover and focus. */
+  .feed-title {
+    font: 700 clamp(28px, 3.4vw, 38px) / 1.1 var(--display);
+    letter-spacing: -0.028em;
+    overflow-wrap: anywhere;
+    min-width: 0;
+  }
+  .feed-title a {
+    color: var(--accent);
+  }
+  .feed-title a span {
+    padding: 0 0.1em;
+    margin: 0 -0.1em;
+    border-radius: 2px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    transition:
+      background-color 100ms var(--ease),
+      color 100ms var(--ease);
+  }
+  .feed-title a:hover span,
+  .feed-title a:focus-visible span {
+    background: var(--accent);
+    color: var(--bg);
+  }
+  .feed-title a:focus-visible {
+    outline: none;
+  }
+  .feed-summary {
+    font-size: 18px;
+    line-height: 1.55;
+    margin-top: 10px;
+    max-width: 56ch;
+  }
+  .feed-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    margin-top: 10px;
+    font: 13px/1.6 var(--mono);
+    color: var(--muted);
+  }
+  .feed-note .feed-title {
+    font-size: 23px;
+    letter-spacing: -0.02em;
+  }
+  .feed-note .feed-meta {
+    margin-top: 4px;
+  }
+  @media (max-width: 540px) {
+    .feed-title {
+      font-size: 28px;
+    }
+    .feed-summary {
+      font-size: 17px;
+      margin-top: 8px;
+    }
+    .feed-note .feed-title {
+      font-size: 21px;
+    }
+  }
+  @media (max-width: 360px) {
+    .feed-title {
+      font-size: 26px;
+    }
+  }
+</style>

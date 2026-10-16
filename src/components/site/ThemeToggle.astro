@@ -1,0 +1,43 @@
+---
+import Icon from '../Icon.astro';
+---
+
+<button type="button" class="icon-button" id="theme-toggle" aria-label="Switch to light mode" title="Switch theme">
+  <span class="theme-moon">
+    <Icon name="moon" />
+  </span>
+  <span class="theme-sun">
+    <Icon name="sun" />
+  </span>
+</button>
+
+<script>
+  import { initThemeToggle } from '../../scripts/theme';
+  initThemeToggle();
+</script>
+
+<style>
+  .icon-button {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius);
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .icon-button:hover {
+    color: var(--ink);
+    background: var(--soft);
+  }
+  .theme-sun,
+  :global([data-theme='light']) .theme-moon {
+    display: none;
+  }
+  :global([data-theme='light']) .theme-sun {
+    display: block;
+  }
+</style>

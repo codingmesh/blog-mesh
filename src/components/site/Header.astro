@@ -1,0 +1,160 @@
+---
+import Icon from '../Icon.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import { site } from '../../config';
+interface Props {
+  active?: string;
+  home?: boolean;
+}
+const { active, home = false } = Astro.props;
+---
+
+<header class="site-header column" data-pagefind-ignore>
+  {home ? (
+    <h1 class="brand">
+      <a href="/" aria-label={`${site.name} home`}>
+        {site.wordmark}
+        <span class="brand-dot">.</span>
+      </a>
+    </h1>
+  ) : (
+    <a href="/" class="brand" aria-label={`${site.name} home`}>
+      {site.wordmark}
+      <span class="brand-dot">.</span>
+    </a>
+  )}
+  <div class="header-right">
+    <nav aria-label="Main navigation">
+      <a href="/writing/" aria-current={active === 'writing' ? 'page' : undefined}>
+        Writing
+      </a>
+      <a href="/notes/" aria-current={active === 'notes' ? 'page' : undefined}>
+        Notes
+      </a>
+      <a href="/about/" aria-current={active === 'about' ? 'page' : undefined}>
+        About
+      </a>
+    </nav>
+    <div class="header-tools">
+      <button
+        type="button"
+        class="icon-button"
+        id="search-open"
+        aria-label="Search writing and notes"
+        aria-haspopup="dialog"
+        aria-controls="search-dialog"
+        title="Search (⌘K / Ctrl+K)"
+      >
+        <Icon name="search" />
+      </button>
+      <ThemeToggle />
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    font: 700 21px/1 var(--display);
+    letter-spacing: -0.03em;
+    margin: 0;
+  }
+  .brand-dot {
+    color: var(--accent);
+  }
+  .header-right,
+  .header-tools,
+  nav {
+    display: flex;
+    align-items: center;
+  }
+  nav {
+    gap: 22px;
+  }
+  nav a {
+    font: 500 15px/44px var(--sans);
+    color: var(--muted);
+  }
+  nav a:hover {
+    color: var(--ink);
+  }
+  nav a[aria-current='page'] {
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+  }
+  .header-tools {
+    gap: 0;
+    margin-left: 10px;
+  }
+  .icon-button {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius);
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .icon-button:hover {
+    color: var(--ink);
+    background: var(--soft);
+  }
+  @media (max-width: 800px) {
+    .site-header {
+      min-height: 72px;
+    }
+  }
+  @media (max-width: 540px) {
+    .site-header {
+      min-height: 68px;
+    }
+    .brand {
+      font-size: 19px;
+    }
+    nav {
+      gap: 2px;
+    }
+    nav a {
+      font-size: 14px;
+      min-width: 44px;
+      padding-inline: 5px;
+      text-align: center;
+    }
+    .header-tools {
+      margin-left: 2px;
+    }
+  }
+  @media (max-width: 360px) {
+    .brand {
+      font-size: 17px;
+    }
+    .header-tools {
+      margin-left: 0;
+    }
+    nav {
+      gap: 0;
+    }
+    nav a {
+      font-size: 13px;
+    }
+  }
+  @media print {
+    .site-header {
+      display: none !important;
+    }
+  }
+</style>

@@ -1,0 +1,164 @@
+---
+/**
+ * MDX-facing wrapper so articles can write <OutcomeExplorer /> without imports or client directives.
+ * The React island hydrates when scrolled into view; its server HTML is the complete diagram.
+ */
+import Island from '../islands/OutcomeExplorer';
+---
+
+<Island client:visible />
+
+<style is:global>
+  .outcome-explorer {
+    border: 1px solid var(--line);
+    padding: 24px;
+    border-radius: var(--radius);
+    font-family: var(--sans);
+  }
+  .outcome-origin {
+    margin: 0 auto;
+    width: fit-content;
+    padding: 8px 22px;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    font-size: 15px;
+    font-weight: 500;
+    position: relative;
+  }
+  .outcome-origin::after {
+    content: '';
+    position: absolute;
+    height: 22px;
+    width: 1px;
+    background: var(--accent);
+    top: 100%;
+    left: 50%;
+  }
+  .outcome-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 22px 0 0;
+    list-style: none;
+    gap: 14px;
+    margin: 22px 0 0;
+    border-top: 1px solid var(--accent);
+  }
+  .outcome-list li {
+    position: relative;
+    margin: 0;
+  }
+  .outcome-list li::before {
+    content: '';
+    position: absolute;
+    height: 22px;
+    width: 1px;
+    background: var(--accent);
+    bottom: 100%;
+    left: 50%;
+  }
+  .outcome-list button {
+    width: 100%;
+    text-align: center;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 12px 8px;
+    background: var(--bg);
+    color: var(--ink);
+    display: grid;
+    gap: 3px;
+  }
+  .outcome-list button:hover {
+    border-color: var(--accent);
+  }
+  .outcome-list button[aria-pressed='true'] {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+  }
+  .outcome-list button[aria-pressed='true'] span {
+    color: var(--bg);
+  }
+  .outcome-list strong {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .outcome-list span {
+    color: var(--muted);
+    font-size: 12.5px;
+  }
+  .outcome-incomplete button {
+    border-style: dashed;
+    border-color: var(--accent);
+  }
+  .outcome-result {
+    display: block;
+    margin-top: 18px;
+    font: 14px/1.6 var(--mono);
+    color: var(--muted);
+    text-align: center;
+    min-height: 1.6em;
+  }
+  .outcome-result code {
+    color: var(--accent);
+  }
+  .outcome-result q {
+    color: var(--ink);
+  }
+  .outcome-explorer figcaption {
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+    margin-top: 14px;
+  }
+  @media (max-width: 540px) {
+    .outcome-explorer {
+      padding: 14px;
+    }
+    .outcome-list {
+      grid-template-columns: 1fr;
+      border-top: 0;
+      padding: 0 0 0 16px;
+      border-left: 1px solid var(--accent);
+      margin: 22px 0 0 12px;
+      gap: 12px;
+    }
+    .outcome-list li::before {
+      width: 16px;
+      height: 1px;
+      left: -17px;
+      top: 50%;
+      bottom: auto;
+    }
+    .outcome-list button {
+      grid-template-columns: auto 1fr;
+      justify-content: space-between;
+      text-align: left;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+    }
+    .outcome-list span {
+      text-align: right;
+    }
+    .outcome-origin {
+      margin-left: 0;
+      font-size: 14px;
+    }
+    .outcome-origin::after {
+      left: 12px;
+    }
+  }
+  @media (max-width: 360px) {
+    .outcome-list button {
+      grid-template-columns: 1fr;
+    }
+    .outcome-list span {
+      text-align: left;
+    }
+  }
+  @media print {
+    .outcome-explorer {
+      break-inside: avoid;
+    }
+  }
+</style>

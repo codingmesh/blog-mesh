@@ -1,0 +1,250 @@
+---
+import Icon from '../Icon.astro';
+import { getArticles } from '../../lib/content';
+const topics = [...new Set((await getArticles()).flatMap((post) => post.data.tags))].slice(0, 4);
+---
+
+<dialog id="search-dialog" aria-labelledby="search-title" data-pagefind-ignore>
+  <div class="search-top">
+    <h2 id="search-title">Find something to read</h2>
+    <button type="button" class="icon-button" id="search-close" aria-label="Close search">
+      <Icon name="close" />
+    </button>
+  </div>
+  <label class="sr-only" for="search-input">
+    Search writing and notes
+  </label>
+  <div class="search-field">
+    <Icon name="search" />
+    <input
+      id="search-input"
+      type="search"
+      placeholder="Search articles, notes, or a keyword"
+      autocomplete="off"
+      enterkeyhint="search"
+      aria-describedby="search-status"
+      aria-controls="search-results"
+    />
+  </div>
+  <div id="search-suggestions">
+    <p>Explore a topic</p>
+    <div class="search-topics">
+      {topics.map((topic) => (
+        <button type="button" data-search-topic={topic}>
+          {topic}
+        </button>
+      ))}
+    </div>
+  </div>
+  <p id="search-status" class="search-status" role="status" aria-live="polite" aria-atomic="true">
+    Enter a keyword to search all writing and notes.
+  </p>
+  <ul id="search-results" aria-label="Search results" role="list" hidden></ul>
+  <div id="search-recovery" hidden>
+    <button type="button" id="search-retry" class="text-button">
+      Try again
+    </button>
+    <a href="/writing/">Browse all writing</a>
+  </div>
+  <div class="search-bottom">
+    <span id="search-mode">Full-text search</span>
+    <span>
+      <kbd>↑</kbd> <kbd>↓</kbd> Navigate <kbd>esc</kbd> Close
+    </span>
+  </div>
+</dialog>
+
+<script>
+  import { initSearch } from '../../scripts/search';
+  initSearch();
+</script>
+
+<style>
+  #search-dialog {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 24px;
+    color: var(--ink);
+    background: var(--surface);
+    width: min(640px, calc(100% - 32px));
+    max-height: min(75vh, 650px);
+    margin: 12vh auto auto;
+    box-shadow: 0 30px 80px rgb(0 0 0 / 0.45);
+  }
+  #search-dialog::backdrop {
+    background: rgb(0 0 0 / 0.55);
+    backdrop-filter: blur(3px);
+  }
+  #search-dialog[open] {
+    display: flex;
+    flex-direction: column;
+    max-height: min(720px, calc(100dvh - 64px));
+    margin-top: max(32px, 8dvh);
+    overflow: hidden;
+  }
+  #search-dialog > * {
+    flex-shrink: 0;
+  }
+  .search-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .search-top h2 {
+    font-size: 20px;
+  }
+  .icon-button {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius);
+    color: var(--muted);
+  }
+  .icon-button:hover {
+    color: var(--ink);
+    background: var(--soft);
+  }
+  .search-field {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 0 14px;
+    color: var(--muted);
+  }
+  .search-field:focus-within {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  #search-input {
+    background: transparent;
+    border: 0;
+    color: var(--ink);
+    width: 100%;
+    min-width: 0;
+    padding: 13px 0;
+    font: 400 17px/1.5 var(--sans);
+    outline: none;
+  }
+  #search-input::placeholder {
+    color: var(--muted);
+  }
+  .search-status {
+    font: 13px/1.6 var(--mono);
+    color: var(--muted);
+    padding: 16px 0 8px;
+    overflow-wrap: anywhere;
+  }
+  #search-results {
+    padding: 4px;
+    margin-inline: -4px;
+    list-style: none;
+    flex-shrink: 1;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+  /* Results are created by the script, so they are styled through :global. */
+  #search-results :global(a) {
+    display: grid;
+    gap: 4px;
+    padding: 12px;
+    border-radius: var(--radius);
+  }
+  #search-results :global(a:hover) {
+    background: var(--soft);
+    color: inherit;
+  }
+  #search-results :global(a:focus-visible) {
+    outline-offset: -2px;
+    background: var(--soft);
+  }
+  #search-results :global(strong) {
+    font: 700 17px/1.3 var(--display);
+    letter-spacing: -0.02em;
+    color: var(--accent);
+  }
+  #search-results :global(span) {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  #search-results :global(mark) {
+    color: var(--bg);
+    background: var(--accent);
+    border-radius: 2px;
+    padding: 0 2px;
+  }
+  #search-suggestions {
+    margin-top: 16px;
+  }
+  #search-suggestions > p {
+    font: 13px/1.6 var(--mono);
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .search-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .search-topics button {
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 7px 11px;
+    min-height: 38px;
+    font: 500 13px/1.4 var(--mono);
+    color: var(--ink);
+  }
+  .search-topics button:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  #search-recovery {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 18px;
+    font: 500 14px/1.5 var(--sans);
+    color: var(--accent);
+  }
+  #search-recovery a {
+    padding-block: 8px;
+    text-decoration: underline;
+  }
+  .search-bottom {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 18px;
+    font: 12px/1.6 var(--mono);
+    color: var(--muted);
+  }
+  @media (max-width: 540px) {
+    #search-dialog {
+      padding: 18px;
+      margin-top: 8vh;
+    }
+    .search-bottom {
+      gap: 12px;
+      flex-wrap: wrap;
+      padding-top: 14px;
+    }
+  }
+  @media print {
+    #search-dialog {
+      display: none !important;
+    }
+  }
+</style>

@@ -1,0 +1,123 @@
+---
+import type { MarkdownHeading } from 'astro';
+/** Sticky list beside the article on wide screens; a collapsed disclosure above it elsewhere. */
+interface Props {
+  headings: MarkdownHeading[];
+  variant: 'side' | 'inline';
+}
+const { headings, variant } = Astro.props;
+---
+
+{variant === 'side' ? (
+  <nav class="article-toc" aria-label="Table of contents" data-pagefind-ignore>
+    <h2>On this page</h2>
+    <ol>
+      {headings.map((heading) => (
+        <li class:list={{ 'toc-sub': heading.depth === 3 }}>
+          <a href={`#${heading.slug}`}>{heading.text}</a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+) : (
+  <details class="mobile-toc" data-pagefind-ignore>
+    <summary>
+      Contents <span class="toc-count">{headings.length} sections</span>
+    </summary>
+    <ol>
+      {headings.map((heading) => (
+        <li>
+          <a href={`#${heading.slug}`}>{heading.text}</a>
+        </li>
+      ))}
+    </ol>
+  </details>
+)}
+
+<script>
+  import { initTableOfContents } from '../../scripts/toc';
+  initTableOfContents();
+</script>
+
+<style>
+  .article-toc {
+    position: sticky;
+    top: 40px;
+    padding-left: 18px;
+    border-left: 1px solid var(--line);
+  }
+  .article-toc h2 {
+    font: 500 12px/1.6 var(--mono);
+    color: var(--muted);
+    letter-spacing: 0;
+    margin-bottom: 12px;
+  }
+  .article-toc ol {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .article-toc a {
+    display: block;
+    font: 500 13px/1.5 var(--sans);
+    color: var(--muted);
+  }
+  .article-toc a:hover {
+    color: var(--ink);
+  }
+  .article-toc a[aria-current='location'] {
+    color: var(--accent);
+    position: relative;
+  }
+  .article-toc a[aria-current='location']::before {
+    content: '';
+    width: 2px;
+    height: 18px;
+    position: absolute;
+    left: -19px;
+    top: 1px;
+    background: var(--accent);
+  }
+  .toc-sub {
+    padding-left: 12px;
+  }
+  .mobile-toc {
+    padding: 0;
+    border-block: 1px solid var(--line);
+    margin-bottom: 28px;
+  }
+  .mobile-toc summary {
+    cursor: pointer;
+    font: 500 13px/1.6 var(--mono);
+    color: var(--accent);
+    min-height: 44px;
+    align-content: center;
+  }
+  .toc-count {
+    margin-left: 8px;
+    color: var(--muted);
+    font: 400 12px/1.4 var(--mono);
+  }
+  .mobile-toc ol {
+    padding-left: 20px;
+    margin: 4px 0 14px;
+    font: 500 14px/1.5 var(--sans);
+    color: var(--muted);
+  }
+  .mobile-toc li a {
+    display: block;
+    padding: 8px 0;
+  }
+  @media (max-width: 540px) {
+    .mobile-toc {
+      margin-bottom: 20px;
+    }
+  }
+  @media print {
+    .article-toc,
+    .mobile-toc {
+      display: none !important;
+    }
+  }
+</style>

@@ -1,0 +1,54 @@
+---
+/** giscus comments backed by GitHub Discussions. Renders nothing until the three public ids are configured. */
+const repo = import.meta.env.PUBLIC_GISCUS_REPO;
+const repoId = import.meta.env.PUBLIC_GISCUS_REPO_ID;
+const categoryId = import.meta.env.PUBLIC_GISCUS_CATEGORY_ID;
+const category = import.meta.env.PUBLIC_GISCUS_CATEGORY || 'General';
+const enabled = Boolean(repo && repoId && categoryId);
+---
+
+{enabled && (
+  <section class="comments" aria-labelledby="comments-title" data-pagefind-ignore>
+    <h2 id="comments-title">Comments</h2>
+    <div class="giscus" />
+    <script
+      is:inline
+      src="https://giscus.app/client.js"
+      data-repo={repo}
+      data-repo-id={repoId}
+      data-category={category}
+      data-category-id={categoryId}
+      data-mapping="pathname"
+      data-strict="1"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="dark"
+      data-lang="en"
+      data-loading="lazy"
+      crossorigin="anonymous"
+      async
+    />
+  </section>
+)}
+
+<script>
+  // Keep the embed in step with the site theme.
+  document.addEventListener('themechange', (event) => {
+    const frame = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
+    const theme = (event as CustomEvent<string>).detail;
+    frame?.contentWindow?.postMessage({ giscus: { setConfig: { theme } } }, 'https://giscus.app');
+  });
+</script>
+
+<style>
+  .comments {
+    margin-top: 64px;
+  }
+  .comments h2 {
+    font: 500 13px/1.6 var(--mono);
+    color: var(--muted);
+    letter-spacing: 0;
+    margin-bottom: 16px;
+  }
+</style>

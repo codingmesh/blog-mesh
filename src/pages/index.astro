@@ -1,22 +1,72 @@
 ---
 import Base from '../layouts/Base.astro';
-import PostRow from '../components/PostRow.astro';
+import Feed from '../components/content/Feed.astro';
+import PostRow from '../components/content/PostRow.astro';
 import Icon from '../components/Icon.astro';
-import { getWriting } from '../lib/content';
-const posts = await getWriting();
-const articles = posts.filter((post) => post.data.kind === 'article');
-const notes = posts.filter((post) => post.data.kind === 'note');
+import { getArticles, getNotes } from '../lib/content';
+const [articles, notes] = await Promise.all([getArticles(), getNotes()]);
 ---
+
 <Base home>
-  <div class="home page-width">
-    <ol class="feed" role="list">{articles.slice(0, 6).map((post) => <PostRow post={post} />)}</ol>
+  <div class="home column">
+    <Feed class="home-feed">
+      {articles.slice(0, 6).map((post) => (
+        <PostRow post={post} />
+      ))}
+    </Feed>
     {!articles.length && <p class="empty-copy">The first article is on its way.</p>}
-    {articles.length > 6 && <p class="feed-more"><a class="quiet-link" href="/writing/">All writing <Icon name="arrow" size={14} /></a></p>}
-    {notes.length > 0 && <section class="feed-section" aria-labelledby="notes-label">
-      <h2 id="notes-label" class="feed-label">Notes</h2>
-      <ol class="feed feed-compact" role="list">{notes.slice(0, 4).map((post) => <PostRow post={post} variant="note" heading="h3" />)}</ol>
-      <p class="feed-more"><a class="quiet-link" href="/notes/">All notes <Icon name="arrow" size={14} /></a></p>
-    </section>}
-    <p class="reading-disclosure">These sample reading notes draw on claude.dev. Sources and personal reflections are clearly separated.</p>
+    {articles.length > 6 && (
+      <p class="feed-more">
+        <a class="quiet-link" href="/writing/">
+          All writing <Icon name="arrow" size={14} />
+        </a>
+      </p>
+    )}
+    {notes.length > 0 && (
+      <section class="feed-section" aria-labelledby="notes-label">
+        <h2 id="notes-label" class="feed-label">
+          Notes
+        </h2>
+        <Feed compact>
+          {notes.slice(0, 4).map((post) => (
+            <PostRow post={post} variant="note" heading="h3" />
+          ))}
+        </Feed>
+        <p class="feed-more">
+          <a class="quiet-link" href="/notes/">
+            All notes <Icon name="arrow" size={14} />
+          </a>
+        </p>
+      </section>
+    )}
+    <p class="reading-disclosure">
+      These sample reading notes draw on claude.dev. Sources and personal reflections are clearly separated.
+    </p>
   </div>
 </Base>
+
+<style>
+  .home :global(.home-feed) {
+    margin-top: 36px;
+  }
+  .feed-section {
+    margin-top: 88px;
+  }
+  .feed-label {
+    font: 500 13px/1.6 var(--mono);
+    color: var(--muted);
+    letter-spacing: 0;
+    margin-bottom: 22px;
+  }
+  .feed-more {
+    margin-top: 36px;
+  }
+  @media (max-width: 540px) {
+    .home :global(.home-feed) {
+      margin-top: 20px;
+    }
+    .feed-section {
+      margin-top: 64px;
+    }
+  }
+</style>
