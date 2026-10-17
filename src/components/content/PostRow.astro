@@ -12,8 +12,8 @@ const Heading = heading;
 
 <li class:list={['feed-item', 'archive-item', `feed-${variant}`]} data-tags={JSON.stringify(post.data.tags)}>
   <Heading class="feed-title">
-    <a href={postUrl(post)}>
-      <span>{post.data.title}</span>
+    <a class="link-line" href={postUrl(post)}>
+      {post.data.title}
     </a>
   </Heading>
   {variant === 'article' && <p class="feed-summary">{post.data.description}</p>}
@@ -24,45 +24,33 @@ const Heading = heading;
 </li>
 
 <style>
-  /* Titles carry the identity: large, accent, filled solid on hover and focus. */
+  /* Titles carry the identity: large, accent, with the shared underline drawing in on hover. */
   .feed-title {
-    font: 700 clamp(28px, 3.4vw, 38px) / 1.1 var(--display);
+    font: 700 clamp(28px, 3.4vw, 38px) / 1.12 var(--display);
     letter-spacing: -0.028em;
     overflow-wrap: anywhere;
     min-width: 0;
   }
   .feed-title a {
     color: var(--accent);
+    padding-bottom: 0.06em;
   }
-  .feed-title a span {
-    padding: 0 0.1em;
-    margin: 0 -0.1em;
-    border-radius: 2px;
-    -webkit-box-decoration-break: clone;
-    box-decoration-break: clone;
-    transition:
-      background-color 100ms var(--ease),
-      color 100ms var(--ease);
-  }
-  .feed-title a:hover span,
-  .feed-title a:focus-visible span {
-    background: var(--accent);
-    color: var(--bg);
-  }
+  .feed-title a:hover,
   .feed-title a:focus-visible {
-    outline: none;
+    color: var(--accent);
   }
   .feed-summary {
     font-size: 18px;
     line-height: 1.55;
     margin-top: 10px;
-    max-width: 56ch;
+    max-width: 58ch;
+    color: var(--ink);
   }
   .feed-meta {
     display: flex;
     flex-wrap: wrap;
     gap: 4px 16px;
-    margin-top: 10px;
+    margin-top: 12px;
     font: 13px/1.6 var(--mono);
     color: var(--muted);
   }
@@ -71,7 +59,7 @@ const Heading = heading;
     letter-spacing: -0.02em;
   }
   .feed-note .feed-meta {
-    margin-top: 4px;
+    margin-top: 6px;
   }
   @media (max-width: 540px) {
     .feed-title {

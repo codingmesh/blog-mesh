@@ -51,7 +51,7 @@ const [articles, notes] = await Promise.all([getArticles(), getNotes()]);
   .home-kicker {
     font: 500 13px/1.6 var(--mono);
     color: var(--muted);
-    margin-top: 44px;
+    margin-top: 40px;
   }
   .home :global(.home-feed) {
     margin-top: 26px;
@@ -63,9 +63,6 @@ const [articles, notes] = await Promise.all([getArticles(), getNotes()]);
   .home :global(.home-feed > :first-child .feed-summary) {
     font-size: 20px;
     max-width: 50ch;
-  }
-  .home :global(.home-feed > :first-child) {
-    padding-bottom: 10px;
   }
   .feed-section {
     margin-top: 88px;

@@ -1,5 +1,5 @@
 ---
-/** Vertical list of PostRow entries. Spacing is the only separator; there are no hairlines. */
+/** Vertical list of PostRow entries separated by hairlines. */
 interface Props {
   compact?: boolean;
   class?: string;
@@ -16,18 +16,24 @@ const { compact = false, class: className } = Astro.props;
     list-style: none;
     padding: 0;
     margin: 0;
-    display: grid;
-    gap: 56px;
   }
-  .feed.compact {
-    gap: 26px;
+  .feed > :global(li + li) {
+    border-top: 1px solid var(--line);
+    padding-top: 40px;
+    margin-top: 40px;
+  }
+  .feed.compact > :global(li + li) {
+    padding-top: 18px;
+    margin-top: 18px;
   }
   @media (max-width: 540px) {
-    .feed {
-      gap: 40px;
+    .feed > :global(li + li) {
+      padding-top: 30px;
+      margin-top: 30px;
     }
-    .feed.compact {
-      gap: 22px;
+    .feed.compact > :global(li + li) {
+      padding-top: 16px;
+      margin-top: 16px;
     }
   }
 </style>

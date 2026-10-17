@@ -48,8 +48,10 @@
 }
 .prose blockquote {
   border-left: 2px solid var(--accent);
-  padding: 4px 0 4px 20px;
+  padding: 12px 20px;
   font-size: 19px;
+  background: var(--surface);
+  border-radius: 0 var(--radius) var(--radius) 0;
 }
 .prose blockquote p {
   color: var(--muted);
@@ -59,7 +61,7 @@
 }
 .prose code {
   font: 0.84em/1.6 var(--mono);
-  background: var(--soft);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 3px;
   padding: 1px 5px;
@@ -139,13 +141,14 @@
 :root:not([data-theme='light']) .astro-code span {
   color: var(--shiki-dark) !important;
 }
-:root:not([data-theme='light']) .astro-code {
-  background-color: var(--shiki-dark-bg) !important;
+.prose .astro-code {
+  background-color: var(--surface) !important;
 }
 .code-block {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   overflow: hidden;
+  background: var(--surface);
 }
 .code-toolbar {
   display: grid;

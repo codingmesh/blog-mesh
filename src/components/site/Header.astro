@@ -9,52 +9,57 @@ interface Props {
 const { active, home = false } = Astro.props;
 ---
 
-<header class="site-header column" data-pagefind-ignore>
-  {home ? (
-    <h1 class="brand">
-      <a href="/" aria-label={`${site.name} home`}>
+<header class="site-header" data-pagefind-ignore>
+  <div class="site-header-inner column">
+    {home ? (
+      <h1 class="brand">
+        <a href="/" aria-label={`${site.name} home`}>
+          {site.wordmark}
+          <span class="brand-dot">.</span>
+        </a>
+      </h1>
+    ) : (
+      <a href="/" class="brand" aria-label={`${site.name} home`}>
         {site.wordmark}
         <span class="brand-dot">.</span>
       </a>
-    </h1>
-  ) : (
-    <a href="/" class="brand" aria-label={`${site.name} home`}>
-      {site.wordmark}
-      <span class="brand-dot">.</span>
-    </a>
-  )}
-  <div class="header-right">
-    <nav aria-label="Main navigation">
-      <a href="/writing/" aria-current={active === 'writing' ? 'page' : undefined}>
-        Writing
-      </a>
-      <a href="/notes/" aria-current={active === 'notes' ? 'page' : undefined}>
-        Notes
-      </a>
-      <a href="/about/" aria-current={active === 'about' ? 'page' : undefined}>
-        About
-      </a>
-    </nav>
-    <div class="header-tools">
-      <button
-        type="button"
-        class="icon-button"
-        id="search-open"
-        aria-label="Search writing and notes"
-        aria-haspopup="dialog"
-        aria-controls="search-dialog"
-        title="Search (⌘K / Ctrl+K)"
-      >
-        <Icon name="search" />
-      </button>
-      <ThemeToggle />
+    )}
+    <div class="header-right">
+      <nav aria-label="Main navigation">
+        <a class="link-line" href="/writing/" aria-current={active === 'writing' ? 'page' : undefined}>
+          Writing
+        </a>
+        <a class="link-line" href="/notes/" aria-current={active === 'notes' ? 'page' : undefined}>
+          Notes
+        </a>
+        <a class="link-line" href="/about/" aria-current={active === 'about' ? 'page' : undefined}>
+          About
+        </a>
+      </nav>
+      <div class="header-tools">
+        <button
+          type="button"
+          class="icon-button"
+          id="search-open"
+          aria-label="Search writing and notes"
+          aria-haspopup="dialog"
+          aria-controls="search-dialog"
+          title="Search (⌘K / Ctrl+K)"
+        >
+          <Icon name="search" />
+        </button>
+        <ThemeToggle />
+      </div>
     </div>
   </div>
 </header>
 
 <style>
   .site-header {
-    min-height: 80px;
+    border-bottom: 1px solid var(--line);
+  }
+  .site-header-inner {
+    min-height: 72px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -67,6 +72,9 @@ const { active, home = false } = Astro.props;
     letter-spacing: -0.03em;
     margin: 0;
   }
+  .brand a:hover {
+    color: var(--ink);
+  }
   .brand-dot {
     color: var(--accent);
   }
@@ -77,30 +85,24 @@ const { active, home = false } = Astro.props;
     align-items: center;
   }
   nav {
-    gap: 22px;
+    gap: 24px;
   }
   nav a {
-    font: 500 15px/44px var(--sans);
+    font: 500 15px/1.4 var(--sans);
     color: var(--muted);
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 6px;
-    transition:
-      color 120ms var(--ease),
-      text-decoration-color 160ms var(--ease);
+    padding: 11px 0 9px;
   }
-  nav a:hover {
+  nav a:hover,
+  nav a:focus-visible {
     color: var(--ink);
-    text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
   }
   nav a[aria-current='page'] {
     color: var(--ink);
-    text-decoration-color: var(--accent);
+    background-image: linear-gradient(var(--accent), var(--accent));
   }
   .header-tools {
-    gap: 0;
-    margin-left: 10px;
+    gap: 2px;
+    margin-left: 12px;
   }
   .icon-button {
     border: 0;
@@ -118,20 +120,15 @@ const { active, home = false } = Astro.props;
     color: var(--ink);
     background: var(--soft);
   }
-  @media (max-width: 800px) {
-    .site-header {
-      min-height: 72px;
-    }
-  }
   @media (max-width: 540px) {
-    .site-header {
-      min-height: 68px;
+    .site-header-inner {
+      min-height: 64px;
     }
     .brand {
       font-size: 19px;
     }
     nav {
-      gap: 2px;
+      gap: 4px;
     }
     nav a {
       font-size: 14px;

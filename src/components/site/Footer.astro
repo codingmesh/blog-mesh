@@ -3,28 +3,33 @@ import Icon from '../Icon.astro';
 import { site } from '../../config';
 ---
 
-<footer class="site-footer column" data-pagefind-ignore>
-  <div>
-    <a href="/" class="footer-name">
-      {site.wordmark}
-      <span>.</span>
-    </a>
-    <p>{site.focus}</p>
-  </div>
-  <div class="footer-right">
-    <a href="/rss.xml">
-      <Icon name="rss" size={15} /> RSS
-    </a>
-    <span>
-      © {new Date().getFullYear()} {site.name}
-    </span>
+<footer class="site-footer" data-pagefind-ignore>
+  <div class="site-footer-inner column">
+    <div>
+      <a href="/" class="footer-name">
+        {site.wordmark}
+        <span>.</span>
+      </a>
+      <p>{site.focus}</p>
+    </div>
+    <div class="footer-right">
+      <a href="/rss.xml">
+        <Icon name="rss" size={15} /> RSS
+      </a>
+      <span>
+        © {new Date().getFullYear()} {site.name}
+      </span>
+    </div>
   </div>
 </footer>
 
 <style>
   .site-footer {
-    margin-top: 112px;
-    padding: 20px 0 56px;
+    margin-top: 96px;
+    border-top: 1px solid var(--line);
+  }
+  .site-footer-inner {
+    padding: 28px 0 48px;
     display: flex;
     justify-content: space-between;
     align-items: baseline;
@@ -58,7 +63,9 @@ import { site } from '../../config';
   }
   @media (max-width: 540px) {
     .site-footer {
-      margin-top: 80px;
+      margin-top: 72px;
+    }
+    .site-footer-inner {
       flex-direction: column;
       gap: 10px;
       padding-bottom: 40px;

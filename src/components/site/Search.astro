@@ -200,7 +200,7 @@ const topics = [...new Set((await getArticles()).flatMap((post) => post.data.tag
     gap: 8px;
   }
   .search-topics button {
-    background: transparent;
+    background: var(--bg);
     border: 1px solid var(--line);
     border-radius: var(--radius);
     padding: 7px 11px;

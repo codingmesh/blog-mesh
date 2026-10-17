@@ -113,6 +113,7 @@ time {
 }
 kbd {
   font-size: 11px;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 3px;
   padding: 2px 5px;
@@ -145,15 +146,28 @@ kbd {
   transform: translateY(0);
 }
 
-/* The reading column. Off-center on wide screens: the column sits left, the right side stays empty. */
+/* The reading column: centered, one measure everywhere. Wide-screen pages place side content in the margins. */
 .column {
   width: var(--column);
   margin-inline: auto;
 }
-@media (min-width: 1100px) {
-  .column {
-    margin-left: clamp(72px, 11vw, 190px);
-  }
+
+/* Shared hover language: an underline that draws in from the left. Works across wrapped lines. */
+.link-line {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0 2px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition:
+    background-size 220ms var(--ease),
+    color 120ms var(--ease);
+}
+.link-line:hover,
+.link-line:focus-visible,
+.link-line[aria-current] {
+  background-size: 100% 2px;
 }
 
 /* Shared text pieces */
@@ -171,6 +185,7 @@ kbd {
 .text-button {
   border: 0;
   background: transparent;
+  border-radius: var(--radius);
   color: var(--accent);
   padding: 8px 0;
   font: 500 15px/1.4 var(--sans);
