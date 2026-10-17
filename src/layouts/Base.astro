@@ -3,7 +3,7 @@ import { Font } from 'astro:assets';
 import '../styles/tokens.css';
 import '../styles/base.css';
 import { site } from '../config';
-import Rail from '../components/site/Rail.astro';
+import Header from '../components/site/Header.astro';
 import Footer from '../components/site/Footer.astro';
 import Search from '../components/site/Search.astro';
 interface Props {
@@ -20,13 +20,13 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
-<html lang={site.locale} data-theme="dark">
+<html lang={site.locale} data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="theme-color"
-      content={site.themeColor.dark}
+      content={site.themeColor.light}
       data-light={site.themeColor.light}
       data-dark={site.themeColor.dark}
     />
@@ -35,7 +35,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <Font cssVariable="--font-display" preload={[{ weight: 700, style: 'normal', subset: 'latin' }]} />
     <Font cssVariable="--font-sans" preload={[{ weight: 400, style: 'normal', subset: 'latin' }]} />
     <Font cssVariable="--font-mono" />
     <link rel="alternate" type="application/rss+xml" title={`${site.name}'s writing and notes`} href="/rss.xml" />
@@ -48,13 +47,13 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     {article && <meta name="author" content={site.name} />}
     <meta name="twitter:card" content="summary" />
     <script is:inline>
-      // Dark is the default. A stored choice of light wins; the system preference is not consulted.
+      // Light is the default. A stored choice of dark wins; the system preference is not consulted.
       (() => {
         let preference;
         try {
           preference = localStorage.getItem('theme');
         } catch {}
-        const theme = preference === 'light' ? 'light' : 'dark';
+        const theme = preference === 'dark' ? 'dark' : 'light';
         const meta = document.querySelector('meta[name="theme-color"]');
         document.documentElement.dataset.theme = theme;
         meta.content = meta.dataset[theme];
@@ -65,13 +64,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <a href="#main" class="skip-link">
       Skip to content
     </a>
-    <div class="shell">
-      <Rail active={active} />
-      <main id="main" class="stage" tabindex="-1">
-        <slot />
-        <Footer />
-      </main>
-    </div>
+    <Header active={active} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
     <Search />
   </body>
 </html>

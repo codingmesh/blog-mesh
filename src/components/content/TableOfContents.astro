@@ -1,6 +1,6 @@
 ---
 import type { MarkdownHeading } from 'astro';
-/** Sticky list beside the article on wide screens; a collapsed disclosure above it elsewhere. */
+/** A list in the right margin on wide screens; a collapsed disclosure above the body elsewhere. */
 interface Props {
   headings: MarkdownHeading[];
   variant: 'side' | 'inline';
@@ -10,7 +10,7 @@ const { headings, variant } = Astro.props;
 
 {variant === 'side' ? (
   <nav class="article-toc" aria-label="Table of contents" data-pagefind-ignore>
-    <h2>On this page</h2>
+    <h2 class="label">On this page</h2>
     <ol>
       {headings.map((heading) => (
         <li class:list={{ 'toc-sub': heading.depth === 3 }}>
@@ -41,67 +41,52 @@ const { headings, variant } = Astro.props;
 
 <style>
   .article-toc {
-    padding-left: 18px;
-    border-left: 1px solid var(--line);
-  }
-  .article-toc h2 {
-    font: 500 12px/1.6 var(--mono);
+    position: sticky;
+    top: 32px;
+    font-size: 13.5px;
     color: var(--muted);
-    letter-spacing: 0;
-    margin-bottom: 12px;
+  }
+  .article-toc .label {
+    font-size: 11px;
+    margin-bottom: 10px;
   }
   .article-toc ol {
     list-style: none;
     padding: 0;
-    display: grid;
-    gap: 10px;
+    margin: 0;
   }
   .article-toc a {
     display: block;
-    font: 500 13px/1.5 var(--sans);
-    color: var(--muted);
+    padding: 5px 0 5px 12px;
+    border-left: 1px solid var(--line);
+    line-height: 1.45;
+    transition:
+      color 140ms var(--ease),
+      border-color 140ms var(--ease);
   }
   .article-toc a:hover {
     color: var(--ink);
   }
-  .article-toc a {
-    position: relative;
-  }
-  .article-toc a::before {
-    content: '';
-    width: 2px;
-    height: 18px;
-    position: absolute;
-    left: -19px;
-    top: 1px;
-    background: var(--accent);
-    opacity: 0;
-    transition: opacity 160ms var(--ease);
-  }
   .article-toc a[aria-current='location'] {
-    color: var(--accent);
+    border-left-color: var(--accent);
+    color: var(--ink);
   }
-  .article-toc a[aria-current='location']::before {
-    opacity: 1;
-  }
-  .toc-sub {
-    padding-left: 12px;
+  .toc-sub a {
+    padding-left: 24px;
   }
   .mobile-toc {
-    padding: 0;
     border-block: 1px solid var(--line);
-    margin-bottom: 28px;
+    margin: 0 0 32px;
   }
   .mobile-toc summary {
     cursor: pointer;
     font: 500 13px/1.6 var(--mono);
     color: var(--accent);
     min-height: 44px;
-    align-content: center;
-    list-style: none;
     display: flex;
     align-items: center;
     gap: 10px;
+    list-style: none;
   }
   .mobile-toc summary::-webkit-details-marker {
     display: none;
@@ -120,29 +105,20 @@ const { headings, variant } = Astro.props;
     transform: rotate(45deg);
   }
   .toc-count {
-    margin-left: 8px;
     color: var(--muted);
-    font: 400 12px/1.4 var(--mono);
+    font-weight: 400;
   }
   .mobile-toc ol {
     padding-left: 20px;
     margin: 4px 0 14px;
-    font: 500 14px/1.5 var(--sans);
+    font-size: 14px;
     color: var(--muted);
   }
   .mobile-toc li a {
     display: block;
     padding: 8px 0;
   }
-  @media (max-width: 540px) {
-    .mobile-toc {
-      margin-bottom: 20px;
-    }
-  }
-  @media print {
-    .article-toc,
-    .mobile-toc {
-      display: none !important;
-    }
+  .mobile-toc li a:hover {
+    color: var(--ink);
   }
 </style>

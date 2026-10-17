@@ -2,12 +2,12 @@
 import Icon from '../Icon.astro';
 ---
 
-<button type="button" class="icon-button" id="theme-toggle" aria-label="Switch to light mode" title="Switch theme">
+<button type="button" class="icon-button" id="theme-toggle" aria-label="Switch to dark mode" title="Switch theme">
   <span class="theme-moon">
-    <Icon name="moon" size={18} />
+    <Icon name="moon" size={17} />
   </span>
   <span class="theme-sun">
-    <Icon name="sun" size={18} />
+    <Icon name="sun" size={17} />
   </span>
 </button>
 
@@ -18,34 +18,27 @@ import Icon from '../Icon.astro';
 
 <style>
   .icon-button {
-    border: 1px solid var(--line-strong);
+    border: 0;
     padding: 0;
-    background: var(--surface);
-    width: 42px;
-    height: 42px;
+    background: transparent;
+    width: 40px;
+    height: 40px;
     display: grid;
     place-items: center;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius);
     color: var(--muted);
     flex-shrink: 0;
   }
   .icon-button:hover {
     color: var(--ink);
-    border-color: var(--accent);
+    background: var(--soft);
   }
-  .theme-moon,
-  :global([data-theme='light']) .theme-sun {
+  /* Show the destination: a moon while light, a sun while dark. */
+  .theme-sun,
+  :global([data-theme='dark']) .theme-moon {
     display: none;
   }
-  :global([data-theme='light']) .theme-moon {
+  :global([data-theme='dark']) .theme-sun {
     display: block;
-  }
-  @media (max-width: 1023px) {
-    .icon-button {
-      width: 44px;
-      height: 44px;
-      border: 0;
-      background: transparent;
-    }
   }
 </style>

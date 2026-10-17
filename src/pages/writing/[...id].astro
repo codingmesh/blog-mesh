@@ -2,7 +2,6 @@
 import { render } from 'astro:content';
 import '../../styles/prose.css';
 import Base from '../../layouts/Base.astro';
-import Icon from '../../components/Icon.astro';
 import CodeWindows from '../../components/content/CodeWindows.astro';
 import Comments from '../../components/content/Comments.astro';
 import SourceLine from '../../components/content/SourceLine.astro';
@@ -48,147 +47,117 @@ const topic = post.data.tags[0];
   article
   publishedAt={post.data.date}
 >
-  <article class="article" data-pagefind-body>
-    <div class="article-main">
-      <a class="quiet-link article-back" href={listHref} data-pagefind-ignore>
-        <Icon name="arrow" size={16} />
-        {note ? 'All notes' : 'All writing'}
-      </a>
-      <header class="article-header">
-        <p class="eyebrow">
-          {topic}
-          {topic && (
-            <span class="eyebrow-sep" aria-hidden="true">
-              /
-            </span>
-          )}
-          {post.data.sample ? 'Sample ' : ''}
+  <article class="article wrap" data-pagefind-body>
+    <header class="article-head">
+      <p class="eyebrow">
+        <a href={listHref} data-pagefind-ignore>
+          {topic || (note ? 'Notes' : 'Writing')}
+        </a>
+        <span>
+          {' '}
+          / {post.data.sample ? 'Sample ' : ''}
           {label}
-        </p>
-        <h1 data-pagefind-meta="title">{post.data.title}</h1>
-        <p class="article-description" data-pagefind-meta="description">
-          {post.data.description}
-        </p>
-        <div class="post-meta">
-          <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
-          <span>{readingTime(post.body)} min read</span>
-        </div>
-        {source && <SourceLine source={source} />}
-      </header>
-      {toc.length > 1 && <TableOfContents headings={toc} variant="inline" />}
-      <div class="prose">
-        <Content components={mdxComponents} />
-      </div>
-      <CodeWindows />
-      <footer class="article-end" data-pagefind-ignore>
-        <div class="tags">
-          {post.data.tags.map((tag) =>
-            note ? <span>{tag}</span> : <a href={`/writing/?tag=${encodeURIComponent(tag)}`}>{tag}</a>,
-          )}
-        </div>
-        {post.data.sample && (
-          <p>
-            This is an AI-assisted sample {label}.{' '}
-            {source && 'Source summaries and additional reflections are labeled separately. '}It does not represent
-            firsthand experience or original experimental results.
-          </p>
-        )}
-        <div class="article-actions">
-          <a href={listHref} class="quiet-link">
-            Back to {note ? 'notes' : 'writing'} <Icon name="arrow" size={16} />
-          </a>
-          <a href="#main" class="quiet-link">
-            {' '}
-            Back to top ↑{' '}
-          </a>
-        </div>
-        {next && (
-          <a class="related-post panel" href={postUrl(next)}>
-            <span class="eyebrow">Read next</span>
-            <h2 class="link-line">{next.data.title}</h2>
-            <p>{next.data.description}</p>
-          </a>
-        )}
-      </footer>
-      <Comments />
+        </span>
+      </p>
+      <h1 data-pagefind-meta="title">{post.data.title}</h1>
+      <p class="lede" data-pagefind-meta="description">
+        {post.data.description}
+      </p>
+      <p class="meta">
+        <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+        <span>{readingTime(post.body)} min read</span>
+      </p>
+      {source && <SourceLine source={source} />}
+    </header>
+    {toc.length > 1 && <TableOfContents headings={toc} variant="side" />}
+    {toc.length > 1 && <TableOfContents headings={toc} variant="inline" />}
+    <div class="prose">
+      <Content components={mdxComponents} />
     </div>
-    {toc.length > 1 && (
-      <aside class="article-side">
-        <TableOfContents headings={toc} variant="side" />
-      </aside>
-    )}
+    <CodeWindows />
+    <footer class="article-end" data-pagefind-ignore>
+      <div class="tags">
+        {post.data.tags.map((tag) =>
+          note ? <span>{tag}</span> : <a href={`/writing/?tag=${encodeURIComponent(tag)}`}>{tag}</a>,
+        )}
+      </div>
+      {post.data.sample && (
+        <p class="sample-note">
+          This is an AI-assisted sample {label}.{' '}
+          {source && 'Source summaries and additional reflections are labeled separately. '}It does not represent
+          firsthand experience or original experimental results.
+        </p>
+      )}
+      <div class="article-actions">
+        <a href={listHref} class="quiet-link">
+          ← Back to {note ? 'notes' : 'writing'}
+        </a>
+        <a href="#main" class="quiet-link">
+          Back to top ↑
+        </a>
+      </div>
+      {next && (
+        <a class="related" href={postUrl(next)}>
+          <span class="label">Read next</span>
+          <h2>{next.data.title}</h2>
+          <p>{next.data.description}</p>
+        </a>
+      )}
+    </footer>
+    <Comments />
   </article>
 </Base>
 
 <style>
-  /* Text at one measure; from 1360px the table of contents sits in a side column. */
   .article {
-    display: grid;
-    grid-template-columns: minmax(0, var(--measure));
-    column-gap: 72px;
+    position: relative;
   }
-  .article-side {
+  .article-head {
+    padding: 72px 0 40px;
+  }
+  .article-head .eyebrow {
+    margin-bottom: 22px;
+  }
+  .article-head .eyebrow a:hover {
+    text-decoration: underline;
+  }
+  .article-head h1 {
+    font-size: clamp(36px, 5.4vw, 58px);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    margin: 0 0 20px;
+    overflow-wrap: anywhere;
+  }
+  .lede {
+    font-size: 21px;
+    line-height: 1.45;
+    color: var(--muted);
+    max-width: 52ch;
+    margin: 0 0 20px;
+  }
+  .article :global(.source-line) {
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+    margin: 28px 0 0;
+  }
+  /* The side contents list hangs in the right margin on wide screens only. */
+  .article :global(.article-toc) {
     display: none;
   }
   .article :global(.mobile-toc) {
     display: block;
   }
-  @media (min-width: 1360px) {
-    .article {
-      grid-template-columns: minmax(0, var(--measure)) 220px;
-    }
-    .article-side {
+  @media (min-width: 1280px) {
+    .article :global(.article-toc) {
       display: block;
-      align-self: start;
-      position: sticky;
-      top: 48px;
-      padding-top: 196px;
+      position: absolute;
+      left: calc(100% + 56px);
+      top: 96px;
+      width: 200px;
     }
     .article :global(.mobile-toc) {
       display: none;
     }
-  }
-  .article-back {
-    margin-bottom: 28px;
-  }
-  .article-back :global(svg) {
-    transform: rotate(180deg);
-  }
-  .eyebrow-sep {
-    margin: 0 6px;
-    color: var(--muted);
-  }
-  .article-header {
-    padding-bottom: 28px;
-    margin-bottom: 36px;
-    border-bottom: 1px solid var(--line);
-    position: relative;
-  }
-  .article-header::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -1px;
-    width: 64px;
-    height: 2px;
-    background: var(--accent);
-  }
-  .article-header h1 {
-    font-size: clamp(34px, 4.2vw, 50px);
-    letter-spacing: -0.032em;
-    line-height: 1.04;
-    margin: 12px 0 16px;
-    overflow-wrap: anywhere;
-  }
-  .article-description {
-    font-size: 20px;
-    line-height: 1.5;
-    color: var(--muted);
-    margin: 0 0 18px;
-    max-width: 54ch;
-  }
-  .article-header :global(.source-line) {
-    margin: 18px 0 0;
   }
   .article-end {
     margin-top: 64px;
@@ -205,14 +174,14 @@ const topic = post.data.tags[0];
     font: 500 13px/1.6 var(--sans);
     color: var(--muted);
     padding: 5px 12px;
-    border: 1px solid var(--line-strong);
+    border: 1px solid var(--line);
     border-radius: 999px;
   }
   .tags a:hover {
     color: var(--ink);
     border-color: var(--accent);
   }
-  .article-end > p {
+  .sample-note {
     font-size: 14px;
     line-height: 1.6;
     color: var(--muted);
@@ -225,71 +194,54 @@ const topic = post.data.tags[0];
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 16px;
+    margin-top: 8px;
   }
-  .related-post {
+  .related {
     display: block;
-    margin-top: 40px;
-    padding: 24px 28px;
-    transition:
-      border-color 160ms var(--ease),
-      transform 180ms var(--ease),
-      box-shadow 180ms var(--ease);
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--ink);
   }
-  .related-post:hover {
-    border-color: var(--line-strong);
-    transform: translateY(-2px);
-    box-shadow: 0 14px 36px rgb(0 0 0 / 0.28);
+  .related .label {
+    display: block;
+    margin-bottom: 10px;
   }
-  .related-post h2 {
-    display: inline;
-    font-size: 26px;
-    letter-spacing: -0.025em;
-    color: var(--ink);
-    background-size: 0 2px;
+  .related h2 {
+    font-size: 30px;
+    letter-spacing: -0.03em;
+    margin: 0 0 8px;
   }
-  .related-post:hover h2 {
-    background-size: 100% 2px;
+  .related:hover h2 {
+    color: var(--accent);
   }
-  .related-post p {
+  .related p {
     color: var(--muted);
-    font-size: 15.5px;
-    margin-top: 10px;
+    font-size: 16px;
+    max-width: 54ch;
   }
-  .related-post .eyebrow {
-    display: block;
-    margin-bottom: 8px;
-  }
-  @media (max-width: 540px) {
-    .article-back {
-      margin-bottom: 18px;
+  @media (max-width: 600px) {
+    .article-head {
+      padding: 44px 0 28px;
     }
-    .article-header h1 {
-      font-size: 32px;
-      line-height: 1.08;
-      margin: 10px 0 12px;
+    .article-head .eyebrow {
+      margin-bottom: 16px;
     }
-    .article-description {
-      font-size: 17px;
-      margin-bottom: 12px;
+    .article-head h1 {
+      font-size: 34px;
+      margin-bottom: 14px;
     }
-    .article-header {
-      padding-bottom: 20px;
-      margin-bottom: 26px;
+    .lede {
+      font-size: 18px;
+      margin-bottom: 14px;
     }
-    .related-post {
-      padding: 18px;
-    }
-    .related-post h2 {
-      font-size: 23px;
+    .related h2 {
+      font-size: 26px;
     }
   }
   @media print {
-    .article {
-      display: block;
-    }
-    .article-back,
     .article-end,
-    .article-side {
+    .article :global(.article-toc),
+    .article :global(.mobile-toc) {
       display: none !important;
     }
   }

@@ -1,4 +1,4 @@
-/* Reset, document defaults, the shell (rail + stage), and shared text pieces.
+/* Reset, document defaults, the reading column, and the small set of text pieces shared by several pages.
    Component- and page-specific rules live in scoped <style> blocks next to their markup. */
 *,
 *::before,
@@ -44,45 +44,40 @@ html {
 }
 body {
   min-height: 100dvh;
-  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
   color: var(--ink);
   font: 17px/1.65 var(--sans);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
-/* A soft accent glow at the top of the stage gives the page depth without decoration. */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-  background: radial-gradient(900px 520px at 38% -12%, var(--glow), transparent 68%);
+main {
+  flex: 1;
+}
+main:focus {
+  outline: none;
 }
 ::selection {
   background: var(--accent);
-  color: var(--bg);
+  color: var(--paper);
 }
 a {
   color: inherit;
   text-decoration: none;
-  text-underline-offset: 4px;
+  text-underline-offset: 3px;
 }
 a,
 button {
   transition:
     color 140ms var(--ease),
     background-color 140ms var(--ease),
-    border-color 140ms var(--ease),
-    box-shadow 160ms var(--ease),
-    transform 160ms var(--ease);
+    border-color 140ms var(--ease);
 }
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
-  border-radius: 3px;
-}
-main:focus {
-  outline: none;
+  border-radius: 2px;
 }
 body:has(dialog[open]) {
   overflow: hidden;
@@ -94,10 +89,9 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: var(--display);
-  font-weight: 700;
-  letter-spacing: -0.022em;
-  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
 }
 h1,
 h2,
@@ -118,8 +112,7 @@ time {
 }
 kbd {
   font-size: 11px;
-  background: var(--soft);
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--line);
   border-radius: 4px;
   padding: 1px 6px;
   color: var(--muted);
@@ -141,100 +134,74 @@ kbd {
   z-index: 20;
   left: 20px;
   top: 12px;
-  background: var(--accent);
-  color: var(--bg);
+  background: var(--ink);
+  color: var(--paper);
   padding: 10px 16px;
-  border-radius: var(--radius-sm);
-  font: 600 14px/1.4 var(--display);
+  border-radius: var(--radius);
+  font: 600 14px/1.4 var(--sans);
   transform: translateY(-160%);
 }
 .skip-link:focus {
   transform: translateY(0);
 }
 
-/* The shell: a sticky rail on the left, a wide stage on the right. */
-.shell {
-  display: flex;
-  min-height: 100dvh;
-}
-.stage {
-  flex: 1;
-  min-width: 0;
-  padding: 64px clamp(24px, 6vw, 96px) 96px;
-}
-.stage-inner {
-  max-width: var(--stage);
-}
-.measure {
-  max-width: var(--measure);
-}
-@media (max-width: 1023px) {
-  .shell {
-    display: block;
-  }
-  .stage {
-    padding: 36px 20px 72px;
-  }
-}
-
-/* Shared hover language: an underline that draws in from the left and follows wrapped lines. */
-.link-line {
-  background-image: linear-gradient(currentColor, currentColor);
-  background-size: 0 2px;
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-  transition:
-    background-size 240ms var(--ease),
-    color 140ms var(--ease);
-}
-.link-line:hover,
-.link-line:focus-visible,
-.link-line[aria-current] {
-  background-size: 100% 2px;
+/* The reading column: one centered measure for every page. */
+.wrap {
+  width: var(--column);
+  margin-inline: auto;
 }
 
 /* Shared text pieces */
 .eyebrow {
-  font: 500 12.5px/1.6 var(--mono);
+  font: 500 13px/1.6 var(--mono);
   color: var(--accent);
-  letter-spacing: 0.02em;
+}
+.eyebrow span {
+  color: var(--muted);
 }
 .meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 14px;
-  font: 12.5px/1.6 var(--mono);
+  gap: 4px 18px;
+  font: 13px/1.6 var(--mono);
   color: var(--muted);
 }
-.post-meta {
-  display: flex;
-  gap: 4px 14px;
-  flex-wrap: wrap;
-  font: 12.5px/1.6 var(--mono);
+.meta b {
+  font-weight: 500;
+  color: var(--accent);
+}
+.label {
+  font: 500 12px/1.6 var(--mono);
   color: var(--muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 .section-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 20px;
+  margin: 72px 0 6px;
 }
-.section-head h2 {
-  font-size: 15px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  color: var(--muted);
-  text-transform: none;
+.section-head a {
+  font-size: 14px;
+  color: var(--accent);
+}
+.section-head a:hover {
+  color: var(--accent-ink);
+  text-decoration: underline;
+}
+.index {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 .quiet-link {
   display: inline-flex;
   gap: 8px;
   align-items: center;
   color: var(--muted);
-  font: 500 14px/1.4 var(--sans);
+  font-size: 14px;
   min-height: 32px;
 }
 .quiet-link:hover {
@@ -243,12 +210,11 @@ kbd {
 .text-button {
   border: 0;
   background: transparent;
-  border-radius: var(--radius-sm);
   color: var(--accent);
   padding: 8px 0;
   font: 500 15px/1.4 var(--sans);
   text-decoration: underline;
-  text-underline-offset: 4px;
+  text-underline-offset: 3px;
 }
 .primary-link {
   display: inline-flex;
@@ -256,15 +222,15 @@ kbd {
   gap: 8px;
   padding: 11px 18px;
   background: var(--accent);
-  color: var(--bg);
-  border-radius: var(--radius-sm);
-  font: 600 15px/1.3 var(--display);
+  color: var(--paper);
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 15px;
   white-space: nowrap;
 }
 .primary-link:hover {
-  color: var(--bg);
-  transform: translateY(-1px);
-  box-shadow: 0 8px 24px var(--glow);
+  background: var(--accent-ink);
+  color: var(--paper);
 }
 .reading-disclosure,
 .empty-copy {
@@ -280,44 +246,39 @@ kbd {
   padding: 24px 0;
 }
 .page-head {
-  margin-bottom: 36px;
+  padding: 72px 0 36px;
 }
 .page-head h1 {
-  font-size: clamp(36px, 4vw, 48px);
-  letter-spacing: -0.03em;
-  margin: 8px 0 12px;
+  font-size: clamp(40px, 6vw, 60px);
+  letter-spacing: -0.035em;
+  line-height: 1;
+  margin: 14px 0 18px;
 }
 .page-head p {
   color: var(--muted);
-  font-size: 17px;
-  max-width: 52ch;
-}
-.panel {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.03);
+  font-size: 19px;
+  max-width: 46ch;
 }
 @media (max-width: 540px) {
+  .section-head {
+    margin-top: 52px;
+  }
   .reading-disclosure {
     margin-top: 44px;
   }
   .page-head {
-    margin-bottom: 28px;
+    padding: 44px 0 28px;
   }
   .page-head h1 {
-    font-size: 34px;
+    font-size: 38px;
   }
   .page-head p {
-    font-size: 16px;
+    font-size: 17px;
   }
 }
 @media print {
-  body::before {
-    display: none;
-  }
-  .stage {
-    padding: 0;
+  .wrap {
+    width: 100%;
   }
 }
 @media (prefers-reduced-motion: reduce) {

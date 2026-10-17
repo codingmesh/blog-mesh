@@ -1,86 +1,121 @@
 ---
 import { formatDate, postUrl, readingTime, type Post } from '../../lib/content';
-/** A post as a row: date in the left column, title and summary on the right. Used by the archive and notes pages. */
+/**
+ * One entry in an index. With a `number` it is a numbered table-of-contents row; without one it is a plain row.
+ * The `note` variant is a single line with the date on the right.
+ */
 interface Props {
   post: Post;
-  variant?: 'article' | 'note';
+  number?: string;
+  variant?: 'index' | 'note';
   heading?: 'h2' | 'h3';
 }
-const { post, variant = 'article', heading = 'h2' } = Astro.props;
+const { post, number, variant = 'index', heading = 'h2' } = Astro.props;
 const Heading = heading;
+const topic = post.data.tags[0];
 ---
 
-<li class:list={['row', 'archive-item', `row-${variant}`]} data-tags={JSON.stringify(post.data.tags)}>
-  <p class="row-date">
-    <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
-    {variant === 'article' && <span>{readingTime(post.body)} min</span>}
-  </p>
-  <div class="row-body">
-    <Heading class="row-title">
-      <a class="link-line" href={postUrl(post)}>
-        {post.data.title}
-      </a>
-    </Heading>
-    <p class="row-summary">{post.data.description}</p>
-  </div>
-</li>
+{variant === 'note' ? (
+  <li class="note-row archive-item" data-tags={JSON.stringify(post.data.tags)}>
+    <a href={postUrl(post)}>
+      <Heading class="note-title">{post.data.title}</Heading>
+      <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+    </a>
+  </li>
+) : (
+  <li class:list={['index-row', 'archive-item', { numbered: !!number }]} data-tags={JSON.stringify(post.data.tags)}>
+    {number && <span class="num">{number}</span>}
+    <div>
+      <Heading class="index-title">
+        <a href={postUrl(post)}>{post.data.title}</a>
+      </Heading>
+      <p class="index-summary">{post.data.description}</p>
+      <p class="meta">
+        <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+        <span>{readingTime(post.body)} min</span>
+        {topic && <b>{topic}</b>}
+      </p>
+    </div>
+  </li>
+)}
 
 <style>
-  .row {
+  .index-row {
     display: grid;
-    grid-template-columns: 128px minmax(0, 1fr);
-    column-gap: 24px;
-    padding: 24px 0;
-    border-top: 1px solid var(--line);
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0 28px;
+    padding: 36px 0;
+    border-bottom: 1px solid var(--line);
   }
-  .row-date {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding-top: 5px;
-    font: 12.5px/1.6 var(--mono);
-    color: var(--muted);
+  .index-row.numbered {
+    grid-template-columns: 72px minmax(0, 1fr);
   }
-  .row-title {
-    font-size: 23px;
-    letter-spacing: -0.022em;
-    line-height: 1.2;
+  .num {
+    font: 500 15px/1.2 var(--mono);
+    color: var(--accent);
+    padding-top: 10px;
+  }
+  .index-title {
+    font-size: 34px;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    margin: 0 0 10px;
     overflow-wrap: anywhere;
   }
-  .row-title a {
-    color: var(--ink);
-    padding-bottom: 0.08em;
-  }
-  .row-title a:hover,
-  .row-title a:focus-visible {
+  .index-title a:hover,
+  .index-title a:focus-visible {
     color: var(--accent);
   }
-  .row-summary {
+  .index-summary {
+    margin: 0 0 12px;
     color: var(--muted);
-    font-size: 16px;
-    line-height: 1.55;
-    margin-top: 8px;
-    max-width: 60ch;
+    font-size: 17px;
+    max-width: 54ch;
   }
-  .row-note .row-title {
-    font-size: 20px;
+  .note-row {
+    border-bottom: 1px solid var(--line);
   }
-  @media (max-width: 640px) {
-    .row {
+  .note-row a {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 20px;
+    padding: 16px 0;
+  }
+  .note-title {
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1.45;
+  }
+  .note-row a:hover .note-title {
+    color: var(--accent);
+  }
+  .note-row time {
+    flex-shrink: 0;
+    font: 13px/1.8 var(--mono);
+    color: var(--muted);
+  }
+  @media (max-width: 600px) {
+    .index-row,
+    .index-row.numbered {
       grid-template-columns: minmax(0, 1fr);
-      row-gap: 8px;
-      padding: 20px 0;
+      gap: 6px;
+      padding: 28px 0;
     }
-    .row-date {
-      flex-direction: row;
-      gap: 12px;
-      padding-top: 0;
+    .num {
+      padding: 0;
     }
-    .row-title {
-      font-size: 21px;
+    .index-title {
+      font-size: 28px;
     }
-    .row-summary {
-      font-size: 15.5px;
+    .index-summary {
+      font-size: 16px;
+    }
+    .note-row a {
+      flex-direction: column;
+      gap: 2px;
+      padding: 14px 0;
     }
   }
 </style>

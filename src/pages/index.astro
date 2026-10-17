@@ -1,70 +1,48 @@
 ---
 import Base from '../layouts/Base.astro';
-import Card from '../components/content/Card.astro';
-import Icon from '../components/Icon.astro';
-import { formatDate, getArticles, getNotes, postUrl } from '../lib/content';
+import PostRow from '../components/content/PostRow.astro';
+import { getArticles, getNotes } from '../lib/content';
 import { site } from '../config';
 const [articles, notes] = await Promise.all([getArticles(), getNotes()]);
-const [featured, ...rest] = articles;
-const tagline = site.tagline.replace(/\.$/, '');
 // The description opens with the tagline; the hero shows only what the headline does not already say.
 const heroSub = site.description.startsWith(site.tagline)
   ? site.description.slice(site.tagline.length).trim()
   : site.description;
+const number = (index: number) => String(index + 1).padStart(2, '0');
 ---
 
 <Base>
-  <div class="stage-inner home">
+  <div class="wrap">
     <header class="hero">
-      <p class="eyebrow">{site.focus}</p>
-      <h1>
-        {tagline}
-        <span class="hero-dot">.</span>
-      </h1>
-      <p class="hero-sub">{heroSub}</p>
+      <h1>{site.tagline}</h1>
+      <p>{heroSub}</p>
     </header>
-
-    {featured && (
-      <section class="latest" aria-labelledby="latest-label">
-        <div class="section-head">
-          <h2 id="latest-label">Latest writing</h2>
-          <a class="quiet-link" href="/writing/">
-            All writing <Icon name="arrow" size={14} />
-          </a>
-        </div>
-        <Card post={featured} featured heading="h3" />
-        {rest.length > 0 && (
-          <div class="card-grid">
-            {rest.slice(0, 4).map((post) => (
-              <Card post={post} heading="h3" />
-            ))}
-          </div>
-        )}
-      </section>
-    )}
+    <ol class="index" role="list">
+      {articles.slice(0, 8).map((post, index) => (
+        <PostRow post={post} number={number(index)} />
+      ))}
+    </ol>
     {!articles.length && <p class="empty-copy">The first article is on its way.</p>}
-
+    {articles.length > 8 && (
+      <p class="more">
+        <a href="/writing/">All writing →</a>
+      </p>
+    )}
     {notes.length > 0 && (
-      <section class="notes panel" aria-labelledby="notes-label">
+      <section aria-labelledby="notes-label">
         <div class="section-head">
-          <h2 id="notes-label">Notes</h2>
-          <a class="quiet-link" href="/notes/">
-            All notes <Icon name="arrow" size={14} />
-          </a>
+          <h2 id="notes-label" class="label">
+            Notes
+          </h2>
+          <a href="/notes/">All notes →</a>
         </div>
-        <ol class="note-list" role="list">
+        <ul class="index" role="list">
           {notes.slice(0, 5).map((post) => (
-            <li>
-              <a class="note-link" href={postUrl(post)}>
-                <span class="note-title">{post.data.title}</span>
-                <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
-              </a>
-            </li>
+            <PostRow post={post} variant="note" heading="h3" />
           ))}
-        </ol>
+        </ul>
       </section>
     )}
-
     <p class="reading-disclosure">
       These sample reading notes draw on claude.dev. Sources and personal reflections are clearly separated.
     </p>
@@ -73,91 +51,40 @@ const heroSub = site.description.startsWith(site.tagline)
 
 <style>
   .hero {
-    padding: 8px 0 48px;
-    max-width: 760px;
+    padding: 88px 0 56px;
+    border-bottom: 1px solid var(--ink);
   }
   .hero h1 {
-    font-size: clamp(38px, 5vw, 64px);
+    font-size: clamp(40px, 6vw, 66px);
+    line-height: 1;
     letter-spacing: -0.035em;
-    line-height: 1.02;
-    margin: 14px 0 18px;
+    margin: 0 0 20px;
+    max-width: 12ch;
   }
-  .hero-dot {
+  .hero p {
+    font-size: 19px;
+    color: var(--muted);
+    max-width: 44ch;
+  }
+  .more {
+    padding: 24px 0 0;
+  }
+  .more a {
+    font-size: 15px;
     color: var(--accent);
   }
-  @media (min-width: 1024px) {
-    .hero .eyebrow {
-      display: none;
-    }
-    .hero h1 {
-      margin-top: 0;
-    }
+  .more a:hover {
+    text-decoration: underline;
   }
-  .hero-sub {
-    color: var(--muted);
-    font-size: 18px;
-    line-height: 1.55;
-    max-width: 56ch;
-  }
-  .latest {
-    margin-bottom: 40px;
-  }
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 18px;
-    margin-top: 18px;
-  }
-  .notes {
-    padding: 24px 28px 12px;
-  }
-  .notes .section-head {
-    margin-bottom: 8px;
-  }
-  .note-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .note-list li + li {
-    border-top: 1px solid var(--line);
-  }
-  .note-link {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 20px;
-    padding: 14px 0;
-    color: var(--ink);
-  }
-  .note-title {
-    font: 500 16.5px/1.4 var(--sans);
-  }
-  .note-link:hover .note-title {
-    color: var(--accent);
-  }
-  .note-link time {
-    flex-shrink: 0;
-    font: 12.5px/1.6 var(--mono);
-    color: var(--muted);
-  }
-  @media (max-width: 540px) {
+  @media (max-width: 600px) {
     .hero {
-      padding: 0 0 32px;
+      padding: 56px 0 40px;
     }
     .hero h1 {
-      font-size: 38px;
-      margin: 10px 0 14px;
+      font-size: 40px;
     }
-    .hero-sub {
-      font-size: 16.5px;
-    }
-    .notes {
-      padding: 18px 20px 8px;
-    }
-    .note-link {
-      flex-direction: column;
-      gap: 4px;
+    .hero p {
+      font-size: 17px;
     }
   }
 </style>

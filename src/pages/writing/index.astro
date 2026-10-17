@@ -1,15 +1,15 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Feed from '../../components/content/Feed.astro';
 import PostRow from '../../components/content/PostRow.astro';
 import { getArticles } from '../../lib/content';
 const posts = await getArticles();
 const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
 const years = [...new Set(posts.map((post) => post.data.date.getUTCFullYear()))];
+const number = (post: (typeof posts)[number]) => String(posts.indexOf(post) + 1).padStart(2, '0');
 ---
 
 <Base title="Writing" active="writing">
-  <div class="stage-inner">
+  <div class="wrap">
     <header class="page-head">
       <p class="eyebrow">Archive</p>
       <h1>Writing</h1>
@@ -37,14 +37,14 @@ const years = [...new Set(posts.map((post) => post.data.date.getUTCFullYear()))]
     </div>
     {years.map((year) => (
       <section class="archive-group" aria-label={`${year} archive`}>
-        <h2 class="archive-year">{year}</h2>
-        <Feed>
+        <h2 class="label archive-year">{year}</h2>
+        <ol class="index" role="list">
           {posts
             .filter((post) => post.data.date.getUTCFullYear() === year)
             .map((post) => (
-              <PostRow post={post} heading="h3" />
+              <PostRow post={post} number={number(post)} heading="h3" />
             ))}
-        </Feed>
+        </ol>
       </section>
     ))}
     <p class="reading-disclosure">
@@ -65,34 +65,33 @@ const years = [...new Set(posts.map((post) => post.data.date.getUTCFullYear()))]
     align-items: center;
     gap: 8px;
     flex-wrap: wrap;
-    margin: 0 0 32px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--ink);
   }
   .filter-button {
-    padding: 8px 14px;
-    border: 1px solid var(--line-strong);
+    padding: 7px 14px;
+    border: 1px solid var(--line);
     border-radius: 999px;
     background: transparent;
     color: var(--muted);
     font: 500 13px/1.6 var(--sans);
-    min-height: 38px;
+    min-height: 36px;
   }
   .filter-button:hover {
     color: var(--ink);
     border-color: var(--accent);
   }
   .filter-button[aria-pressed='true'] {
-    color: var(--bg);
+    color: var(--paper);
     background: var(--accent);
     border-color: var(--accent);
   }
   .archive-year {
-    font: 500 13px/1.6 var(--mono);
-    color: var(--accent);
-    letter-spacing: 0.02em;
-    margin: 40px 0 10px;
+    margin: 40px 0 0;
+    padding-bottom: 6px;
   }
   .archive-group:first-of-type .archive-year {
-    margin-top: 0;
+    margin-top: 28px;
   }
   #filter-empty {
     padding: 24px 0;

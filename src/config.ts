@@ -10,8 +10,8 @@ export const site = {
   title: 'Mikey — Software, AI, and notes',
   description: 'Writing code and thinking things through. Notes on software engineering, AI, and what I am learning.',
   tagline: 'Writing code and thinking things through.',
-  focus: 'Software, AI, and reading notes.',
-  themeColor: { light: '#f5f2ea', dark: '#0e0f11' },
+  focus: 'Software, AI, and reading notes',
+  themeColor: { light: '#faf8f3', dark: '#131412' },
   repo: 'codingmesh/blog-mesh',
 } as const;
 

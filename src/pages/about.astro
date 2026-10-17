@@ -5,7 +5,7 @@ import { site } from '../config';
 ---
 
 <Base title="About" active="about">
-  <div class="stage-inner measure">
+  <div class="wrap">
     <header class="page-head">
       <p class="eyebrow">A little background</p>
       <h1>About {site.name}</h1>
@@ -30,7 +30,7 @@ import { site } from '../config';
         the author's claims from additional reflections.
       </p>
     </div>
-    <aside class="about-note panel">
+    <aside class="about-note">
       This is a preview profile, without a verified biography or contact details. The sample notes were prepared with AI
       assistance and do not represent experiments personally conducted by the site owner.
     </aside>
@@ -39,11 +39,11 @@ import { site } from '../config';
 
 <style>
   .about-note {
-    padding: 18px 22px;
-    border-left: 2px solid var(--accent);
-    font-size: 14px;
-    line-height: 1.6;
+    margin: 48px 0 0;
+    padding: 18px 0 0;
+    border-top: 1px solid var(--line);
+    font: 14px/1.6 var(--sans);
     color: var(--muted);
-    margin: 40px 0;
+    max-width: 60ch;
   }
 </style>

@@ -1,26 +1,31 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Feed from '../../components/content/Feed.astro';
 import PostRow from '../../components/content/PostRow.astro';
 import { getNotes } from '../../lib/content';
 const notes = await getNotes();
 ---
 
 <Base title="Notes" active="notes">
-  <div class="stage-inner">
+  <div class="wrap">
     <header class="page-head">
       <p class="eyebrow">Shorter</p>
       <h1>Notes</h1>
       <p>Short notes and ideas still taking shape.</p>
     </header>
-    <Feed>
+    <ol class="index notes-index" role="list">
       {notes.map((post) => (
-        <PostRow post={post} variant="note" />
+        <PostRow post={post} />
       ))}
-    </Feed>
+    </ol>
     {!notes.length && <p class="empty-copy">No notes yet.</p>}
     <p class="reading-disclosure">
       These sample notes demonstrate the reading experience. They can be replaced with your own writing.
     </p>
   </div>
 </Base>
+
+<style>
+  .notes-index {
+    border-top: 1px solid var(--ink);
+  }
+</style>
