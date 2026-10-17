@@ -1,9 +1,9 @@
 /* Rendered Markdown and the code windows built around it. Global because Markdown output cannot be scoped. */
 .prose {
   font-size: 18px;
-  line-height: 1.7;
+  line-height: 1.72;
   overflow-wrap: anywhere;
-  max-width: 64ch;
+  max-width: var(--measure);
 }
 .prose > * + * {
   margin-top: 22px;
@@ -12,8 +12,8 @@
   margin-top: 0;
 }
 .prose h2 {
-  font-size: 26px;
-  margin: 48px 0 16px;
+  font-size: 27px;
+  margin: 52px 0 16px;
   scroll-margin-top: 30px;
 }
 .prose h3 {
@@ -91,6 +91,7 @@
 .prose img {
   height: auto;
   border-radius: var(--radius);
+  border: 1px solid var(--line);
 }
 .prose figure {
   margin: 0;
@@ -149,6 +150,7 @@
   border-radius: var(--radius);
   overflow: hidden;
   background: var(--surface);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.03);
 }
 .code-toolbar {
   display: grid;

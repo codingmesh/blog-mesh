@@ -1,74 +1,36 @@
 ---
 import Icon from '../Icon.astro';
 import { site } from '../../config';
+/** Shown below 1024px, where the rail collapses to a top bar and loses its footer links. */
 ---
 
 <footer class="site-footer" data-pagefind-ignore>
-  <div class="site-footer-inner column">
-    <div>
-      <a href="/" class="footer-name">
-        {site.wordmark}
-        <span>.</span>
-      </a>
-      <p>{site.focus}</p>
-    </div>
-    <div class="footer-right">
-      <a href="/rss.xml">
-        <Icon name="rss" size={15} /> RSS
-      </a>
-      <span>
-        © {new Date().getFullYear()} {site.name}
-      </span>
-    </div>
-  </div>
+  <span>
+    © {new Date().getFullYear()} {site.name}
+  </span>
+  <a href="/rss.xml">
+    <Icon name="rss" size={14} /> RSS
+  </a>
 </footer>
 
 <style>
   .site-footer {
-    margin-top: 96px;
-    border-top: 1px solid var(--line);
+    display: none;
   }
-  .site-footer-inner {
-    padding: 28px 0 48px;
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 20px;
-    font: 13px/1.6 var(--mono);
-    color: var(--muted);
-  }
-  .footer-name {
-    font: 700 15px/1 var(--display);
-    letter-spacing: -0.03em;
-    color: var(--ink);
-  }
-  .footer-name span {
-    color: var(--accent);
-  }
-  p {
-    margin-top: 8px;
-  }
-  .footer-right {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-  }
-  .footer-right a {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .footer-right a:hover {
-    color: var(--ink);
-  }
-  @media (max-width: 540px) {
+  @media (max-width: 1023px) {
     .site-footer {
-      margin-top: 72px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 20px 40px;
+      border-top: 1px solid var(--line);
+      font: 12.5px/1.6 var(--mono);
+      color: var(--muted);
     }
-    .site-footer-inner {
-      flex-direction: column;
-      gap: 10px;
-      padding-bottom: 40px;
+    .site-footer a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
   }
   @media print {

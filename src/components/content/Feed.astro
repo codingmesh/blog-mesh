@@ -1,13 +1,12 @@
 ---
-/** Vertical list of PostRow entries separated by hairlines. */
+/** Vertical list of PostRow entries. The rows draw their own hairlines; the list closes with one. */
 interface Props {
-  compact?: boolean;
   class?: string;
 }
-const { compact = false, class: className } = Astro.props;
+const { class: className } = Astro.props;
 ---
 
-<ol class:list={['feed', { compact }, className]} role="list">
+<ol class:list={['feed', className]} role="list">
   <slot />
 </ol>
 
@@ -16,24 +15,6 @@ const { compact = false, class: className } = Astro.props;
     list-style: none;
     padding: 0;
     margin: 0;
-  }
-  .feed > :global(li + li) {
-    border-top: 1px solid var(--line);
-    padding-top: 40px;
-    margin-top: 40px;
-  }
-  .feed.compact > :global(li + li) {
-    padding-top: 18px;
-    margin-top: 18px;
-  }
-  @media (max-width: 540px) {
-    .feed > :global(li + li) {
-      padding-top: 30px;
-      margin-top: 30px;
-    }
-    .feed.compact > :global(li + li) {
-      padding-top: 16px;
-      margin-top: 16px;
-    }
+    border-bottom: 1px solid var(--line);
   }
 </style>

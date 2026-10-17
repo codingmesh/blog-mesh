@@ -1,46 +1,70 @@
 ---
 import Base from '../layouts/Base.astro';
-import Feed from '../components/content/Feed.astro';
-import PostRow from '../components/content/PostRow.astro';
+import Card from '../components/content/Card.astro';
 import Icon from '../components/Icon.astro';
-import { getArticles, getNotes } from '../lib/content';
+import { formatDate, getArticles, getNotes, postUrl } from '../lib/content';
 import { site } from '../config';
 const [articles, notes] = await Promise.all([getArticles(), getNotes()]);
+const [featured, ...rest] = articles;
+const tagline = site.tagline.replace(/\.$/, '');
+// The description opens with the tagline; the hero shows only what the headline does not already say.
+const heroSub = site.description.startsWith(site.tagline)
+  ? site.description.slice(site.tagline.length).trim()
+  : site.description;
 ---
 
-<Base home>
-  <div class="home column">
-    <p class="home-kicker">{site.focus}</p>
-    <Feed class="home-feed">
-      {articles.slice(0, 6).map((post) => (
-        <PostRow post={post} />
-      ))}
-    </Feed>
-    {!articles.length && <p class="empty-copy">The first article is on its way.</p>}
-    {articles.length > 6 && (
-      <p class="feed-more">
-        <a class="quiet-link" href="/writing/">
-          All writing <Icon name="arrow" size={14} />
-        </a>
-      </p>
+<Base>
+  <div class="stage-inner home">
+    <header class="hero">
+      <p class="eyebrow">{site.focus}</p>
+      <h1>
+        {tagline}
+        <span class="hero-dot">.</span>
+      </h1>
+      <p class="hero-sub">{heroSub}</p>
+    </header>
+
+    {featured && (
+      <section class="latest" aria-labelledby="latest-label">
+        <div class="section-head">
+          <h2 id="latest-label">Latest writing</h2>
+          <a class="quiet-link" href="/writing/">
+            All writing <Icon name="arrow" size={14} />
+          </a>
+        </div>
+        <Card post={featured} featured heading="h3" />
+        {rest.length > 0 && (
+          <div class="card-grid">
+            {rest.slice(0, 4).map((post) => (
+              <Card post={post} heading="h3" />
+            ))}
+          </div>
+        )}
+      </section>
     )}
+    {!articles.length && <p class="empty-copy">The first article is on its way.</p>}
+
     {notes.length > 0 && (
-      <section class="feed-section" aria-labelledby="notes-label">
-        <h2 id="notes-label" class="feed-label">
-          Notes
-        </h2>
-        <Feed compact>
-          {notes.slice(0, 4).map((post) => (
-            <PostRow post={post} variant="note" heading="h3" />
-          ))}
-        </Feed>
-        <p class="feed-more">
+      <section class="notes panel" aria-labelledby="notes-label">
+        <div class="section-head">
+          <h2 id="notes-label">Notes</h2>
           <a class="quiet-link" href="/notes/">
             All notes <Icon name="arrow" size={14} />
           </a>
-        </p>
+        </div>
+        <ol class="note-list" role="list">
+          {notes.slice(0, 5).map((post) => (
+            <li>
+              <a class="note-link" href={postUrl(post)}>
+                <span class="note-title">{post.data.title}</span>
+                <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+              </a>
+            </li>
+          ))}
+        </ol>
       </section>
     )}
+
     <p class="reading-disclosure">
       These sample reading notes draw on claude.dev. Sources and personal reflections are clearly separated.
     </p>
@@ -48,49 +72,92 @@ const [articles, notes] = await Promise.all([getArticles(), getNotes()]);
 </Base>
 
 <style>
-  .home-kicker {
-    font: 500 13px/1.6 var(--mono);
+  .hero {
+    padding: 8px 0 48px;
+    max-width: 760px;
+  }
+  .hero h1 {
+    font-size: clamp(38px, 5vw, 64px);
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+    margin: 14px 0 18px;
+  }
+  .hero-dot {
+    color: var(--accent);
+  }
+  @media (min-width: 1024px) {
+    .hero .eyebrow {
+      display: none;
+    }
+    .hero h1 {
+      margin-top: 0;
+    }
+  }
+  .hero-sub {
     color: var(--muted);
-    margin-top: 40px;
+    font-size: 18px;
+    line-height: 1.55;
+    max-width: 56ch;
   }
-  .home :global(.home-feed) {
-    margin-top: 26px;
+  .latest {
+    margin-bottom: 40px;
   }
-  .home :global(.home-feed > :first-child .feed-title) {
-    font-size: clamp(34px, 4.6vw, 50px);
-    letter-spacing: -0.032em;
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+    margin-top: 18px;
   }
-  .home :global(.home-feed > :first-child .feed-summary) {
-    font-size: 20px;
-    max-width: 50ch;
+  .notes {
+    padding: 24px 28px 12px;
   }
-  .feed-section {
-    margin-top: 88px;
+  .notes .section-head {
+    margin-bottom: 8px;
   }
-  .feed-label {
-    font: 500 13px/1.6 var(--mono);
+  .note-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .note-list li + li {
+    border-top: 1px solid var(--line);
+  }
+  .note-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 20px;
+    padding: 14px 0;
+    color: var(--ink);
+  }
+  .note-title {
+    font: 500 16.5px/1.4 var(--sans);
+  }
+  .note-link:hover .note-title {
+    color: var(--accent);
+  }
+  .note-link time {
+    flex-shrink: 0;
+    font: 12.5px/1.6 var(--mono);
     color: var(--muted);
-    letter-spacing: 0;
-    margin-bottom: 22px;
-  }
-  .feed-more {
-    margin-top: 36px;
   }
   @media (max-width: 540px) {
-    .home-kicker {
-      margin-top: 24px;
+    .hero {
+      padding: 0 0 32px;
     }
-    .home :global(.home-feed) {
-      margin-top: 18px;
+    .hero h1 {
+      font-size: 38px;
+      margin: 10px 0 14px;
     }
-    .home :global(.home-feed > :first-child .feed-title) {
-      font-size: 33px;
+    .hero-sub {
+      font-size: 16.5px;
     }
-    .home :global(.home-feed > :first-child .feed-summary) {
-      font-size: 18px;
+    .notes {
+      padding: 18px 20px 8px;
     }
-    .feed-section {
-      margin-top: 64px;
+    .note-link {
+      flex-direction: column;
+      gap: 4px;
     }
   }
 </style>

@@ -24,16 +24,16 @@ export default defineConfig({
   ],
   fonts: [
     {
-      name: 'Space Grotesk',
+      name: 'Schibsted Grotesk',
       cssVariable: '--font-display',
       provider: fontProviders.fontsource(),
-      weights: [700],
+      weights: [600, 700],
       styles: ['normal'],
       subsets: ['latin'],
       fallbacks: ['Helvetica Neue', 'Arial', 'sans-serif'],
     },
     {
-      name: 'Hanken Grotesk',
+      name: 'Instrument Sans',
       cssVariable: '--font-sans',
       provider: fontProviders.fontsource(),
       weights: [400, 500, 600],

@@ -1,6 +1,6 @@
 ---
 import { formatDate, postUrl, readingTime, type Post } from '../../lib/content';
-/** One entry in a feed. Articles show a summary and reading time; notes show the title and date only. */
+/** A post as a row: date in the left column, title and summary on the right. Used by the archive and notes pages. */
 interface Props {
   post: Post;
   variant?: 'article' | 'note';
@@ -10,72 +10,77 @@ const { post, variant = 'article', heading = 'h2' } = Astro.props;
 const Heading = heading;
 ---
 
-<li class:list={['feed-item', 'archive-item', `feed-${variant}`]} data-tags={JSON.stringify(post.data.tags)}>
-  <Heading class="feed-title">
-    <a class="link-line" href={postUrl(post)}>
-      {post.data.title}
-    </a>
-  </Heading>
-  {variant === 'article' && <p class="feed-summary">{post.data.description}</p>}
-  <p class="feed-meta">
+<li class:list={['row', 'archive-item', `row-${variant}`]} data-tags={JSON.stringify(post.data.tags)}>
+  <p class="row-date">
     <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
-    {variant === 'article' && <span>{readingTime(post.body)} min read</span>}
+    {variant === 'article' && <span>{readingTime(post.body)} min</span>}
   </p>
+  <div class="row-body">
+    <Heading class="row-title">
+      <a class="link-line" href={postUrl(post)}>
+        {post.data.title}
+      </a>
+    </Heading>
+    <p class="row-summary">{post.data.description}</p>
+  </div>
 </li>
 
 <style>
-  /* Titles carry the identity: large, accent, with the shared underline drawing in on hover. */
-  .feed-title {
-    font: 700 clamp(28px, 3.4vw, 38px) / 1.12 var(--display);
-    letter-spacing: -0.028em;
-    overflow-wrap: anywhere;
-    min-width: 0;
+  .row {
+    display: grid;
+    grid-template-columns: 128px minmax(0, 1fr);
+    column-gap: 24px;
+    padding: 24px 0;
+    border-top: 1px solid var(--line);
   }
-  .feed-title a {
-    color: var(--accent);
-    padding-bottom: 0.06em;
-  }
-  .feed-title a:hover,
-  .feed-title a:focus-visible {
-    color: var(--accent);
-  }
-  .feed-summary {
-    font-size: 18px;
-    line-height: 1.55;
-    margin-top: 10px;
-    max-width: 58ch;
-    color: var(--ink);
-  }
-  .feed-meta {
+  .row-date {
     display: flex;
-    flex-wrap: wrap;
-    gap: 4px 16px;
-    margin-top: 12px;
-    font: 13px/1.6 var(--mono);
+    flex-direction: column;
+    gap: 2px;
+    padding-top: 5px;
+    font: 12.5px/1.6 var(--mono);
     color: var(--muted);
   }
-  .feed-note .feed-title {
+  .row-title {
     font-size: 23px;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.022em;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
   }
-  .feed-note .feed-meta {
-    margin-top: 6px;
+  .row-title a {
+    color: var(--ink);
+    padding-bottom: 0.08em;
   }
-  @media (max-width: 540px) {
-    .feed-title {
-      font-size: 28px;
+  .row-title a:hover,
+  .row-title a:focus-visible {
+    color: var(--accent);
+  }
+  .row-summary {
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.55;
+    margin-top: 8px;
+    max-width: 60ch;
+  }
+  .row-note .row-title {
+    font-size: 20px;
+  }
+  @media (max-width: 640px) {
+    .row {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 8px;
+      padding: 20px 0;
     }
-    .feed-summary {
-      font-size: 17px;
-      margin-top: 8px;
+    .row-date {
+      flex-direction: row;
+      gap: 12px;
+      padding-top: 0;
     }
-    .feed-note .feed-title {
+    .row-title {
       font-size: 21px;
     }
-  }
-  @media (max-width: 360px) {
-    .feed-title {
-      font-size: 26px;
+    .row-summary {
+      font-size: 15.5px;
     }
   }
 </style>

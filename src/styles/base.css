@@ -1,5 +1,5 @@
-/* Reset, document defaults, the reading column, and the small set of text pieces shared by several pages.
-   Everything page- or component-specific lives in a scoped <style> next to its markup. */
+/* Reset, document defaults, the shell (rail + stage), and shared text pieces.
+   Component- and page-specific rules live in scoped <style> blocks next to their markup. */
 *,
 *::before,
 *::after {
@@ -39,17 +39,24 @@ button {
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 36px;
+  scroll-padding-top: 32px;
   scrollbar-gutter: stable;
 }
 body {
   min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
   background: var(--bg);
   color: var(--ink);
   font: 17px/1.65 var(--sans);
   -webkit-font-smoothing: antialiased;
+}
+/* A soft accent glow at the top of the stage gives the page depth without decoration. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(900px 520px at 38% -12%, var(--glow), transparent 68%);
 }
 ::selection {
   background: var(--accent);
@@ -63,18 +70,16 @@ a {
 a,
 button {
   transition:
-    color 120ms var(--ease),
-    background-color 120ms var(--ease),
-    border-color 120ms var(--ease),
-    text-decoration-color 120ms var(--ease);
+    color 140ms var(--ease),
+    background-color 140ms var(--ease),
+    border-color 140ms var(--ease),
+    box-shadow 160ms var(--ease),
+    transform 160ms var(--ease);
 }
 :focus-visible {
   outline: 2px solid var(--accent);
-  outline-offset: 4px;
-  border-radius: 2px;
-}
-main {
-  flex: 1;
+  outline-offset: 3px;
+  border-radius: 3px;
 }
 main:focus {
   outline: none;
@@ -91,7 +96,7 @@ h3,
 h4 {
   font-family: var(--display);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.022em;
   line-height: 1.1;
 }
 h1,
@@ -113,10 +118,11 @@ time {
 }
 kbd {
   font-size: 11px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 3px;
-  padding: 2px 5px;
+  background: var(--soft);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  padding: 1px 6px;
+  color: var(--muted);
 }
 
 .sr-only {
@@ -138,7 +144,7 @@ kbd {
   background: var(--accent);
   color: var(--bg);
   padding: 10px 16px;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   font: 600 14px/1.4 var(--display);
   transform: translateY(-160%);
 }
@@ -146,13 +152,32 @@ kbd {
   transform: translateY(0);
 }
 
-/* The reading column: centered, one measure everywhere. Wide-screen pages place side content in the margins. */
-.column {
-  width: var(--column);
-  margin-inline: auto;
+/* The shell: a sticky rail on the left, a wide stage on the right. */
+.shell {
+  display: flex;
+  min-height: 100dvh;
+}
+.stage {
+  flex: 1;
+  min-width: 0;
+  padding: 64px clamp(24px, 6vw, 96px) 96px;
+}
+.stage-inner {
+  max-width: var(--stage);
+}
+.measure {
+  max-width: var(--measure);
+}
+@media (max-width: 1023px) {
+  .shell {
+    display: block;
+  }
+  .stage {
+    padding: 36px 20px 72px;
+  }
 }
 
-/* Shared hover language: an underline that draws in from the left. Works across wrapped lines. */
+/* Shared hover language: an underline that draws in from the left and follows wrapped lines. */
 .link-line {
   background-image: linear-gradient(currentColor, currentColor);
   background-size: 0 2px;
@@ -161,8 +186,8 @@ kbd {
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
   transition:
-    background-size 220ms var(--ease),
-    color 120ms var(--ease);
+    background-size 240ms var(--ease),
+    color 140ms var(--ease);
 }
 .link-line:hover,
 .link-line:focus-visible,
@@ -171,6 +196,39 @@ kbd {
 }
 
 /* Shared text pieces */
+.eyebrow {
+  font: 500 12.5px/1.6 var(--mono);
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font: 12.5px/1.6 var(--mono);
+  color: var(--muted);
+}
+.post-meta {
+  display: flex;
+  gap: 4px 14px;
+  flex-wrap: wrap;
+  font: 12.5px/1.6 var(--mono);
+  color: var(--muted);
+}
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.section-head h2 {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+  text-transform: none;
+}
 .quiet-link {
   display: inline-flex;
   gap: 8px;
@@ -180,12 +238,12 @@ kbd {
   min-height: 32px;
 }
 .quiet-link:hover {
-  color: var(--ink);
+  color: var(--accent);
 }
 .text-button {
   border: 0;
   background: transparent;
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   color: var(--accent);
   padding: 8px 0;
   font: 500 15px/1.4 var(--sans);
@@ -195,81 +253,71 @@ kbd {
 .primary-link {
   display: inline-flex;
   align-items: center;
+  gap: 8px;
   padding: 11px 18px;
   background: var(--accent);
   color: var(--bg);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   font: 600 15px/1.3 var(--display);
   white-space: nowrap;
 }
 .primary-link:hover {
   color: var(--bg);
-  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px var(--glow);
 }
 .reading-disclosure,
 .empty-copy {
   font-size: 14px;
   line-height: 1.6;
   color: var(--muted);
-  max-width: 56ch;
+  max-width: 60ch;
 }
 .reading-disclosure {
-  margin-top: 64px;
+  margin-top: 56px;
 }
 .empty-copy {
   padding: 24px 0;
 }
-.post-meta {
-  display: flex;
-  gap: 4px 16px;
-  flex-wrap: wrap;
-  font: 13px/1.6 var(--mono);
-  color: var(--muted);
+.page-head {
+  margin-bottom: 36px;
 }
-.page-intro {
-  padding: 40px 0 24px;
-}
-.page-intro h1 {
-  font-size: 40px;
+.page-head h1 {
+  font-size: clamp(36px, 4vw, 48px);
   letter-spacing: -0.03em;
-  margin-bottom: 10px;
+  margin: 8px 0 12px;
 }
-.page-intro p {
+.page-head p {
   color: var(--muted);
   font-size: 17px;
-  max-width: 50ch;
+  max-width: 52ch;
 }
-.intro-greeting {
-  color: var(--accent);
-  font: 500 13px/1.6 var(--mono);
-  margin-bottom: 12px;
-}
-.page-tall {
-  min-height: 65vh;
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.03);
 }
 @media (max-width: 540px) {
   .reading-disclosure {
-    margin-top: 48px;
+    margin-top: 44px;
   }
-  .post-meta {
-    font-size: 12px;
-    gap: 2px 12px;
+  .page-head {
+    margin-bottom: 28px;
   }
-  .page-intro {
-    padding: 28px 0 16px;
-  }
-  .page-intro h1 {
+  .page-head h1 {
     font-size: 34px;
   }
-  .page-intro p {
+  .page-head p {
     font-size: 16px;
   }
 }
-
 @media print {
-  .column {
-    width: 100%;
-    margin: 0;
+  body::before {
+    display: none;
+  }
+  .stage {
+    padding: 0;
   }
 }
 @media (prefers-reduced-motion: reduce) {

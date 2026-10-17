@@ -9,8 +9,9 @@ const years = [...new Set(posts.map((post) => post.data.date.getUTCFullYear()))]
 ---
 
 <Base title="Writing" active="writing">
-  <div class="column page-tall">
-    <header class="page-intro">
+  <div class="stage-inner">
+    <header class="page-head">
+      <p class="eyebrow">Archive</p>
       <h1>Writing</h1>
       <p>
         Technical essays and reading notes. <span id="post-count">{posts.length}</span>{' '}
@@ -62,33 +63,33 @@ const years = [...new Set(posts.map((post) => post.data.date.getUTCFullYear()))]
   .archive-tools {
     display: flex;
     align-items: center;
-    gap: 6px 8px;
+    gap: 8px;
     flex-wrap: wrap;
-    margin: 0 0 28px;
+    margin: 0 0 32px;
   }
   .filter-button {
-    padding: 8px 12px;
-    border: 1px solid transparent;
-    border-radius: var(--radius);
+    padding: 8px 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
     background: transparent;
     color: var(--muted);
-    font: 500 13px/1.6 var(--mono);
-    min-height: 40px;
+    font: 500 13px/1.6 var(--sans);
+    min-height: 38px;
   }
   .filter-button:hover {
     color: var(--ink);
-    background: var(--soft);
+    border-color: var(--accent);
   }
   .filter-button[aria-pressed='true'] {
-    color: var(--accent);
-    border-color: var(--line);
-    background: var(--surface);
+    color: var(--bg);
+    background: var(--accent);
+    border-color: var(--accent);
   }
   .archive-year {
     font: 500 13px/1.6 var(--mono);
-    color: var(--ink);
-    letter-spacing: 0;
-    margin: 44px 0 22px;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+    margin: 40px 0 10px;
   }
   .archive-group:first-of-type .archive-year {
     margin-top: 0;
@@ -100,10 +101,5 @@ const years = [...new Set(posts.map((post) => post.data.date.getUTCFullYear()))]
   #filter-empty p {
     margin-bottom: 10px;
     overflow-wrap: anywhere;
-  }
-  @media (max-width: 540px) {
-    .archive-tools {
-      margin-bottom: 20px;
-    }
   }
 </style>

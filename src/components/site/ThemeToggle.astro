@@ -4,10 +4,10 @@ import Icon from '../Icon.astro';
 
 <button type="button" class="icon-button" id="theme-toggle" aria-label="Switch to light mode" title="Switch theme">
   <span class="theme-moon">
-    <Icon name="moon" />
+    <Icon name="moon" size={18} />
   </span>
   <span class="theme-sun">
-    <Icon name="sun" />
+    <Icon name="sun" size={18} />
   </span>
 </button>
 
@@ -18,20 +18,20 @@ import Icon from '../Icon.astro';
 
 <style>
   .icon-button {
-    border: 0;
+    border: 1px solid var(--line-strong);
     padding: 0;
-    background: transparent;
-    width: 44px;
-    height: 44px;
+    background: var(--surface);
+    width: 42px;
+    height: 42px;
     display: grid;
     place-items: center;
-    border-radius: var(--radius);
+    border-radius: var(--radius-sm);
     color: var(--muted);
     flex-shrink: 0;
   }
   .icon-button:hover {
     color: var(--ink);
-    background: var(--soft);
+    border-color: var(--accent);
   }
   .theme-moon,
   :global([data-theme='light']) .theme-sun {
@@ -39,5 +39,13 @@ import Icon from '../Icon.astro';
   }
   :global([data-theme='light']) .theme-moon {
     display: block;
+  }
+  @media (max-width: 1023px) {
+    .icon-button {
+      width: 44px;
+      height: 44px;
+      border: 0;
+      background: transparent;
+    }
   }
 </style>
