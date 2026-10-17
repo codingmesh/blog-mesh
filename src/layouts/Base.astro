@@ -19,6 +19,8 @@ interface Props {
   image?: string;
   /** Index pages carry the wind in their margins; article pages stay still. */
   wind?: boolean;
+  /** Section crumb after the name in the header, on article pages. */
+  crumb?: { label: string; href: string };
 }
 const {
   title,
@@ -29,6 +31,7 @@ const {
   noindex = false,
   image = '/og/site.png',
   wind = false,
+  crumb,
 } = Astro.props;
 const pageTitle = title ? `${title} — ${site.name}` : site.title;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -87,7 +90,7 @@ const imageUrl = new URL(image, Astro.site);
     <a href="#main" class="skip-link">
       Skip to content
     </a>
-    <Header active={active} />
+    <Header active={active} crumb={crumb} />
     <main id="main" tabindex="-1">
       <slot />
     </main>

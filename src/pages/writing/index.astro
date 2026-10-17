@@ -4,14 +4,11 @@ import PostRow from '../../components/content/PostRow.astro';
 import { getArticles } from '../../lib/content';
 const posts = await getArticles();
 const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
-const years = [...new Set(posts.map((post) => post.data.date.getUTCFullYear()))];
-const number = (post: (typeof posts)[number]) => String(posts.indexOf(post) + 1).padStart(2, '0');
 ---
 
 <Base title="Writing" active="writing" wind>
   <div class="wrap">
     <header class="page-head">
-      <p class="eyebrow">Archive</p>
       <h1>Writing</h1>
       <p>
         Technical essays and reading notes. <span id="post-count">{posts.length}</span>{' '}
@@ -35,18 +32,11 @@ const number = (post: (typeof posts)[number]) => String(posts.indexOf(post) + 1)
         View all writing
       </button>
     </div>
-    {years.map((year) => (
-      <section class="archive-group" aria-label={`${year} archive`}>
-        <h2 class="label archive-year">{year}</h2>
-        <ol class="index" role="list">
-          {posts
-            .filter((post) => post.data.date.getUTCFullYear() === year)
-            .map((post) => (
-              <PostRow post={post} number={number(post)} heading="h3" />
-            ))}
-        </ol>
-      </section>
-    ))}
+    <ul class="index archive-list" role="list">
+      {posts.map((post) => (
+        <PostRow post={post} heading="h2" />
+      ))}
+    </ul>
     <p class="reading-disclosure">
       These sample reading notes were prepared with AI assistance. Each article identifies its sources and separates the
       summary from further reflection.
@@ -66,8 +56,11 @@ const number = (post: (typeof posts)[number]) => String(posts.indexOf(post) + 1)
     align-items: center;
     gap: 8px;
     flex-wrap: wrap;
-    padding-bottom: 28px;
-    border-bottom: 1px solid var(--ink);
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+  }
+  .archive-list {
+    padding-top: 16px;
   }
   .filter-button {
     padding: 7px 14px;
@@ -86,14 +79,6 @@ const number = (post: (typeof posts)[number]) => String(posts.indexOf(post) + 1)
     color: var(--paper);
     background: var(--accent);
     border-color: var(--accent);
-  }
-  .archive-year {
-    margin: 40px 0 0;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--line);
-  }
-  .archive-group:first-of-type .archive-year {
-    margin-top: 28px;
   }
   #filter-empty {
     padding: 24px 0;

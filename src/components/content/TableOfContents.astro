@@ -1,32 +1,24 @@
 ---
 import type { MarkdownHeading } from 'astro';
 /**
- * Numbered to match the section numerals in the body. The side list has a marker that slides to the
- * current section; the inline version is a collapsed disclosure above the body.
+ * The section headings of an article. The side list has a marker that slides to the current section; the inline
+ * version is a collapsed disclosure above the body.
  */
 interface Props {
   headings: MarkdownHeading[];
   variant: 'side' | 'inline';
 }
 const { headings, variant } = Astro.props;
-let section = 0;
-const entries = headings.map((heading) => ({
-  ...heading,
-  number: heading.depth === 2 ? String(++section).padStart(2, '0') : '',
-}));
 ---
 
 {variant === 'side' ? (
   <nav class="article-toc" aria-label="Table of contents" data-pagefind-ignore>
-    <h2 class="label">On this page</h2>
+    <h2 class="toc-label">On this page</h2>
     <ol>
       <span class="toc-marker" aria-hidden="true" />
-      {entries.map((heading) => (
+      {headings.map((heading) => (
         <li class:list={{ 'toc-sub': heading.depth === 3 }}>
-          <a href={`#${heading.slug}`}>
-            <i>{heading.number}</i>
-            <span>{heading.text}</span>
-          </a>
+          <a href={`#${heading.slug}`}>{heading.text}</a>
         </li>
       ))}
     </ol>
@@ -34,15 +26,12 @@ const entries = headings.map((heading) => ({
 ) : (
   <details class="mobile-toc" data-pagefind-ignore>
     <summary>
-      Contents <span class="toc-count">{entries.length} sections</span>
+      Contents <span class="toc-count">{headings.length} sections</span>
     </summary>
     <ol>
-      {entries.map((heading) => (
+      {headings.map((heading) => (
         <li class:list={{ 'toc-sub': heading.depth === 3 }}>
-          <a href={`#${heading.slug}`}>
-            <i>{heading.number}</i>
-            <span>{heading.text}</span>
-          </a>
+          <a href={`#${heading.slug}`}>{heading.text}</a>
         </li>
       ))}
     </ol>
@@ -59,12 +48,14 @@ const entries = headings.map((heading) => ({
   .article-toc {
     position: sticky;
     top: 32px;
-    font-size: 13.5px;
+    font-size: 14px;
+    line-height: 1.5;
     color: var(--muted);
   }
-  .article-toc .label {
-    font-size: 11px;
-    margin-bottom: 10px;
+  .toc-label {
+    margin: 0 0 8px;
+    font: 400 13px/1.8 var(--mono);
+    color: var(--muted);
   }
   .article-toc ol {
     position: relative;
@@ -86,17 +77,9 @@ const entries = headings.map((heading) => ({
       height 300ms var(--ease);
   }
   .article-toc a {
-    display: grid;
-    grid-template-columns: 26px minmax(0, 1fr);
-    gap: 8px;
-    padding: 6px 0 6px 12px;
-    line-height: 1.4;
+    display: block;
+    padding: 4px 0 4px 12px;
     transition: color 140ms var(--ease);
-  }
-  .article-toc a i {
-    font: 500 12px/1.6 var(--mono);
-    font-style: normal;
-    color: var(--accent);
   }
   .article-toc a:hover,
   .article-toc a[aria-current='location'] {
@@ -111,7 +94,7 @@ const entries = headings.map((heading) => ({
   }
   .mobile-toc summary {
     cursor: pointer;
-    font: 500 13px/1.6 var(--mono);
+    font: 400 13px/1.8 var(--mono);
     color: var(--accent);
     min-height: 44px;
     display: flex;
@@ -137,25 +120,20 @@ const entries = headings.map((heading) => ({
   }
   .toc-count {
     color: var(--muted);
-    font-weight: 400;
   }
   .mobile-toc ol {
     list-style: none;
     padding: 0;
     margin: 4px 0 14px;
-    font-size: 14px;
+    font-size: 15px;
     color: var(--muted);
   }
   .mobile-toc li a {
-    display: grid;
-    grid-template-columns: 30px minmax(0, 1fr);
-    gap: 6px;
+    display: block;
     padding: 8px 0;
   }
-  .mobile-toc li a i {
-    font: 500 12px/1.8 var(--mono);
-    font-style: normal;
-    color: var(--accent);
+  .mobile-toc .toc-sub a {
+    padding-left: 16px;
   }
   .mobile-toc li a:hover {
     color: var(--ink);

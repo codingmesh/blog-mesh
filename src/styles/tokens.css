@@ -17,7 +17,7 @@
   --highlight-edge: #5fbf9a;
   --sans: var(--font-sans, 'IBM Plex Sans', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif);
   --mono: var(--font-mono, 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace);
-  --column: min(100% - 48px, 760px);
+  --column: min(100% - 48px, 720px);
   --radius: 6px;
   --code-pad: 24px;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -37,7 +37,7 @@
 }
 @media (max-width: 540px) {
   :root {
-    --column: min(100% - 40px, 760px);
+    --column: min(100% - 40px, 720px);
     --code-pad: 18px;
   }
 }

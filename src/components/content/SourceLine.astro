@@ -1,5 +1,5 @@
 ---
-/** Citation for reading notes as two labeled rows: the source, and who wrote it where. */
+/** Citation for reading notes, as one sentence: the source, and who wrote it where. */
 interface Props {
   source: { title: string; url: string; author: string };
 }
@@ -7,58 +7,38 @@ const { source } = Astro.props;
 const host = new URL(source.url).hostname.replace(/^www\./, '');
 ---
 
-<dl class="source-line" data-pagefind-ignore>
-  <dt>Source</dt>
-  <dd>
-    <a href={source.url} target="_blank" rel="noopener noreferrer">
-      {source.title}
-      <span class="sr-only"> (opens in a new tab)</span>
-    </a>
+<p class="source-line" data-pagefind-ignore>
+  On{' '}
+  <a href={source.url} target="_blank" rel="noopener noreferrer">
+    {source.title}
+    <span class="sr-only"> (opens in a new tab)</span>
     <span class="ext" aria-hidden="true">
       ↗
     </span>
-  </dd>
-  <dt>By</dt>
-  <dd>
-    {source.author}, {host}
-  </dd>
-</dl>
+  </a>{' '}
+  by {source.author}, {host}.
+</p>
 
 <style>
   .source-line {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 4px 16px;
-    margin: 0;
-    font: 13px/1.7 var(--mono);
+    margin: 14px 0 0;
+    font-size: 15px;
+    line-height: 1.6;
     color: var(--muted);
     overflow-wrap: anywhere;
   }
-  dt {
-    font-weight: 500;
-    color: var(--accent);
-  }
-  dd {
-    margin: 0;
-  }
   .source-line a {
-    color: var(--ink);
+    color: var(--accent);
     text-decoration: underline;
     text-decoration-color: var(--line);
     text-underline-offset: 3px;
     transition: text-decoration-color 150ms var(--ease);
   }
   .source-line a:hover {
-    color: var(--accent);
     text-decoration-color: currentColor;
   }
   .ext {
-    margin-left: 4px;
+    margin-left: 2px;
     font-size: 11px;
-  }
-  @media print {
-    .source-line {
-      break-inside: avoid;
-    }
   }
 </style>

@@ -21,21 +21,18 @@ export async function getStaticPaths() {
     seen.set(post.id, post.collection);
   }
   return posts.map((post) => {
-    const kin = posts.filter((candidate) => candidate.collection === post.collection);
-    const siblings = kin.filter((candidate) => candidate.id !== post.id);
+    const siblings = posts.filter((candidate) => candidate.collection === post.collection && candidate.id !== post.id);
     const next =
       siblings.find((candidate) => candidate.data.tags.some((tag) => post.data.tags.includes(tag))) || siblings[0];
-    const number = String(kin.findIndex((candidate) => candidate.id === post.id) + 1).padStart(2, '0');
-    return { params: { id: post.id }, props: { post, next, number } };
+    return { params: { id: post.id }, props: { post, next } };
   });
 }
 
 interface Props {
   post: Post;
   next?: Post;
-  number: string;
 }
-const { post, next, number } = Astro.props;
+const { post, next } = Astro.props;
 const { Content, headings } = await render(post);
 const toc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 const note = isNote(post);
@@ -50,6 +47,7 @@ const transitionName = `title-${post.collection}-${post.id}`;
   title={post.data.title}
   description={post.data.description}
   active={note ? 'notes' : 'writing'}
+  crumb={{ label: note ? 'Notes' : 'Writing', href: listHref }}
   article
   publishedAt={post.data.date}
   image={`/og/${post.id}.png`}
@@ -58,32 +56,23 @@ const transitionName = `title-${post.collection}-${post.id}`;
   <BackToTop />
   <article class="article wrap" data-pagefind-body>
     <header class="article-head">
-      <span class="entry-num" aria-hidden="true">
-        {number}
-      </span>
-      <p class="eyebrow">
-        <span class="crumb-num">
-          {number}
-          <span> / </span>
-        </span>
-        <a href={listHref} data-pagefind-ignore>
-          {topic || (note ? 'Notes' : 'Writing')}
-        </a>
-        <span>
-          {' '}
-          / {post.data.sample ? 'Sample ' : ''}
-          {label}
-        </span>
-      </p>
       <h1 data-pagefind-meta="title" transition:name={transitionName}>
         {post.data.title}
       </h1>
-      <p class="lede" data-pagefind-meta="description">
-        {post.data.description}
-      </p>
-      <p class="meta">
+      <meta data-pagefind-meta="description[content]" content={post.data.description} />
+      <p class="meta-line">
         <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
-        <span>{readingTime(post.body)} min read</span>
+        <i>·</i>
+        {readingTime(post.body)} minute read
+        {topic && (
+          <>
+            <i>·</i>
+            {note ? topic : <a href={`/writing/?tag=${encodeURIComponent(topic)}`}>{topic}</a>}
+          </>
+        )}
+        <i>·</i>
+        {post.data.sample ? 'Sample ' : ''}
+        {label}
       </p>
       {source && <SourceLine source={source} />}
     </header>
@@ -94,11 +83,6 @@ const transitionName = `title-${post.collection}-${post.id}`;
     </div>
     <CodeWindows />
     <footer class="article-end" data-pagefind-ignore>
-      <div class="tags">
-        {post.data.tags.map((tag) =>
-          note ? <span>{tag}</span> : <a href={`/writing/?tag=${encodeURIComponent(tag)}`}>{tag}</a>,
-        )}
-      </div>
       {post.data.sample && (
         <p class="sample-note">
           This is an AI-assisted sample {label}.{' '}
@@ -106,19 +90,10 @@ const transitionName = `title-${post.collection}-${post.id}`;
           firsthand experience or original experimental results.
         </p>
       )}
-      <div class="article-actions">
-        <a href={listHref} class="quiet-link">
-          ← Back to {note ? 'notes' : 'writing'}
-        </a>
-        <a href="#main" class="quiet-link">
-          Back to top ↑
-        </a>
-      </div>
       {next && (
-        <a class="related" href={postUrl(next)}>
-          <span class="label">Read next</span>
-          <h2>{next.data.title}</h2>
-          <p>{next.data.description}</p>
+        <a class="next" href={postUrl(next)}>
+          <span class="next-label">Read next</span>
+          <span class="next-title">{next.data.title}</span>
         </a>
       )}
     </footer>
@@ -131,60 +106,33 @@ const transitionName = `title-${post.collection}-${post.id}`;
     position: relative;
   }
   .article-head {
-    position: relative;
-    padding: 72px 0 40px;
-  }
-  .article-head .eyebrow {
-    margin-bottom: 22px;
-  }
-  .article-head .eyebrow a:hover {
-    text-decoration: underline;
-  }
-  /* The entry's index numeral, large and faint, in the top right of the header on wide screens. */
-  .entry-num {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 60px;
-    font: 500 128px/1 var(--mono);
-    letter-spacing: -0.06em;
-    color: var(--line);
-    pointer-events: none;
-    user-select: none;
-  }
-  .crumb-num {
-    display: inline;
-  }
-  @media (min-width: 900px) {
-    .entry-num {
-      display: block;
-    }
-    .crumb-num {
-      display: none;
-    }
-    .article-head h1 {
-      max-width: 15ch;
-    }
+    padding: 64px 0 28px;
   }
   .article-head h1 {
-    font-size: clamp(36px, 5.4vw, 58px);
-    line-height: 1.02;
-    letter-spacing: -0.035em;
-    margin: 0 0 20px;
+    font-size: 34px;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    margin: 0 0 10px;
     overflow-wrap: anywhere;
-    position: relative;
   }
-  .lede {
-    font-size: 21px;
-    line-height: 1.45;
+  .meta-line {
+    margin: 0;
+    font: 13px/1.8 var(--mono);
     color: var(--muted);
-    max-width: 52ch;
-    margin: 0 0 20px;
   }
-  .article :global(.source-line) {
-    border-top: 1px solid var(--line);
-    padding-top: 16px;
-    margin: 28px 0 0;
+  .meta-line i {
+    font-style: normal;
+    margin: 0 6px;
+    color: var(--line);
+  }
+  .meta-line a {
+    color: var(--accent);
+  }
+  .meta-line a:hover {
+    text-decoration: underline;
+  }
+  .prose {
+    padding-top: 12px;
   }
   /* The side contents list hangs in the right margin on wide screens only. */
   .article :global(.article-toc) {
@@ -193,12 +141,12 @@ const transitionName = `title-${post.collection}-${post.id}`;
   .article :global(.mobile-toc) {
     display: block;
   }
-  @media (min-width: 1280px) {
+  @media (min-width: 1240px) {
     .article :global(.article-toc) {
       display: block;
       position: absolute;
       left: calc(100% + 56px);
-      top: 96px;
+      top: 72px;
       width: 200px;
     }
     .article :global(.mobile-toc) {
@@ -206,87 +154,44 @@ const transitionName = `title-${post.collection}-${post.id}`;
     }
   }
   .article-end {
-    margin-top: 64px;
-    padding-top: 24px;
+    margin-top: 48px;
+    padding-top: 20px;
     border-top: 1px solid var(--line);
-  }
-  .tags {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .tags a,
-  .tags > span {
-    font: 500 13px/1.6 var(--sans);
-    color: var(--muted);
-    padding: 5px 12px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-  }
-  .tags a:hover {
-    color: var(--ink);
-    border-color: var(--accent);
   }
   .sample-note {
     font-size: 14px;
     line-height: 1.6;
     color: var(--muted);
-    margin: 20px 0 24px;
+    margin: 0 0 28px;
     max-width: 60ch;
   }
-  .article-actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-top: 8px;
-  }
-  .related {
+  .next {
     display: block;
-    margin-top: 48px;
-    padding-top: 24px;
-    border-top: 1px solid var(--ink);
   }
-  .related .label {
+  .next-label {
     display: block;
-    margin-bottom: 10px;
-  }
-  .related h2 {
-    font-size: 30px;
-    letter-spacing: -0.03em;
-    margin: 0 0 8px;
-  }
-  .related:hover h2 {
-    color: var(--accent);
-  }
-  .related p {
+    font: 400 13px/1.8 var(--mono);
     color: var(--muted);
-    font-size: 16px;
-    max-width: 54ch;
+  }
+  .next-title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+  }
+  .next:hover .next-title {
+    color: var(--accent);
   }
   @media (max-width: 600px) {
     .article-head {
-      padding: 44px 0 28px;
-    }
-    .article-head .eyebrow {
-      margin-bottom: 16px;
+      padding: 40px 0 24px;
     }
     .article-head h1 {
-      font-size: 34px;
-      margin-bottom: 14px;
-    }
-    .lede {
-      font-size: 18px;
-      margin-bottom: 14px;
-    }
-    .related h2 {
-      font-size: 26px;
+      font-size: 29px;
     }
   }
   @media print {
     .article-end,
-    .entry-num,
     .article :global(.article-toc),
     .article :global(.mobile-toc) {
       display: none !important;

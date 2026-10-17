@@ -8,24 +8,17 @@ const notes = await getNotes();
 <Base title="Notes" active="notes" wind>
   <div class="wrap">
     <header class="page-head">
-      <p class="eyebrow">Shorter</p>
       <h1>Notes</h1>
       <p>Short notes and ideas still taking shape.</p>
     </header>
-    <ol class="index notes-index" role="list">
+    <ul class="index" role="list">
       {notes.map((post) => (
-        <PostRow post={post} />
+        <PostRow post={post} heading="h2" />
       ))}
-    </ol>
+    </ul>
     {!notes.length && <p class="empty-copy">No notes yet.</p>}
     <p class="reading-disclosure">
       These sample notes demonstrate the reading experience. They can be replaced with your own writing.
     </p>
   </div>
 </Base>
-
-<style>
-  .notes-index {
-    border-top: 1px solid var(--ink);
-  }
-</style>

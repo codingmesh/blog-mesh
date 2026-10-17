@@ -4,10 +4,7 @@ import Base from '../layouts/Base.astro';
 
 <Base title="Page not found" noindex wind>
   <div class="wrap">
-    <header class="page-head missing">
-      <p class="eyebrow">
-        00 <span>/ Not in the index</span>
-      </p>
+    <header class="page-head">
       <h1>This page is missing.</h1>
       <p>The link may have changed, or there may be a typo in the address.</p>
     </header>
@@ -23,28 +20,10 @@ import Base from '../layouts/Base.astro';
 </Base>
 
 <style>
-  .missing {
-    position: relative;
-  }
-  .missing::after {
-    content: '00';
-    position: absolute;
-    right: 0;
-    top: 56px;
-    font: 500 128px/1 var(--mono);
-    letter-spacing: -0.06em;
-    color: var(--line);
-    pointer-events: none;
-  }
   .not-found-actions {
     display: flex;
     align-items: center;
     gap: 24px;
     flex-wrap: wrap;
-  }
-  @media (max-width: 600px) {
-    .missing::after {
-      display: none;
-    }
   }
 </style>

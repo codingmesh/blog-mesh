@@ -182,7 +182,12 @@ kbd {
   align-items: baseline;
   justify-content: space-between;
   gap: 16px;
-  margin: 72px 0 6px;
+  margin: 40px 0 14px;
+}
+.section-title {
+  margin: 0;
+  font: 400 17px/1.5 var(--sans);
+  color: var(--muted);
 }
 .section-head a {
   font-size: 14px;
@@ -247,18 +252,18 @@ kbd {
   padding: 24px 0;
 }
 .page-head {
-  padding: 72px 0 36px;
+  padding: 64px 0 28px;
 }
 .page-head h1 {
-  font-size: clamp(40px, 6vw, 60px);
-  letter-spacing: -0.035em;
-  line-height: 1;
-  margin: 14px 0 18px;
+  font-size: 34px;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  margin: 0 0 10px;
 }
 .page-head p {
   color: var(--muted);
-  font-size: 19px;
-  max-width: 46ch;
+  font-size: 17px;
+  max-width: 50ch;
 }
 @media (max-width: 540px) {
   .section-head {

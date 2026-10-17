@@ -8,7 +8,7 @@ const [articles, notes] = await Promise.all([getArticles(), getNotes()]);
 const heroSub = site.description.startsWith(site.tagline)
   ? site.description.slice(site.tagline.length).trim()
   : site.description;
-const number = (index: number) => String(index + 1).padStart(2, '0');
+const [latest] = articles;
 ---
 
 <Base wind>
@@ -17,28 +17,39 @@ const number = (index: number) => String(index + 1).padStart(2, '0');
       <h1>{site.tagline}</h1>
       <p>{heroSub}</p>
     </header>
-    <ol class="index" role="list">
-      {articles.slice(0, 8).map((post, index) => (
-        <PostRow post={post} number={number(index)} />
-      ))}
-    </ol>
-    {!articles.length && <p class="empty-copy">The first article is on its way.</p>}
-    {articles.length > 8 && (
-      <p class="more">
-        <a href="/writing/">All writing →</a>
-      </p>
+    {latest && (
+      <section class="section" aria-labelledby="latest-label">
+        <h2 id="latest-label" class="section-title">
+          Latest
+        </h2>
+        <PostRow post={latest} variant="latest" heading="h3" />
+      </section>
     )}
+    <section class="section" aria-labelledby="writing-label">
+      <div class="section-head">
+        <h2 id="writing-label" class="section-title">
+          Writing
+        </h2>
+        {articles.length > 8 && <a href="/writing/">All writing →</a>}
+      </div>
+      <ul class="index" role="list">
+        {articles.slice(0, 8).map((post) => (
+          <PostRow post={post} />
+        ))}
+      </ul>
+      {!articles.length && <p class="empty-copy">The first article is on its way.</p>}
+    </section>
     {notes.length > 0 && (
-      <section aria-labelledby="notes-label">
+      <section class="section" aria-labelledby="notes-label">
         <div class="section-head">
-          <h2 id="notes-label" class="label">
+          <h2 id="notes-label" class="section-title">
             Notes
           </h2>
-          <a href="/notes/">All notes →</a>
+          {notes.length > 5 && <a href="/notes/">All notes →</a>}
         </div>
         <ul class="index" role="list">
           {notes.slice(0, 5).map((post) => (
-            <PostRow post={post} variant="note" heading="h3" />
+            <PostRow post={post} />
           ))}
         </ul>
       </section>
@@ -51,37 +62,39 @@ const number = (index: number) => String(index + 1).padStart(2, '0');
 
 <style>
   .hero {
-    padding: 88px 0 56px;
-    border-bottom: 1px solid var(--ink);
+    padding: 72px 0 40px;
+    border-bottom: 1px solid var(--line);
   }
   .hero h1 {
-    font-size: clamp(40px, 6vw, 66px);
-    line-height: 1;
-    letter-spacing: -0.035em;
-    margin: 0 0 20px;
-    max-width: 12ch;
+    font-size: 40px;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin: 0 0 10px;
+    max-width: 18ch;
   }
   .hero p {
-    font-size: 19px;
+    font-size: 18px;
     color: var(--muted);
-    max-width: 44ch;
+    max-width: 46ch;
   }
-  .more {
-    padding: 24px 0 0;
+  .section {
+    padding: 36px 0 8px;
   }
-  .more a {
-    font-size: 15px;
-    color: var(--accent);
+  .section + .section {
+    border-top: 1px solid var(--line);
   }
-  .more a:hover {
-    text-decoration: underline;
+  .section .section-head {
+    margin: 0 0 16px;
+  }
+  .section > .section-title {
+    margin-bottom: 16px;
   }
   @media (max-width: 600px) {
     .hero {
-      padding: 56px 0 40px;
+      padding: 48px 0 32px;
     }
     .hero h1 {
-      font-size: 40px;
+      font-size: 32px;
     }
     .hero p {
       font-size: 17px;

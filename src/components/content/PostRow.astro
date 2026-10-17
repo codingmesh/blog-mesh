@@ -1,160 +1,126 @@
 ---
 import { formatDate, postUrl, readingTime, type Post } from '../../lib/content';
 /**
- * One entry in an index. With a `number` it is a numbered table-of-contents row; without one it is a plain row.
- * The `note` variant is a single line with the date on the right. Titles carry a view-transition name so the
- * clicked title morphs into the article headline.
+ * One entry in a list. The `row` variant is a date and a title, the `latest` variant adds the reading time, the topic,
+ * and the one-line description. Titles carry a view-transition name so the clicked title morphs into the headline.
  */
 interface Props {
   post: Post;
-  number?: string;
-  variant?: 'index' | 'note';
+  variant?: 'row' | 'latest';
   heading?: 'h2' | 'h3';
 }
-const { post, number, variant = 'index', heading = 'h2' } = Astro.props;
+const { post, variant = 'row', heading = 'h3' } = Astro.props;
 const Heading = heading;
 const topic = post.data.tags[0];
 const transitionName = `title-${post.collection}-${post.id}`;
+const date = post.data.date;
+const yearMonth = `${date.getUTCFullYear()} · ${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
 ---
 
-{variant === 'note' ? (
-  <li class="note-row archive-item" data-tags={JSON.stringify(post.data.tags)}>
-    <a href={postUrl(post)}>
-      <Heading class="note-title" transition:name={transitionName}>
-        {post.data.title}
-      </Heading>
-      <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
-    </a>
-  </li>
+{variant === 'latest' ? (
+  <article class="latest archive-item" data-tags={JSON.stringify(post.data.tags)}>
+    <Heading class="latest-title" transition:name={transitionName}>
+      <a href={postUrl(post)}>{post.data.title}</a>
+    </Heading>
+    <p class="latest-when">
+      <time datetime={date.toISOString()}>{formatDate(date)}</time>
+      <i>·</i>
+      {readingTime(post.body)} minute read
+      {topic && (
+        <>
+          <i>·</i>
+          {topic}
+        </>
+      )}
+    </p>
+    <p class="latest-summary">
+      {post.data.description} <a href={postUrl(post)}>Keep reading →</a>
+    </p>
+  </article>
 ) : (
-  <li class:list={['index-row', 'archive-item', { numbered: !!number }]} data-tags={JSON.stringify(post.data.tags)}>
-    {number && (
-      <span class="num" aria-hidden="true">
-        <span class="num-text">{number}</span>
-        <span class="num-arrow">→</span>
-      </span>
-    )}
-    <div>
-      <Heading class="index-title" transition:name={transitionName}>
-        <a href={postUrl(post)}>{post.data.title}</a>
-      </Heading>
-      <p class="index-summary">{post.data.description}</p>
-      <p class="meta">
-        <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
-        <span>{readingTime(post.body)} min</span>
-        {topic && <b>{topic}</b>}
-      </p>
-    </div>
+  <li class="row archive-item" data-tags={JSON.stringify(post.data.tags)}>
+    <time datetime={date.toISOString()}>{yearMonth}</time>
+    <Heading class="row-title" transition:name={transitionName}>
+      <a href={postUrl(post)}>{post.data.title}</a>
+    </Heading>
   </li>
 )}
 
 <style>
-  .index-row {
+  .row {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0 28px;
-    padding: 36px 0;
-    border-bottom: 1px solid var(--line);
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 0 20px;
+    align-items: baseline;
+    padding: 7px 0;
   }
-  .index-row.numbered {
-    grid-template-columns: 72px minmax(0, 1fr);
+  .row time {
+    font: 13px/1.8 var(--mono);
+    color: var(--muted);
+    white-space: nowrap;
   }
-  /* The numeral becomes an arrow while the row is hovered or its link focused. */
-  .num {
-    position: relative;
-    display: block;
-    font: 500 15px/1.2 var(--mono);
-    color: var(--accent);
-    padding-top: 10px;
-  }
-  .num-text,
-  .num-arrow {
-    display: block;
-    transition:
-      opacity 160ms var(--ease),
-      transform 200ms var(--ease);
-  }
-  .num-arrow {
-    position: absolute;
-    left: 0;
-    top: 10px;
-    opacity: 0;
-    transform: translateX(-6px);
-  }
-  .index-row:hover .num-text,
-  .index-row:focus-within .num-text {
-    opacity: 0;
-    transform: translateX(6px);
-  }
-  .index-row:hover .num-arrow,
-  .index-row:focus-within .num-arrow {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  .index-title {
-    font-size: 34px;
-    line-height: 1.08;
-    letter-spacing: -0.03em;
-    margin: 0 0 10px;
+  .row-title {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0;
     overflow-wrap: anywhere;
   }
-  .index-title a:hover,
-  .index-title a:focus-visible {
+  .row-title a {
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 150ms var(--ease);
+  }
+  .row-title a:hover,
+  .row-title a:focus-visible {
+    color: var(--accent);
+    text-decoration-color: currentColor;
+  }
+  .latest-title {
+    margin: 0 0 6px;
+    font-size: 26px;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    overflow-wrap: anywhere;
+  }
+  .latest-title a:hover,
+  .latest-title a:focus-visible {
     color: var(--accent);
   }
-  .index-summary {
-    margin: 0 0 12px;
-    color: var(--muted);
-    font-size: 17px;
-    max-width: 54ch;
-  }
-  .note-row {
-    border-bottom: 1px solid var(--line);
-  }
-  .note-row a {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 20px;
-    padding: 16px 0;
-  }
-  .note-title {
-    font-size: 17px;
-    font-weight: 500;
-    letter-spacing: 0;
-    line-height: 1.45;
-  }
-  .note-row a:hover .note-title {
-    color: var(--accent);
-  }
-  .note-row time {
-    flex-shrink: 0;
+  .latest-when {
+    margin: 0 0 10px;
     font: 13px/1.8 var(--mono);
     color: var(--muted);
   }
+  .latest-when i {
+    font-style: normal;
+    margin: 0 6px;
+    color: var(--line);
+  }
+  .latest-summary {
+    margin: 0;
+    color: var(--muted);
+    max-width: 54ch;
+  }
+  .latest-summary a {
+    color: var(--accent);
+  }
+  .latest-summary a:hover {
+    text-decoration: underline;
+  }
   @media (max-width: 600px) {
-    .index-row,
-    .index-row.numbered {
+    .row {
       grid-template-columns: minmax(0, 1fr);
-      gap: 6px;
-      padding: 28px 0;
+      gap: 0;
+      padding: 10px 0;
     }
-    .num {
-      padding: 0;
+    .row time {
+      line-height: 1.4;
     }
-    .num-arrow {
-      top: 0;
-    }
-    .index-title {
-      font-size: 28px;
-    }
-    .index-summary {
-      font-size: 16px;
-    }
-    .note-row a {
-      flex-direction: column;
-      gap: 2px;
-      padding: 14px 0;
+    .latest-title {
+      font-size: 23px;
     }
   }
 </style>
