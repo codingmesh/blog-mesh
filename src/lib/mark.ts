@@ -1,25 +1,32 @@
 /**
- * The site's tab icon: an M on a green tile. Drawn in a 48-unit box and shared by the favicon, the touch icon,
- * and the social cards. The header itself carries no mark; the name is the identity.
+ * The site's icon: a lowercase m written in one loose stroke on a pale disc, the way an initial is signed in a
+ * notebook margin. Drawn in a 100-unit box and shared by the favicon, the touch icon, and the social cards. The
+ * header itself carries no mark; the name is the identity.
  */
-export const markBox = 48;
+export const markBox = 100;
 export const markPaths = {
-  letter: 'M13 35V14l11 12 11-12v21',
+  /** Three uneven arches, so it reads as handwriting rather than type. */
+  letter:
+    'M21 71C22 55 27 41 34 42C42 43 40 58 40 70C41 55 45 41 53 43C61 45 58 60 58 70C59 55 63 41 71 44C79 47 77 60 79 71',
 };
 
 type MarkOptions = {
   size: number;
-  tile?: string;
-  paper?: string;
-  /** Corner radius of the tile in box units. Zero for platforms that mask their own corners. */
-  radius?: number;
+  /** Disc and stroke colors; the defaults are the light theme's paper tones and ink. */
+  disc?: string;
+  ink?: string;
+  /** Fill the square behind the disc, for platforms that do not keep transparency. */
+  background?: string;
+  /** Stroke width in box units; thicker at tab sizes so the letter holds. */
+  stroke?: number;
 };
 
-export function markSvg({ size, tile = '#1f6b4f', paper = '#faf8f3', radius = 10 }: MarkOptions): string {
+export function markSvg({ size, disc = '#ece6d8', ink = '#141414', background, stroke = 7.5 }: MarkOptions): string {
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${markBox} ${markBox}">`,
-    `<rect width="${markBox}" height="${markBox}" rx="${radius}" fill="${tile}"/>`,
-    `<path d="${markPaths.letter}" fill="none" stroke="${paper}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`,
+    background ? `<rect width="${markBox}" height="${markBox}" fill="${background}"/>` : '',
+    `<circle cx="50" cy="50" r="50" fill="${disc}"/>`,
+    `<path d="${markPaths.letter}" fill="none" stroke="${ink}" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round"/>`,
     `</svg>`,
   ].join('');
 }
