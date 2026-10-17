@@ -88,7 +88,7 @@ Bare and dark by default, with one hot color. Article titles are the identity: S
 
 Dark palette: `#0e0f11` background, `#ebe9e3` ink, `#9b9b94` muted, `#ff6b3d` accent. Light palette: warm paper `#f5f2ea`, `#1a1a1a`, `#5f5c55`, `#b03a0e`. Dark is the default regardless of system preference; the toggle stores a choice of light. Every text color meets WCAG AA against its background in both themes, including inverted text on a filled title. One corner radius, 4px, is used everywhere.
 
-Code blocks are flat windows with a single border and a transparent bar: small decorative traffic-light dots, a centered language or filename label, and a copy button that steps forward on hover. Code uses high-contrast light/dark themes at 14px on desktop and 13px on phones, with horizontal scrolling and print styles. Highlighted lines use an accent tint across the full scrollable width; copied text is unaffected.
+Code blocks are flat windows with a single border and a transparent bar: small decorative traffic-light dots, a centered language or filename label, and a muted copy button that turns to ink on hover. Code uses high-contrast light/dark themes at 14px on desktop and 13px on phones, with horizontal scrolling and print styles. Highlighted lines use an accent tint across the full scrollable width; copied text is unaffected.
 
 ## Comments, analytics, and feeds
 
@@ -98,15 +98,16 @@ Code blocks are flat windows with a single border and a transparent bar: small d
 
 ## Deployment
 
-The site deploys to Vercel. Import the GitHub repository, keep the default build command (`npm run build`), and set these environment variables:
+The site is live at https://blog-mesh-nu.vercel.app, deployed from the `blog-mesh` project in Vercel. The GitHub repository is connected, so every push to `main` builds and deploys automatically, and pull requests get preview deployments. `SITE_URL` is set in the production environment; on Vercel the build adds the adapter and the editor routes, while local and CI builds stay fully static with `dist/` as the output.
 
-| Variable                                                                           | Purpose                                                                                                                                                        |
-| ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SITE_URL`                                                                         | Public origin for canonical URLs, RSS, and the sitemap                                                                                                         |
-| `KEYSTATIC_GITHUB_CLIENT_ID`, `KEYSTATIC_GITHUB_CLIENT_SECRET`, `KEYSTATIC_SECRET` | Editor sign-in. Create a GitHub App through the editor's first-run flow at `/keystatic` on the deployed site, or follow https://keystatic.com/docs/github-mode |
-| `PUBLIC_GISCUS_*`                                                                  | Comments, see above                                                                                                                                            |
+Environment variables still to set in Vercel for the remaining features:
 
-On Vercel the build adds the adapter and the editor routes; locally and in CI the build is fully static and `dist/` is the output. Branch deployments give previews for pull requests. To publish scheduled entries, create a deploy hook in Vercel and store it as the `VERCEL_DEPLOY_HOOK` repository secret; the `Scheduled publish` workflow calls it daily.
+| Variable                                                                           | Purpose                                                                                                                                                                                                       |
+| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `KEYSTATIC_GITHUB_CLIENT_ID`, `KEYSTATIC_GITHUB_CLIENT_SECRET`, `KEYSTATIC_SECRET` | Editor sign-in at `/keystatic`. Create a GitHub App for the repository and copy its credentials; see https://keystatic.com/docs/github-mode. Until then the editor shows a login button that cannot complete. |
+| `PUBLIC_GISCUS_REPO_ID`, `PUBLIC_GISCUS_CATEGORY_ID`                               | Comments, see above                                                                                                                                                                                           |
+
+To publish scheduled entries, create a deploy hook in the Vercel project settings and store it as the `VERCEL_DEPLOY_HOOK` repository secret; the `Scheduled publish` workflow calls it daily. To use a custom domain, add it in Vercel and update `SITE_URL` to match.
 
 ## Validation
 
