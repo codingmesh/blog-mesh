@@ -43,8 +43,12 @@ const field = `#version 300 es
 ${common}
 uniform float Reveal, Carried, Span, GustLength, GustWidth, Bend, BendScale;
 uniform vec2 Heading, PaneSize, Origin, Step;
-// Folio: the reading column is calm. Column = (center x, half width, feather, floor).
+// Folio's masks. Column = (center x, half width, fade, floor): the reading column dims to the floor.
+// Head = (bottom of the page head in the viewport, fade, floor below it, how far the column mask lifts inside
+// the head). Pass = how far the hand's ripples and warmth override both masks, so the surface stays one piece.
 uniform vec4 Column;
+uniform vec4 Head;
+uniform float Pass;
 uniform int WakeCount;
 uniform vec4 Wakes[48], Ways[48];
 out vec4 color;
@@ -155,7 +159,10 @@ void main() {
     strength=1.0-(1.0-strength)*(1.0-0.85*warm*smoothstep(-0.5,0.25,grain));
   }
   float outside=max(0.0,abs(p.x-Column.x)-Column.y);
-  float calm=mix(Column.w,1.0,smoothstep(0.0,Column.z,outside));
+  float columnCalm=mix(Column.w,1.0,smoothstep(0.0,Column.z,outside));
+  float inHead=1.0-smoothstep(Head.x,Head.x+Head.y,p.y);
+  float calm=mix(columnCalm,1.0,inHead*Head.w)*mix(Head.z,1.0,inHead);
+  calm=max(calm,Pass*clamp(1.6*hand.w+warm,0.0,1.0));
   float shown=max(Reveal,min(1.0,2.0*hand.w+warm));
   color=vec4(strength*calm*shown,blows*0.5+0.5,calm*shown);
 }`;

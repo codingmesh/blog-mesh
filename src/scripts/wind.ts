@@ -87,6 +87,8 @@ class Wind {
   constructor(
     readonly canvas: HTMLCanvasElement,
     public column: Element,
+    /** The page head (hero or page-head); the field is strongest around it. */
+    public head: Element | null,
   ) {
     const { signal } = this.abort;
     window.addEventListener('pointermove', (ev) => this.onMove(ev), { passive: true, signal });
@@ -151,9 +153,10 @@ class Wind {
     this.canvas.hidden = true;
   }
 
-  /** Called after a client-side navigation that kept the canvas: the column element is new. */
-  refresh(column: Element) {
+  /** Called after a client-side navigation that kept the canvas: the column and head elements are new. */
+  refresh(column: Element, head: Element | null) {
     this.column = column;
+    this.head = head;
     this.wake();
   }
 
@@ -394,9 +397,13 @@ class Wind {
     gl.uniform2f(f.loc('Origin'), left / scale, top / scale);
     gl.uniform2f(f.loc('Step'), cellW / scale, cellH / 2 / scale);
     gl.uniform2f(f.loc('PaneSize'), width, height);
-    // The reading column is calm; the field fades in over 160px into the margins.
+    // One field with two soft masks. The reading column dims to a quarter over a 320px fade; the field is
+    // strongest around the page head and settles to about a third below it; ripples pass through both.
     const rect = this.column.getBoundingClientRect();
-    gl.uniform4f(f.loc('Column'), rect.x + rect.width / 2, rect.width / 2 + 24, 160, 0);
+    gl.uniform4f(f.loc('Column'), rect.x + rect.width / 2, rect.width / 2 + 24, 320, 0.25);
+    const head = (this.head ?? this.column).getBoundingClientRect();
+    gl.uniform4f(f.loc('Head'), head.bottom + 48, 260, 0.35, 0.6);
+    gl.uniform1f(f.loc('Pass'), 0.9);
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.resources.framebuffer);
     gl.viewport(0, 0, cols, 2 * rows);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -529,13 +536,14 @@ let current: Wind | undefined;
 export async function mountWind(canvas: HTMLCanvasElement) {
   const column = document.querySelector('.wrap');
   if (!column) return;
+  const head = document.querySelector('.hero, .page-head');
   if (current?.canvas === canvas) {
-    current.refresh(column);
+    current.refresh(column, head);
     return;
   }
   current?.destroy();
   await document.fonts.load('9px "IBM Plex Mono"').catch(() => undefined);
-  current = new Wind(canvas, column);
+  current = new Wind(canvas, column, head);
 }
 
 export function unmountWind() {
