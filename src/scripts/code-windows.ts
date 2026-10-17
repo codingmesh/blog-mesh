@@ -66,6 +66,12 @@ export function initCodeWindows(
     bar.className = 'code-bar';
     bar.setAttribute('data-pagefind-ignore', '');
 
+    // The three window lights are decoration for the eye only.
+    const lights = document.createElement('span');
+    lights.className = 'code-lights';
+    lights.setAttribute('aria-hidden', 'true');
+    lights.innerHTML = '<i></i><i></i><i></i>';
+
     const tab = document.createElement('span');
     tab.className = pre.dataset.title ? 'code-tab has-title' : 'code-tab';
     tab.innerHTML = pre.dataset.title ? `<b></b><small></small>` : `<b></b>`;
@@ -130,7 +136,7 @@ export function initCodeWindows(
     pre.setAttribute('aria-label', `Code example ${index + 1}, scroll horizontally to read`);
     pre.before(shell);
     shell.append(bar, pre);
-    bar.append(tab, tools);
+    bar.append(lights, tab, tools);
     tools.append(wrapButton, copyButton);
 
     // Offer wrapping only when a line actually overflows.
