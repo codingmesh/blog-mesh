@@ -80,7 +80,7 @@ source: # optional; leave url empty for none
 - `<Transcript model="Claude" date="...">` with `<Turn role="user">` and `<Turn role="model">` inside quotes a conversation; long model turns fold and the head copies the prompt alone.
 - `<Aside kind="note" title="...">` sets a note, tip, or caution apart from the running text.
 - Footnotes (`[^1]`), inline math (`$...$`), and display math (`$$`) work as in GitHub-flavored Markdown; math renders as MathML with no stylesheet. Headings get an anchor on hover.
-- MDX can use the components registered in `src/components/content/mdx-components.ts` without importing them, for example `<OutcomeExplorer />`. The editor offers the same components as blocks. `src/content/articles/writing-blocks.mdx` is a draft that exercises every block; flip `draft` to see it locally.
+- MDX can use the components registered in `src/components/content/mdx-components.ts` without importing them, for example `<OutcomeExplorer />`. The editor offers the same components as blocks. `src/content/articles/writing-blocks.mdx` ("How this site renders things") is a published sample that exercises every block.
 - `featured` is kept in the schema for future use; lists do not show a label.
 - The initial reading notes and short notes are labeled AI-assisted samples.
 

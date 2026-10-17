@@ -15,7 +15,7 @@ export async function GET(context: APIContext) {
       link: postUrl(post),
       author: site.name,
       categories: post.data.tags,
-      content: await renderPostHtml(post),
+      content: await renderPostHtml(post, context.site!, postUrl(post)),
     })),
   );
   return rss({

@@ -6,11 +6,15 @@ interface Props {
   name?: string;
 }
 const { role = 'user', name } = Astro.props;
-const label = name || { user: 'User', system: 'System', model: '' }[role];
+// A model turn without a name shows "Model" until the script swaps in the transcript's model name,
+// so feeds and no-script readers still see a label.
+const label = name || { user: 'User', system: 'System', model: 'Model' }[role];
 ---
 
 <div class:list={['turn', `turn-${role}`]} data-role={role}>
-  <div class="turn-role">{label}</div>
+  <div class="turn-role" data-default={!name && role === 'model' ? '' : undefined}>
+    {label}
+  </div>
   <div class="turn-body">
     <slot />
   </div>

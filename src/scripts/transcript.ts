@@ -13,8 +13,8 @@ export function initTranscripts(root: ParentNode = document) {
     if (transcript.dataset.ready) return;
     transcript.dataset.ready = '';
     const model = transcript.dataset.model || 'Model';
-    transcript.querySelectorAll<HTMLElement>('.turn-model .turn-role').forEach((role) => {
-      if (!role.textContent?.trim()) role.textContent = model;
+    transcript.querySelectorAll<HTMLElement>('.turn-model .turn-role[data-default]').forEach((role) => {
+      role.textContent = model;
     });
 
     transcript.querySelectorAll<HTMLElement>('.turn-model .turn-body').forEach((body) => {
