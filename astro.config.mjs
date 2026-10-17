@@ -29,8 +29,19 @@ export default defineConfig({
     ...(onVercel || isDev ? [keystatic()] : []),
   ],
   fonts: [
+    // Three faces from one family, self-hosted at build time from Fontsource: Source Serif 4 for reading text,
+    // Source Sans 3 for headings and interface, Source Code Pro for code and metadata.
     {
-      name: 'IBM Plex Sans',
+      name: 'Source Serif 4',
+      cssVariable: '--font-serif',
+      provider: fontProviders.fontsource(),
+      weights: [400, 600],
+      styles: ['normal', 'italic'],
+      subsets: ['latin'],
+      fallbacks: ['Georgia', 'Times New Roman', 'serif'],
+    },
+    {
+      name: 'Source Sans 3',
       cssVariable: '--font-sans',
       provider: fontProviders.fontsource(),
       weights: [400, 500, 600, 700],
@@ -39,7 +50,7 @@ export default defineConfig({
       fallbacks: ['-apple-system', 'Segoe UI', 'Helvetica', 'Arial', 'sans-serif'],
     },
     {
-      name: 'IBM Plex Mono',
+      name: 'Source Code Pro',
       cssVariable: '--font-mono',
       provider: fontProviders.fontsource(),
       weights: [400, 500],
@@ -74,8 +85,9 @@ export default defineConfig({
         rehypeAutolinkHeadings,
         {
           behavior: 'prepend',
+          // Empty content: the stylesheet draws the mark, so the heading text stays clean for the contents list.
           properties: { className: ['anchor'], ariaLabel: 'Link to this section' },
-          content: { type: 'text', value: '#' },
+          content: [],
         },
       ],
     ],

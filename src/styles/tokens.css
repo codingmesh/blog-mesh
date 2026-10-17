@@ -1,6 +1,6 @@
 /* Design tokens for Folio: a light, book-like reading site. Light is the default; dark swaps the same system.
    Code always sits in a dark panel, so the panel tokens change little between themes.
-   Font family variables (--font-sans, --font-mono) are injected by Astro's <Font /> components. */
+   Font family variables (--font-serif, --font-sans, --font-mono) are injected by Astro's <Font /> components. */
 :root {
   --paper: #faf8f3;
   --ink: #141414;
@@ -15,8 +15,9 @@
   --panel-line: #2a2c2a;
   --highlight: #243f34;
   --highlight-edge: #5fbf9a;
-  --sans: var(--font-sans, 'IBM Plex Sans', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif);
-  --mono: var(--font-mono, 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace);
+  --serif: var(--font-serif, 'Source Serif 4', Georgia, 'Times New Roman', serif);
+  --sans: var(--font-sans, 'Source Sans 3', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif);
+  --mono: var(--font-mono, 'Source Code Pro', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace);
   --column: min(100% - 48px, 720px);
   --radius: 6px;
   --code-pad: 24px;

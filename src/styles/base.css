@@ -262,8 +262,11 @@ kbd {
 }
 .page-head p {
   color: var(--muted);
-  font-size: 17px;
+  font: 18px/1.55 var(--serif);
   max-width: 50ch;
+}
+.nowrap {
+  white-space: nowrap;
 }
 @media (max-width: 540px) {
   .section-head {

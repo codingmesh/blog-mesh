@@ -1,10 +1,19 @@
 /* Rendered Markdown and the code panels built around it. Global because Markdown output cannot be scoped.
    Code is always a dark panel, in both themes. */
+/* Reading text is set in the serif; headings, captions, and interface pieces stay in the sans. */
 .prose {
-  font-size: 18px;
-  line-height: 1.7;
+  font: 18px/1.65 var(--serif);
   overflow-wrap: anywhere;
   max-width: 66ch;
+}
+.prose h2,
+.prose h3,
+.prose figcaption,
+.prose .aside,
+.prose .turn,
+.prose .transcript,
+.prose table {
+  font-family: var(--sans);
 }
 .prose > * + * {
   margin-top: 20px;
@@ -13,9 +22,9 @@
   margin-top: 0;
 }
 .prose h2 {
-  font-size: 23px;
+  font-size: 24px;
   line-height: 1.3;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.012em;
   margin: 44px 0 12px;
   scroll-margin-top: 30px;
 }
@@ -360,7 +369,7 @@
 /* Terminal blocks: a prompt per command, muted output, no gutter. */
 .prose pre[data-terminal] .line.output span,
 .prose pre[data-terminal] .line.output {
-  color: var(--panel-muted) !important;
+  color: color-mix(in srgb, var(--panel-ink) 72%, var(--panel)) !important;
 }
 .prose pre[data-terminal] .line.command .command-text {
   color: var(--panel-ink);
@@ -429,6 +438,9 @@
   opacity: 0;
   transition: opacity 150ms var(--ease);
 }
+.prose .anchor::before {
+  content: '#';
+}
 .prose :is(h2, h3):hover .anchor,
 .prose .anchor:focus-visible {
   opacity: 1;
@@ -446,6 +458,23 @@
   border-top: 1px solid var(--line);
   font-size: 15px;
   color: var(--muted);
+}
+/* The footnotes heading arrives visually hidden; show it as a small label instead. */
+.prose .footnotes > h2 {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0 0 8px;
+  overflow: visible;
+  clip: auto;
+  clip-path: none;
+  white-space: normal;
+  font: 400 13px/1.8 var(--mono);
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.prose .footnotes > h2 .anchor {
+  display: none;
 }
 .prose .footnotes ol {
   padding-left: 1.4em;
@@ -467,7 +496,9 @@
 }
 .prose math[display='block'] {
   display: block;
-  margin: 20px 0;
+  margin: 24px 0;
+  font-size: 1.2em;
+  text-align: center;
   overflow-x: auto;
 }
 
@@ -475,10 +506,9 @@
   .prose {
     font-size: 17px;
   }
+  /* No hover on phones, so no anchors; the heading text stays flush with the body. */
   .prose .anchor {
-    position: static;
-    width: auto;
-    margin-left: 0.3em;
+    display: none;
   }
   .prose .diagram-frame {
     padding: 14px;

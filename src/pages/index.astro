@@ -8,7 +8,8 @@ const [articles, notes] = await Promise.all([getArticles(), getNotes()]);
 const heroSub = site.description.startsWith(site.tagline)
   ? site.description.slice(site.tagline.length).trim()
   : site.description;
-const [latest] = articles;
+// The newest article is shown once, in the Latest block; the rows carry the rest.
+const [latest, ...rest] = articles;
 ---
 
 <Base wind>
@@ -28,16 +29,17 @@ const [latest] = articles;
     <section class="section" aria-labelledby="writing-label">
       <div class="section-head">
         <h2 id="writing-label" class="section-title">
-          Writing
+          {latest ? 'Earlier writing' : 'Writing'}
         </h2>
-        {articles.length > 8 && <a href="/writing/">All writing →</a>}
+        {rest.length > 8 && <a href="/writing/">All writing →</a>}
       </div>
       <ul class="index" role="list">
-        {articles.slice(0, 8).map((post) => (
+        {rest.slice(0, 8).map((post) => (
           <PostRow post={post} />
         ))}
       </ul>
       {!articles.length && <p class="empty-copy">The first article is on its way.</p>}
+      {articles.length === 1 && <p class="empty-copy">More is on the way.</p>}
     </section>
     {notes.length > 0 && (
       <section class="section" aria-labelledby="notes-label">
@@ -73,7 +75,7 @@ const [latest] = articles;
     max-width: 18ch;
   }
   .hero p {
-    font-size: 18px;
+    font: 19px/1.55 var(--serif);
     color: var(--muted);
     max-width: 46ch;
   }

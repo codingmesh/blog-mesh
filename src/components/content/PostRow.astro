@@ -25,7 +25,7 @@ const yearMonth = `${date.getUTCFullYear()} · ${String(date.getUTCMonth() + 1).
     <p class="latest-when">
       <time datetime={date.toISOString()}>{formatDate(date)}</time>
       <i>·</i>
-      {readingTime(post.body)} minute read
+      <span class="nowrap">{readingTime(post.body)} minute read</span>
       {topic && (
         <>
           <i>·</i>
@@ -97,10 +97,12 @@ const yearMonth = `${date.getUTCFullYear()} · ${String(date.getUTCMonth() + 1).
   .latest-when i {
     font-style: normal;
     margin: 0 6px;
-    color: var(--line);
+    color: var(--muted);
+    opacity: 0.55;
   }
   .latest-summary {
     margin: 0;
+    font: 18px/1.6 var(--serif);
     color: var(--muted);
     max-width: 54ch;
   }

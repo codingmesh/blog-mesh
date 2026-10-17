@@ -19,18 +19,18 @@ const fontFile = (pkg: string, file: string) => resolve(process.cwd(), 'node_mod
 let fonts: Promise<Font[]> | undefined;
 async function loadFonts() {
   fonts ??= Promise.all([
-    readFile(fontFile('ibm-plex-sans', 'ibm-plex-sans-latin-700-normal.woff')).then((data) => ({
-      name: 'Plex',
+    readFile(fontFile('source-sans-3', 'source-sans-3-latin-700-normal.woff')).then((data) => ({
+      name: 'Sans',
       data: toArrayBuffer(data),
       weight: 700 as const,
     })),
-    readFile(fontFile('ibm-plex-sans', 'ibm-plex-sans-latin-400-normal.woff')).then((data) => ({
-      name: 'Plex',
+    readFile(fontFile('source-sans-3', 'source-sans-3-latin-400-normal.woff')).then((data) => ({
+      name: 'Sans',
       data: toArrayBuffer(data),
       weight: 400 as const,
     })),
-    readFile(fontFile('ibm-plex-mono', 'ibm-plex-mono-latin-500-normal.woff')).then((data) => ({
-      name: 'Plex Mono',
+    readFile(fontFile('source-code-pro', 'source-code-pro-latin-500-normal.woff')).then((data) => ({
+      name: 'Mono',
       data: toArrayBuffer(data),
       weight: 500 as const,
     })),
@@ -62,7 +62,7 @@ export async function renderCard({ title, kicker, number, footer }: CardInput): 
       background: paper,
       color: ink,
       padding: '72px 80px 64px',
-      fontFamily: 'Plex',
+      fontFamily: 'Sans',
     },
     [
       el(
@@ -71,7 +71,7 @@ export async function renderCard({ title, kicker, number, footer }: CardInput): 
           display: 'flex',
           alignItems: 'baseline',
           gap: 24,
-          fontFamily: 'Plex Mono',
+          fontFamily: 'Mono',
           fontSize: 26,
           color: accent,
           fontWeight: 500,
@@ -107,7 +107,7 @@ export async function renderCard({ title, kicker, number, footer }: CardInput): 
         },
         [
           el('span', { fontWeight: 700 }, site.name),
-          el('span', { fontFamily: 'Plex Mono', fontSize: 20, color: muted }, footer || site.focus),
+          el('span', { fontFamily: 'Mono', fontSize: 20, color: muted }, footer || site.focus),
         ],
       ),
     ],

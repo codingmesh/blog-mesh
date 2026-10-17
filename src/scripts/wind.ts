@@ -1,5 +1,5 @@
 /**
- * The wind in the margins: a field of small Plex Mono characters that the wind lights as it passes, with the
+ * The wind in the margins: a field of small monospace characters that the wind lights as it passes, with the
  * reading column kept calm. Adapted from the Motion Lab port of egoist/mygo/examples/wind (MIT; see
  * /third-party-notices.txt). Loaded lazily by Wind.astro only on wide pointer devices without a reduced-motion
  * preference, so phones and most readers never download it.
@@ -259,7 +259,7 @@ class Wind {
     sheet.width = 16 * cellW;
     sheet.height = Math.ceil(charset.length / 16) * cellW * 2;
     const ctx = sheet.getContext('2d')!;
-    ctx.font = `400 ${Math.round(9 * scale)}px "IBM Plex Mono", Menlo, Consolas, monospace`;
+    ctx.font = `400 ${Math.round(9 * scale)}px "Source Code Pro", Menlo, Consolas, monospace`;
     ctx.fillStyle = 'white';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -542,7 +542,7 @@ export async function mountWind(canvas: HTMLCanvasElement) {
     return;
   }
   current?.destroy();
-  await document.fonts.load('9px "IBM Plex Mono"').catch(() => undefined);
+  await document.fonts.load('9px "Source Code Pro"').catch(() => undefined);
   current = new Wind(canvas, column, head);
 }
 

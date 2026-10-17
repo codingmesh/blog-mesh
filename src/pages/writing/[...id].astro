@@ -35,7 +35,10 @@ interface Props {
 }
 const { post, next } = Astro.props;
 const { Content, headings } = await render(post);
-const toc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+// Sections only; the hidden footnotes heading from GitHub-flavored Markdown is not a section.
+const toc = headings.filter(
+  (heading) => (heading.depth === 2 || heading.depth === 3) && heading.slug !== 'footnote-label',
+);
 const note = isNote(post);
 const label = formatLabel(post);
 const listHref = note ? '/notes/' : '/writing/';
@@ -65,7 +68,7 @@ const transitionName = `title-${post.collection}-${post.id}`;
       <p class="meta-line">
         <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
         <i>·</i>
-        {readingTime(post.body)} minute read
+        <span class="nowrap">{readingTime(post.body)} minute read</span>
         {topic && (
           <>
             <i>·</i>
@@ -73,8 +76,10 @@ const transitionName = `title-${post.collection}-${post.id}`;
           </>
         )}
         <i>·</i>
-        {post.data.sample ? 'Sample ' : ''}
-        {label}
+        <span class="nowrap">
+          {post.data.sample ? 'Sample ' : ''}
+          {label}
+        </span>
       </p>
       {source && <SourceLine source={source} />}
     </header>
@@ -111,9 +116,9 @@ const transitionName = `title-${post.collection}-${post.id}`;
     padding: 64px 0 28px;
   }
   .article-head h1 {
-    font-size: 34px;
-    line-height: 1.2;
-    letter-spacing: -0.025em;
+    font-size: 36px;
+    line-height: 1.18;
+    letter-spacing: -0.02em;
     margin: 0 0 10px;
     overflow-wrap: anywhere;
   }
@@ -125,7 +130,8 @@ const transitionName = `title-${post.collection}-${post.id}`;
   .meta-line i {
     font-style: normal;
     margin: 0 6px;
-    color: var(--line);
+    color: var(--muted);
+    opacity: 0.55;
   }
   .meta-line a {
     color: var(--accent);
