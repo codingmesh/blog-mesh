@@ -43,9 +43,13 @@ export default function OutcomeExplorer() {
   return (
     <figure className="outcome-explorer" aria-labelledby="outcome-caption">
       <div className="outcome-origin">Check source</div>
-      <ul className="outcome-list" role="list">
+      <ul className="outcome-list" role="list" data-selected={selected ? '' : undefined}>
         {outcomes.map((outcome) => (
-          <li key={outcome.result.status} className={outcome.incomplete ? 'outcome-incomplete' : undefined}>
+          <li
+            key={outcome.result.status}
+            className={outcome.incomplete ? 'outcome-incomplete' : undefined}
+            data-active={selected === outcome.result.status ? '' : undefined}
+          >
             <button
               type="button"
               aria-pressed={selected === outcome.result.status}

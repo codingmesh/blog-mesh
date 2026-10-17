@@ -50,6 +50,7 @@ import Island from '../islands/OutcomeExplorer';
     position: relative;
     margin: 0;
   }
+  /* Connector lines redraw toward the selected outcome: the chosen one thickens, the others recede. */
   .outcome-list li::before {
     content: '';
     position: absolute;
@@ -58,6 +59,18 @@ import Island from '../islands/OutcomeExplorer';
     background: var(--accent);
     bottom: 100%;
     left: 50%;
+    transform-origin: top;
+    transition:
+      opacity 260ms var(--ease),
+      width 260ms var(--ease),
+      transform 260ms var(--ease);
+  }
+  .outcome-list[data-selected] li:not([data-active])::before {
+    opacity: 0.3;
+  }
+  .outcome-list li[data-active]::before {
+    width: 2px;
+    margin-left: -0.5px;
   }
   .outcome-list button {
     width: 100%;

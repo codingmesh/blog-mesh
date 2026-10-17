@@ -1,0 +1,48 @@
+---
+/** A note, tip, or caution set apart from the running text. Available in MDX and as an editor block. */
+interface Props {
+  kind?: 'note' | 'tip' | 'caution';
+  title?: string;
+}
+const { kind = 'note', title } = Astro.props;
+const label = title || { note: 'Note', tip: 'Tip', caution: 'Caution' }[kind];
+---
+
+<aside class:list={['aside', `aside-${kind}`]} aria-label={label}>
+  <b>{label}</b>
+  <div class="aside-body">
+    <slot />
+  </div>
+</aside>
+
+<style>
+  .aside {
+    margin: 28px 0;
+    padding: 16px 20px 16px 22px;
+    border-left: 2px solid var(--accent);
+    background: var(--soft);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 16.5px;
+    line-height: 1.6;
+  }
+  .aside-caution {
+    border-left-color: #b4532a;
+  }
+  .aside > b {
+    display: block;
+    font: 500 12px/1.6 var(--mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .aside-caution > b {
+    color: #b4532a;
+  }
+  .aside-body :global(p) {
+    margin: 0;
+  }
+  .aside-body :global(p + p) {
+    margin-top: 10px;
+  }
+</style>

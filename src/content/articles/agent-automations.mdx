@@ -37,7 +37,7 @@ I would also give each article a stable identifier and track discovery, reading,
 
 This type sketch extends that idea; it is not code from the original article. The highlighted union is the point: the result describes what happened, rather than returning only an array of articles.
 
-```typescript {2-4}
+```typescript {2-4} note="Three outcomes, three shapes. An empty array could never say which one happened." caption="A discriminated union keeps “nothing new” and “could not check” apart at the type level."
 type CheckResult =
   | { status: 'updated'; articles: Article[] }
   | { status: 'unchanged'; checkedAt: Date }

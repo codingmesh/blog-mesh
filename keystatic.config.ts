@@ -1,5 +1,5 @@
 import { collection, config, fields } from '@keystatic/core';
-import { block } from '@keystatic/core/content-components';
+import { block, wrapper } from '@keystatic/core/content-components';
 import { site } from './src/config';
 
 /**
@@ -7,6 +7,22 @@ import { site } from './src/config';
  * so a save from the editor produces frontmatter the collections accept.
  */
 const components = {
+  Aside: wrapper({
+    label: 'Aside',
+    description: 'A note, tip, or caution set apart from the running text.',
+    schema: {
+      kind: fields.select({
+        label: 'Kind',
+        options: [
+          { label: 'Note', value: 'note' },
+          { label: 'Tip', value: 'tip' },
+          { label: 'Caution', value: 'caution' },
+        ],
+        defaultValue: 'note',
+      }),
+      title: fields.text({ label: 'Title', description: 'Optional. Defaults to the kind.' }),
+    },
+  }),
   OutcomeExplorer: block({
     label: 'Outcome explorer',
     description: 'Interactive diagram of the three check outcomes. Renders as static HTML without JavaScript.',

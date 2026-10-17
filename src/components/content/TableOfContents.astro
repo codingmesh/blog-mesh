@@ -1,20 +1,32 @@
 ---
 import type { MarkdownHeading } from 'astro';
-/** A list in the right margin on wide screens; a collapsed disclosure above the body elsewhere. */
+/**
+ * Numbered to match the section numerals in the body. The side list has a marker that slides to the
+ * current section; the inline version is a collapsed disclosure above the body.
+ */
 interface Props {
   headings: MarkdownHeading[];
   variant: 'side' | 'inline';
 }
 const { headings, variant } = Astro.props;
+let section = 0;
+const entries = headings.map((heading) => ({
+  ...heading,
+  number: heading.depth === 2 ? String(++section).padStart(2, '0') : '',
+}));
 ---
 
 {variant === 'side' ? (
   <nav class="article-toc" aria-label="Table of contents" data-pagefind-ignore>
     <h2 class="label">On this page</h2>
     <ol>
-      {headings.map((heading) => (
+      <span class="toc-marker" aria-hidden="true" />
+      {entries.map((heading) => (
         <li class:list={{ 'toc-sub': heading.depth === 3 }}>
-          <a href={`#${heading.slug}`}>{heading.text}</a>
+          <a href={`#${heading.slug}`}>
+            <i>{heading.number}</i>
+            <span>{heading.text}</span>
+          </a>
         </li>
       ))}
     </ol>
@@ -22,12 +34,15 @@ const { headings, variant } = Astro.props;
 ) : (
   <details class="mobile-toc" data-pagefind-ignore>
     <summary>
-      Contents <span class="toc-count">{headings.length} sections</span>
+      Contents <span class="toc-count">{entries.length} sections</span>
     </summary>
     <ol>
-      {headings.map((heading) => (
-        <li>
-          <a href={`#${heading.slug}`}>{heading.text}</a>
+      {entries.map((heading) => (
+        <li class:list={{ 'toc-sub': heading.depth === 3 }}>
+          <a href={`#${heading.slug}`}>
+            <i>{heading.number}</i>
+            <span>{heading.text}</span>
+          </a>
         </li>
       ))}
     </ol>
@@ -52,24 +67,39 @@ const { headings, variant } = Astro.props;
     margin-bottom: 10px;
   }
   .article-toc ol {
+    position: relative;
     list-style: none;
     padding: 0;
     margin: 0;
+    border-left: 1px solid var(--line);
+  }
+  .toc-marker {
+    position: absolute;
+    left: -1px;
+    top: 0;
+    width: 2px;
+    height: var(--toc-height, 0px);
+    background: var(--accent);
+    transform: translateY(var(--toc-top, 0px));
+    transition:
+      transform 300ms var(--ease),
+      height 300ms var(--ease);
   }
   .article-toc a {
-    display: block;
-    padding: 5px 0 5px 12px;
-    border-left: 1px solid var(--line);
-    line-height: 1.45;
-    transition:
-      color 140ms var(--ease),
-      border-color 140ms var(--ease);
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr);
+    gap: 8px;
+    padding: 6px 0 6px 12px;
+    line-height: 1.4;
+    transition: color 140ms var(--ease);
   }
-  .article-toc a:hover {
-    color: var(--ink);
+  .article-toc a i {
+    font: 500 12px/1.6 var(--mono);
+    font-style: normal;
+    color: var(--accent);
   }
+  .article-toc a:hover,
   .article-toc a[aria-current='location'] {
-    border-left-color: var(--accent);
     color: var(--ink);
   }
   .toc-sub a {
@@ -110,14 +140,22 @@ const { headings, variant } = Astro.props;
     font-weight: 400;
   }
   .mobile-toc ol {
-    padding-left: 20px;
+    list-style: none;
+    padding: 0;
     margin: 4px 0 14px;
     font-size: 14px;
     color: var(--muted);
   }
   .mobile-toc li a {
-    display: block;
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 6px;
     padding: 8px 0;
+  }
+  .mobile-toc li a i {
+    font: 500 12px/1.8 var(--mono);
+    font-style: normal;
+    color: var(--accent);
   }
   .mobile-toc li a:hover {
     color: var(--ink);

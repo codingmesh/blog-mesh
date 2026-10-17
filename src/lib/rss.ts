@@ -26,6 +26,6 @@ export async function renderPostHtml(post: Post) {
   return sanitizeHtml(html, {
     allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'figure', 'figcaption', 'details', 'summary']),
     allowedAttributes: { a: ['href', 'rel'], img: ['src', 'alt', 'width', 'height'], td: ['align'], th: ['align'] },
-    exclusiveFilter: (frame) => frame.tag === 'template',
+    exclusiveFilter: (frame) => frame.tag === 'template' || (frame.attribs.class || '').includes('line-note'),
   });
 }

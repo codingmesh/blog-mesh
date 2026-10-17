@@ -30,12 +30,37 @@ export function applyTheme(theme: Theme) {
   document.dispatchEvent(new CustomEvent<Theme>('themechange', { detail: theme }));
 }
 
+/** Switches theme as an ink wipe spreading from the toggle; a plain swap where the API or the reader's settings say no. */
+function switchTheme(next: Theme, origin: HTMLElement) {
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const root = document.documentElement;
+  if (reduced || typeof document.startViewTransition !== 'function') {
+    applyTheme(next);
+    return;
+  }
+  const rect = origin.getBoundingClientRect();
+  const x = rect.left + rect.width / 2;
+  const y = rect.top + rect.height / 2;
+  const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+  root.classList.add('theme-wipe');
+  const transition = document.startViewTransition(() => applyTheme(next));
+  transition.ready
+    .then(() =>
+      root.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+        { duration: 520, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)', pseudoElement: '::view-transition-new(root)' },
+      ),
+    )
+    .catch(() => {});
+  transition.finished.finally(() => root.classList.remove('theme-wipe'));
+}
+
 export function initThemeToggle() {
   const button = document.querySelector<HTMLButtonElement>('#theme-toggle');
   if (!button) return;
   button.addEventListener('click', () => {
     const next: Theme = currentTheme() === 'dark' ? 'light' : 'dark';
-    applyTheme(next);
+    switchTheme(next, button);
     try {
       localStorage.setItem('theme', next);
     } catch {}

@@ -73,7 +73,8 @@ source: # optional; leave url empty for none
 ```
 
 - The filename is the URL: `my-post.md` becomes `/writing/my-post/` for both collections, so an article and a note cannot share a filename. The build fails if they do.
-- Code fences accept `title="path/file.ts"` to name the window and `{2,5-7}` to highlight lines. Use a title only for a real file and highlight lines only when the text refers to them.
+- Code fences accept `title="path/file.ts"` for the tab, `{2,5-7}` to highlight lines, `note="..."` for a short explanation printed under the last highlighted line, `caption="..."` for a figure caption, and `wrap` to soft-wrap long commands. Line numbers appear automatically on blocks longer than three lines; blocks over 24 lines start folded. Use a title only for a real file and highlight lines only when the text refers to them.
+- `<Aside kind="note" title="...">` sets a note, tip, or caution apart from the running text. It is also an editor block.
 - MDX can use the components registered in `src/components/content/mdx-components.ts` without importing them, for example `<OutcomeExplorer />`. The editor offers the same components as blocks.
 - `featured` is kept in the schema for future use; lists do not show a label.
 - The initial reading notes and short notes are labeled AI-assisted samples.
@@ -90,7 +91,9 @@ Type is IBM Plex Sans for everything readable and IBM Plex Mono for numbers, dat
 
 Light palette: `#faf8f3` paper, `#141414` ink, `#6a675f` muted, `#1f6b4f` accent. Dark palette: `#131412`, `#ebe8e0`, `#9b978d`, `#6fbf9d`. Light is the default regardless of system preference; the toggle stores a choice of dark. Every text color meets WCAG AA in both themes.
 
-Code always sits in a dark panel, in both themes: a slim bar with a centered language or filename label and a copy button, Plex Mono at 14px on desktop and 13px on phones, horizontal scrolling, and print styles. Highlighted lines use a green tint across the full scrollable width; copied text is unaffected. The traffic-light dots remain in the markup but are not shown.
+Code always sits in a dark panel, in both themes. The panel has an editor-style tab (filename with a green underline, or the language), a line-number gutter on blocks longer than three lines, highlighted lines with a marker and an optional inline note, wrap and copy controls (copy flashes the lines and shows a check), folding for blocks over 24 lines, and an optional caption. Plex Mono at 14px on desktop and 13px on phones, horizontal scrolling, and print styles. Copied text never includes the notes.
+
+Article typography follows the index: each section heading carries its numeral and the contents list mirrors it with a marker that slides between entries. Quotes carry quotation glyphs and a citation line, links that leave the site end with ↗, the source citation is two labeled rows, and a back-to-top control appears after a screen of scrolling. The theme toggle changes theme as a circular wipe from the button, and the search dialog rises into place. All motion is disabled under reduced motion and nothing animates on scroll-reveal.
 
 A few crafted details sit on top of those rules. Pages navigate with Astro's client router, so the title you click morphs into the article headline and pages crossfade; both are off under reduced motion. Articles carry their index numeral large and faint in the header on wide screens and show a two-pixel green reading line along the top edge that fills as the body scrolls past. Hovering an index row turns its numeral into an arrow. The header has a small green mark and a search entry with its ⌘K hint, the footer is a colophon, and the 404 page is entry 00. Every post has a generated social card at `/og/<id>.png`, rendered at build time with Satori from the Fontsource Plex files, and the site card at `/og/site.png` serves the other pages. Scripts register through `src/scripts/page.ts` so they run again after each client-side navigation without piling up listeners.
 

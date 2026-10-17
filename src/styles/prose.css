@@ -5,6 +5,7 @@
   line-height: 1.72;
   overflow-wrap: anywhere;
   max-width: 66ch;
+  counter-reset: section;
 }
 .prose > * + * {
   margin-top: 22px;
@@ -12,11 +13,23 @@
 .prose > :first-child {
   margin-top: 0;
 }
+/* Sections are numbered like the index, so the article and its contents list speak the same language. */
 .prose h2 {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: baseline;
+  column-gap: 8px;
   font-size: 28px;
   letter-spacing: -0.025em;
   margin: 52px 0 14px;
   scroll-margin-top: 30px;
+  counter-increment: section;
+}
+.prose h2::before {
+  content: counter(section, decimal-leading-zero);
+  font: 500 14px/1 var(--mono);
+  color: var(--accent);
+  letter-spacing: 0;
 }
 .prose h3 {
   font-size: 22px;
@@ -44,18 +57,44 @@
   text-decoration: underline;
   text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
   text-decoration-thickness: 1px;
+  transition: text-decoration-color 150ms var(--ease);
 }
 .prose a:hover {
   color: var(--accent-ink);
   text-decoration-color: currentColor;
 }
+/* Links that leave the site say so. */
+.prose a[href^='http']::after {
+  content: '\2197';
+  font-size: 0.7em;
+  margin-left: 0.2em;
+  vertical-align: 0.3em;
+  color: var(--muted);
+}
 .prose blockquote {
   border-left: 2px solid var(--accent);
-  padding: 4px 0 4px 22px;
+  padding: 6px 0 6px 24px;
   font-size: 19px;
+  line-height: 1.6;
 }
 .prose blockquote p {
+  color: var(--ink);
+}
+.prose blockquote p:first-of-type::before {
+  content: '\201C';
+  color: var(--accent);
+  margin-left: -0.45em;
+}
+.prose blockquote p:last-of-type::after {
+  content: '\201D';
+  color: var(--accent);
+}
+.prose blockquote cite {
+  display: block;
+  margin-top: 8px;
+  font: 13px/1.6 var(--mono);
   color: var(--muted);
+  font-style: normal;
 }
 .prose strong {
   font-weight: 600;
@@ -105,7 +144,7 @@
   margin-top: 10px;
 }
 
-/* Code panels and the chrome added by src/scripts/code-windows.ts */
+/* Code panels. The transformer supplies gutter, highlights, notes, and captions; the script adds the bar. */
 .prose pre {
   max-width: 100%;
   overflow-x: auto;
@@ -114,23 +153,79 @@
   background: var(--panel);
   color: var(--panel-ink);
   border-radius: var(--radius);
-  padding: var(--code-pad);
+  padding: 18px 0;
   font: 14px/1.75 var(--mono);
+  tab-size: 2;
 }
 .prose pre code {
   display: grid;
   padding: 0;
   background: transparent;
   font: inherit;
+  counter-reset: line;
+}
+.prose pre .line {
+  display: block;
+  padding-inline: var(--code-pad);
+  min-height: 1.75em;
+}
+.prose pre[data-gutter] .line {
+  padding-left: 0;
+}
+/* The gutter numeral is an inline block at the start of the line, so tokens keep flowing as text. */
+.prose pre[data-gutter] .line::before {
+  content: counter(line);
+  counter-increment: line;
+  display: inline-block;
+  width: 52px;
+  padding-right: 16px;
+  box-sizing: border-box;
+  text-align: right;
+  font-size: 12px;
+  color: var(--gutter, #5e625f);
+  user-select: none;
 }
 .prose pre .line:empty::after {
   content: ' ';
 }
 .prose pre .line.highlighted {
   background: var(--highlight);
-  margin-inline: calc(-1 * var(--code-pad));
-  padding-inline: calc(var(--code-pad) - 2px) var(--code-pad);
-  border-left: 2px solid var(--highlight-edge);
+  box-shadow: inset 2px 0 0 var(--highlight-edge);
+}
+.prose pre .line.highlighted::before {
+  color: var(--highlight-edge);
+}
+.prose pre .line-note {
+  display: block;
+  background: var(--highlight);
+  padding: 4px var(--code-pad) 10px calc(var(--code-pad));
+  font: 13px/1.5 var(--sans);
+  color: #bfe3d3;
+  white-space: normal;
+}
+.prose pre[data-gutter] .line-note {
+  padding-left: 52px;
+}
+.prose pre .line-note::before {
+  content: '\2014  ';
+  color: var(--highlight-edge);
+}
+.prose pre[data-wrap] .line {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+/* Wrapped continuation lines hang under the code, not under the gutter. */
+.prose pre[data-wrap][data-gutter] .line {
+  padding-left: 52px;
+  text-indent: -52px;
+}
+.prose pre code.flash .line {
+  animation: code-flash 900ms var(--ease);
+}
+@keyframes code-flash {
+  from {
+    background-color: #2d5a46;
+  }
 }
 .prose .code-block pre {
   margin: 0;
@@ -139,54 +234,117 @@
 .prose .code-block pre:focus-visible {
   outline-offset: -3px;
 }
-/* Shiki emits light and dark colors; the panel is dark in both themes, so the dark set is always used. */
 .prose .astro-code,
-.prose .astro-code span {
+.prose .astro-code span:not(.line-note) {
   color: var(--shiki-dark) !important;
 }
 .prose .astro-code {
   background-color: var(--panel) !important;
 }
+.code-figure figcaption {
+  padding: 10px 16px 12px;
+  margin: 0;
+  background: var(--panel);
+  border-top: 1px solid var(--panel-line);
+  color: var(--panel-muted);
+  border-radius: 0 0 var(--radius) var(--radius);
+}
 .code-block {
   border-radius: var(--radius);
   overflow: hidden;
   background: var(--panel);
+  position: relative;
 }
-.code-toolbar {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+.code-figure .code-block {
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.code-bar {
+  display: flex;
   align-items: center;
-  gap: 10px;
-  min-height: 38px;
-  padding: 4px var(--code-pad);
+  justify-content: space-between;
+  padding: 0 8px 0 0;
   border-bottom: 1px solid var(--panel-line);
   color: var(--panel-muted);
-  font-size: 12px;
 }
-.window-controls {
-  display: none;
+.code-tab {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 11px 16px;
+  font: 500 12.5px/1 var(--mono);
+  color: var(--panel-ink);
 }
-.window-title {
-  grid-column: 2;
-  font: 500 12px/1.4 var(--mono);
-  text-align: center;
-  overflow-wrap: anywhere;
-}
-.copy-code {
-  grid-column: 3;
-  justify-self: end;
-  white-space: nowrap;
+.code-tab small {
+  font-size: 11.5px;
+  font-weight: 400;
   color: var(--panel-muted);
+}
+.code-tab.has-title::after {
+  content: '';
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: -1px;
+  height: 2px;
+  background: var(--highlight-edge);
+}
+.code-tools {
+  display: flex;
+  gap: 2px;
+}
+.code-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   border: 0;
   background: transparent;
-  padding: 5px 8px;
-  min-height: 32px;
-  border-radius: 4px;
-  font: 500 12px/1.4 var(--mono);
+  color: var(--panel-muted);
+  font: 500 12px/1 var(--mono);
+  padding: 9px 10px;
+  border-radius: 6px;
+  transition:
+    color 140ms var(--ease),
+    background-color 140ms var(--ease);
 }
-.copy-code:hover {
+.code-tool:hover,
+.code-tool[aria-pressed='true'] {
   color: var(--panel-ink);
   background: var(--panel-line);
+}
+.code-tool.is-done {
+  color: var(--highlight-edge);
+}
+.code-tool svg {
+  flex-shrink: 0;
+}
+.code-block.is-folded pre {
+  max-height: calc(24 * 1.75em + 36px);
+  overflow-y: hidden;
+}
+.code-block.is-folded pre::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 40px;
+  height: 64px;
+  background: linear-gradient(to bottom, transparent, var(--panel));
+  pointer-events: none;
+}
+.code-fold {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  padding: 10px;
+  border: 0;
+  border-top: 1px solid var(--panel-line);
+  background: var(--panel);
+  color: var(--panel-muted);
+  font: 500 12px/1 var(--mono);
+}
+.code-fold:hover {
+  color: var(--panel-ink);
 }
 
 @media (max-width: 540px) {
@@ -194,6 +352,7 @@
     font-size: 17px;
   }
   .prose h2 {
+    grid-template-columns: 36px minmax(0, 1fr);
     font-size: 24px;
     margin-top: 40px;
   }
@@ -203,8 +362,23 @@
   .prose pre {
     font-size: 13px;
   }
+  .prose pre[data-gutter] .line {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+  .prose pre[data-gutter] .line::before {
+    padding-right: 10px;
+  }
+  .prose pre[data-gutter] .line-note {
+    padding-left: 40px;
+  }
   .prose blockquote {
     font-size: 17px;
+  }
+  .code-tool span {
+    display: none;
+  }
+  .code-tool {
+    padding: 9px;
   }
 }
 @media print {
@@ -220,8 +394,12 @@
   .prose h3 {
     break-after: avoid;
   }
-  .copy-code {
+  .code-bar,
+  .code-fold {
     display: none !important;
+  }
+  .code-block.is-folded pre {
+    max-height: none;
   }
   .prose .astro-code,
   .prose .astro-code span {

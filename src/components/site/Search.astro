@@ -72,6 +72,20 @@ const topics = [...new Set((await getArticles()).flatMap((post) => post.data.tag
     margin: 12vh auto auto;
     box-shadow: 0 30px 80px rgb(20 20 20 / 0.25);
   }
+  /* The dialog rises and settles instead of popping; browsers without @starting-style simply show it. */
+  #search-dialog[open] {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 180ms var(--ease),
+      transform 180ms var(--ease);
+  }
+  @starting-style {
+    #search-dialog[open] {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
   #search-dialog::backdrop {
     background: rgb(20 20 20 / 0.45);
     backdrop-filter: blur(3px);

@@ -281,6 +281,19 @@ kbd {
     width: 100%;
   }
 }
+/* Theme change as an ink wipe: the new page is revealed by a growing circle instead of the default crossfade. */
+html.theme-wipe::view-transition-old(root),
+html.theme-wipe::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+html.theme-wipe::view-transition-new(root) {
+  z-index: 1;
+}
+html.theme-wipe::view-transition-old(root) {
+  z-index: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
