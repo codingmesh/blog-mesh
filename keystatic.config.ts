@@ -28,6 +28,39 @@ const components = {
     description: 'Interactive diagram of the three check outcomes. Renders as static HTML without JavaScript.',
     schema: {},
   }),
+  Transcript: wrapper({
+    label: 'Transcript',
+    description: 'A conversation with a model, as role-labeled turns. Put Turn blocks inside it.',
+    schema: {
+      model: fields.text({ label: 'Model', description: 'Who answered, for example Claude.' }),
+      date: fields.text({ label: 'Date', description: 'Optional, shown in the head.' }),
+    },
+  }),
+  Turn: wrapper({
+    label: 'Turn',
+    description: 'One turn of a transcript.',
+    schema: {
+      role: fields.select({
+        label: 'Role',
+        options: [
+          { label: 'User', value: 'user' },
+          { label: 'Model', value: 'model' },
+          { label: 'System', value: 'system' },
+        ],
+        defaultValue: 'user',
+      }),
+      name: fields.text({ label: 'Name', description: 'Optional. Overrides the role label.' }),
+    },
+  }),
+  Video: block({
+    label: 'Video',
+    description: 'A short silent demo that loops while on screen. Captioned like a figure.',
+    schema: {
+      src: fields.file({ label: 'Video file', directory: 'public/media', publicPath: '/media/' }),
+      poster: fields.image({ label: 'Poster frame', directory: 'public/media', publicPath: '/media/' }),
+      caption: fields.text({ label: 'Caption', multiline: true }),
+    },
+  }),
 };
 
 const shared = {

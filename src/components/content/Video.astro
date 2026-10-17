@@ -1,0 +1,35 @@
+---
+/**
+ * A short demo as silent, looping video with a poster frame and a caption. It plays only while on screen and only
+ * when the reader has not asked for reduced motion; the controls stay available either way.
+ */
+interface Props {
+  src: string;
+  poster?: string;
+  caption?: string;
+  /** Loop and start automatically when visible. Off for anything with sound or a narrative. */
+  ambient?: boolean;
+}
+const { src, poster, caption, ambient = true } = Astro.props;
+---
+
+<figure class="figure video">
+  <video
+    src={src}
+    poster={poster}
+    controls
+    playsinline
+    preload="metadata"
+    muted={ambient}
+    loop={ambient}
+    data-ambient={ambient ? '' : undefined}
+    aria-label={caption}
+  ></video>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<script>
+  import { onPageLoad } from '../../scripts/page.ts';
+  import { initAmbientVideo } from '../../scripts/media.ts';
+  onPageLoad(() => initAmbientVideo());
+</script>

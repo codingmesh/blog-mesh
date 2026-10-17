@@ -336,9 +336,131 @@
   color: var(--panel-ink);
 }
 
+/* Terminal blocks: a prompt per command, muted output, no gutter. */
+.prose pre[data-terminal] .line.output span,
+.prose pre[data-terminal] .line.output {
+  color: var(--panel-muted) !important;
+}
+.prose pre[data-terminal] .line.command .command-text {
+  color: var(--panel-ink);
+}
+.prose pre[data-terminal] .prompt {
+  color: var(--highlight-edge);
+  user-select: none;
+}
+
+/* Figures: images and video with the alt text as caption. */
+.prose .figure {
+  margin: 28px 0;
+}
+.prose .figure-link {
+  display: block;
+  cursor: zoom-in;
+}
+.prose .figure img,
+.prose .figure video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--soft);
+}
+.prose .figure img {
+  view-transition-name: none;
+}
+
+/* Diagrams rendered from dot fences at build time. */
+.prose .diagram {
+  margin: 28px 0;
+}
+.prose .diagram-frame {
+  padding: 20px 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--soft);
+  overflow-x: auto;
+}
+.prose .diagram svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-inline: auto;
+}
+.prose .diagram text {
+  font-family: var(--mono);
+}
+
+/* Heading anchors appear on hover and focus. */
+.prose h2,
+.prose h3 {
+  position: relative;
+}
+.prose .anchor {
+  position: absolute;
+  left: -1.2em;
+  top: 0;
+  width: 1em;
+  text-align: center;
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 400;
+  opacity: 0;
+  transition: opacity 150ms var(--ease);
+}
+.prose :is(h2, h3):hover .anchor,
+.prose .anchor:focus-visible {
+  opacity: 1;
+}
+
+/* Footnotes, as a hairline list at the end. */
+.prose sup a {
+  text-decoration: none;
+  font: 500 0.75em/1 var(--mono);
+  padding: 0 1px;
+}
+.prose .footnotes {
+  margin-top: 48px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 15px;
+  color: var(--muted);
+}
+.prose .footnotes ol {
+  padding-left: 1.4em;
+}
+.prose .footnotes li {
+  color: var(--muted);
+}
+.prose .footnotes li + li {
+  margin-top: 6px;
+}
+.prose [data-footnote-backref] {
+  text-decoration: none;
+  margin-left: 4px;
+}
+
+/* Math renders as MathML; the display form gets room and scrolls if it must. */
+.prose math {
+  font-size: 1.06em;
+}
+.prose math[display='block'] {
+  display: block;
+  margin: 20px 0;
+  overflow-x: auto;
+}
+
 @media (max-width: 540px) {
   .prose {
     font-size: 17px;
+  }
+  .prose .anchor {
+    position: static;
+    width: auto;
+    margin-left: 0.3em;
+  }
+  .prose .diagram-frame {
+    padding: 14px;
   }
   .prose h2 {
     font-size: 22px;

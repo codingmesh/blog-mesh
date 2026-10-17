@@ -31,8 +31,13 @@ export function languageLabel(language: string) {
   return languageLabels[language] || language || 'Code';
 }
 
-/** The text a reader expects to copy: the lines only, never the inline notes. */
+/**
+ * The text a reader expects to copy: the lines only, never the inline notes. In a terminal block, only the
+ * commands, without their prompts.
+ */
 export function codeText(code: HTMLElement) {
+  const commands = [...code.querySelectorAll<HTMLElement>('.line.command .command-text')];
+  if (commands.length) return commands.map((command) => command.textContent ?? '').join('\n');
   const lines = [...code.querySelectorAll<HTMLElement>('.line')];
   return lines.length ? lines.map((line) => line.textContent ?? '').join('\n') : (code.textContent ?? '');
 }
@@ -65,8 +70,9 @@ export function initCodeWindows(
     tab.className = pre.dataset.title ? 'code-tab has-title' : 'code-tab';
     tab.innerHTML = pre.dataset.title ? `<b></b><small></small>` : `<b></b>`;
     const primary = tab.querySelector('b')!;
-    primary.textContent = pre.dataset.title || languageLabel(language);
-    if (pre.dataset.title) tab.querySelector('small')!.textContent = languageLabel(language);
+    const terminal = 'terminal' in pre.dataset;
+    primary.textContent = pre.dataset.title || (terminal ? 'Terminal' : languageLabel(language));
+    if (pre.dataset.title) tab.querySelector('small')!.textContent = terminal ? 'Terminal' : languageLabel(language);
 
     const tools = document.createElement('div');
     tools.className = 'code-tools';
@@ -86,7 +92,10 @@ export function initCodeWindows(
     copyButton.type = 'button';
     copyButton.className = 'code-tool code-copy';
     copyButton.innerHTML = `${icons.copy}<span>Copy</span>`;
-    copyButton.setAttribute('aria-label', `Copy code block ${index + 1}`);
+    copyButton.setAttribute(
+      'aria-label',
+      terminal ? `Copy the commands of block ${index + 1}` : `Copy code block ${index + 1}`,
+    );
     let timer: ReturnType<typeof setTimeout>;
     copyButton.addEventListener('click', async () => {
       clearTimeout(timer);

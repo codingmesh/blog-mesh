@@ -74,8 +74,13 @@ source: # optional; leave url empty for none
 
 - The filename is the URL: `my-post.md` becomes `/writing/my-post/` for both collections, so an article and a note cannot share a filename. The build fails if they do.
 - Code fences accept `title="path/file.ts"` for the tab, `{2,5-7}` to highlight lines, `note="..."` for a short explanation printed under the last highlighted line, `caption="..."` for a figure caption, and `wrap` to soft-wrap long commands. Line numbers appear automatically on blocks longer than three lines; blocks over 24 lines start folded. Use a title only for a real file and highlight lines only when the text refers to them.
-- `<Aside kind="note" title="...">` sets a note, tip, or caution apart from the running text. It is also an editor block.
-- MDX can use the components registered in `src/components/content/mdx-components.ts` without importing them, for example `<OutcomeExplorer />`. The editor offers the same components as blocks.
+- A fence with `terminal` in its meta (for example ` ```sh terminal `) is a shell session: lines starting with `$ ` are commands with a prompt, the rest is output, and copy takes only the commands.
+- A ` ```dot ` fence is a diagram in Graphviz's dot language, rendered to SVG at build time in the site's own type and colors, with `caption="..."` for a caption. No browser or service is involved; Graphviz runs as WebAssembly.
+- An image with alt text becomes a captioned figure; the alt text is the caption, local images are optimized to the column, and a click opens the full image. `<Video src="..." poster="..." caption="..." />` adds a short silent demo that loops while on screen.
+- `<Transcript model="Claude" date="...">` with `<Turn role="user">` and `<Turn role="model">` inside quotes a conversation; long model turns fold and the head copies the prompt alone.
+- `<Aside kind="note" title="...">` sets a note, tip, or caution apart from the running text.
+- Footnotes (`[^1]`), inline math (`$...$`), and display math (`$$`) work as in GitHub-flavored Markdown; math renders as MathML with no stylesheet. Headings get an anchor on hover.
+- MDX can use the components registered in `src/components/content/mdx-components.ts` without importing them, for example `<OutcomeExplorer />`. The editor offers the same components as blocks. `src/content/articles/writing-blocks.mdx` is a draft that exercises every block; flip `draft` to see it locally.
 - `featured` is kept in the schema for future use; lists do not show a label.
 - The initial reading notes and short notes are labeled AI-assisted samples.
 

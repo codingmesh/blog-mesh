@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseCodeMeta } from '../src/lib/code-meta.ts';
+import { commandOf, parseCodeMeta } from '../src/lib/code-meta.ts';
 
 test('fence meta yields a tab title and the exact highlighted lines', () => {
   const meta = parseCodeMeta('title="src/check.ts" {2,5-7}');
@@ -19,6 +19,7 @@ test('fences without meta, or with malformed ranges, highlight nothing', () => {
     note: undefined,
     caption: undefined,
     wrap: false,
+    terminal: false,
   });
   assert.deepEqual(parseCodeMeta("title='notes.md' {0,-3, 4-2}").lines, new Set([4]));
   assert.equal(parseCodeMeta("title='notes.md'").title, 'notes.md');
@@ -31,4 +32,13 @@ test('notes, captions, and wrap are read independently of each other', () => {
   assert.equal(meta.wrap, true);
   assert.equal(parseCodeMeta('caption="Only a caption"').note, undefined);
   assert.equal(parseCodeMeta('unwrapped').wrap, false, 'wrap must be a whole word');
+});
+
+test('terminal fences split commands from output by their prompt', () => {
+  assert.equal(parseCodeMeta('terminal').terminal, true);
+  assert.equal(parseCodeMeta('title="deploy" terminal').title, 'deploy');
+  assert.deepEqual(commandOf('$ npm run check'), { prompt: '$', command: 'npm run check' });
+  assert.deepEqual(commandOf('❯ git status'), { prompt: '❯', command: 'git status' });
+  assert.equal(commandOf('US English check passed'), undefined);
+  assert.equal(commandOf('$HOME is set'), undefined, 'a prompt needs a space after it');
 });

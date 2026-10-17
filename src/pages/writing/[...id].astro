@@ -5,6 +5,7 @@ import Base from '../../layouts/Base.astro';
 import CodeWindows from '../../components/content/CodeWindows.astro';
 import Comments from '../../components/content/Comments.astro';
 import BackToTop from '../../components/content/BackToTop.astro';
+import Lightbox from '../../components/content/Lightbox.astro';
 import ReadingLine from '../../components/content/ReadingLine.astro';
 import SourceLine from '../../components/content/SourceLine.astro';
 import TableOfContents from '../../components/content/TableOfContents.astro';
@@ -54,6 +55,7 @@ const transitionName = `title-${post.collection}-${post.id}`;
 >
   <ReadingLine />
   <BackToTop />
+  <Lightbox />
   <article class="article wrap" data-pagefind-body>
     <header class="article-head">
       <h1 data-pagefind-meta="title" transition:name={transitionName}>

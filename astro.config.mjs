@@ -4,7 +4,13 @@ import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
 import vercel from '@astrojs/vercel';
 import keystatic from '@keystatic/astro';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import rehypeKatex from 'rehype-katex';
+import rehypeSlug from 'rehype-slug';
+import remarkMath from 'remark-math';
 import { codeMetaTransformer } from './src/lib/code-meta.ts';
+import rehypeDiagrams from './src/lib/diagrams.ts';
+import rehypeFigures from './src/lib/figures.ts';
 import { features } from './src/config.ts';
 
 // Pages are prerendered everywhere. The CMS adds two on-demand routes, which need an adapter,
@@ -49,10 +55,29 @@ export default defineConfig({
     },
   },
   markdown: {
+    // `dot` fences are diagrams, rendered by rehypeDiagrams rather than highlighted.
+    syntaxHighlight: { type: 'shiki', excludeLangs: ['dot', 'math'] },
     shikiConfig: {
       themes: { light: 'github-light-high-contrast', dark: 'github-dark-high-contrast' },
       wrap: false,
       transformers: [codeMetaTransformer()],
     },
+    remarkPlugins: [remarkMath],
+    rehypePlugins: [
+      rehypeDiagrams,
+      rehypeFigures,
+      // MathML output needs no stylesheet or fonts; browsers render it natively.
+      [rehypeKatex, { output: 'mathml' }],
+      // Heading ids before the anchors, so the links have targets; Astro keeps ids that already exist.
+      rehypeSlug,
+      [
+        rehypeAutolinkHeadings,
+        {
+          behavior: 'prepend',
+          properties: { className: ['anchor'], ariaLabel: 'Link to this section' },
+          content: { type: 'text', value: '#' },
+        },
+      ],
+    ],
   },
 });
