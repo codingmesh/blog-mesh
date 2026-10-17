@@ -34,14 +34,13 @@ const { active, crumb } = Astro.props;
       type="button"
       class="search-trigger"
       id="search-open"
-      aria-label="Search writing and notes"
       aria-haspopup="dialog"
       aria-controls="search-dialog"
       title="Search (⌘K / Ctrl+K)"
     >
       <Icon name="search" size={15} />
-      <span>Search</span>
-      <kbd aria-hidden="true">⌘K</kbd>
+      <span class="search-text">Search</span>
+      <kbd>⌘K</kbd>
     </button>
     <ThemeToggle />
   </nav>
@@ -110,9 +109,17 @@ const { active, crumb } = Astro.props;
     .top {
       padding-top: 20px;
     }
-    .search-trigger kbd,
-    .search-trigger span {
+    .search-trigger kbd {
       display: none;
+    }
+    /* The word stays in the accessible name while only the icon shows. */
+    .search-text {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
     }
     nav {
       gap: 14px;
