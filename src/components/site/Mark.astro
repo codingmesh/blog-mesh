@@ -1,0 +1,43 @@
+---
+import { foldOpacity, markBox, markPaths } from '../../lib/mark';
+/** The site mark drawn inline so it follows the theme colors and can move on hover. */
+interface Props {
+  size?: number;
+}
+const { size = 22 } = Astro.props;
+---
+
+<svg class="site-mark" width={size} height={size} viewBox={`0 0 ${markBox} ${markBox}`} aria-hidden="true">
+  <rect width={markBox} height={markBox} rx="10" fill="var(--accent)"></rect>
+  <path d={markPaths.page} fill="var(--paper)"></path>
+  <path class="fold" d={markPaths.fold} fill="var(--paper)" fill-opacity={foldOpacity}></path>
+  <path class="lines" d={markPaths.lines} stroke="var(--accent)" stroke-width="2" stroke-linecap="round"></path>
+</svg>
+
+<style>
+  .site-mark {
+    display: block;
+    flex-shrink: 0;
+    overflow: visible;
+  }
+  /* On hover the corner turns further and the text lines settle, as if the page were being opened. */
+  .fold {
+    transform-origin: 35px 11px;
+    transition: transform 220ms var(--ease);
+  }
+  .lines {
+    transition: transform 220ms var(--ease);
+  }
+  :global(a:hover) > .site-mark .fold {
+    transform: scale(1.45);
+  }
+  :global(a:hover) > .site-mark .lines {
+    transform: translateY(1.5px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fold,
+    .lines {
+      transition: none;
+    }
+  }
+</style>

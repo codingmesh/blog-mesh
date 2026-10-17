@@ -3,9 +3,11 @@ import { resolve } from 'node:path';
 import satori, { type Font } from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import { site } from '../config';
+import { markDataUri } from './mark';
 
 /**
- * Build-time social cards in the Folio style: paper, a green numeral, the title in Plex, the site name below a rule.
+ * Build-time social cards in the Folio style: paper, a green numeral or the site mark, the title in Plex,
+ * the site name below a rule.
  * Fonts are read from the Fontsource packages, which ship WOFF files Satori can consume.
  */
 const paper = '#faf8f3';
@@ -53,8 +55,10 @@ export async function renderCard({ title, kicker, number, footer }: CardInput): 
     {
       display: 'flex',
       flexDirection: 'column',
-      width: '100%',
-      height: '100%',
+      width: 1200,
+      height: 630,
+      // Satori sizes boxes as content-box; without this the padding grows the canvas and the footer is cropped away.
+      boxSizing: 'border-box',
       background: paper,
       color: ink,
       padding: '72px 80px 64px',
@@ -75,7 +79,10 @@ export async function renderCard({ title, kicker, number, footer }: CardInput): 
         [
           number
             ? el('span', {}, number)
-            : el('span', { width: 14, height: 14, background: accent, borderRadius: 3, marginBottom: 2 }),
+            : {
+                type: 'img',
+                props: { src: markDataUri({ size: 40 }), width: 40, height: 40, style: { marginBottom: 2 } },
+              },
           kicker ? el('span', { color: muted }, kicker) : null,
         ],
       ),
