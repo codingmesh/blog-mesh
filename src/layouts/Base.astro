@@ -7,6 +7,7 @@ import { site } from '../config';
 import Header from '../components/site/Header.astro';
 import Footer from '../components/site/Footer.astro';
 import Search from '../components/site/Search.astro';
+import Wind from '../components/site/Wind.astro';
 interface Props {
   title?: string;
   description?: string;
@@ -16,6 +17,8 @@ interface Props {
   noindex?: boolean;
   /** Path of the social card; defaults to the site card. */
   image?: string;
+  /** Index pages carry the wind in their margins; article pages stay still. */
+  wind?: boolean;
 }
 const {
   title,
@@ -25,6 +28,7 @@ const {
   publishedAt,
   noindex = false,
   image = '/og/site.png',
+  wind = false,
 } = Astro.props;
 const pageTitle = title ? `${title} — ${site.name}` : site.title;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -79,6 +83,7 @@ const imageUrl = new URL(image, Astro.site);
     <ClientRouter />
   </head>
   <body>
+    {wind && <Wind />}
     <a href="#main" class="skip-link">
       Skip to content
     </a>

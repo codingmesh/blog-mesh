@@ -1,0 +1,43 @@
+---
+/**
+ * The wind in the margins, on index pages. The canvas sits behind the page and persists across client-side
+ * navigations between pages that include it. The renderer loads only on wide pointer devices without a
+ * reduced-motion preference, after the page is idle.
+ */
+---
+
+<canvas id="wind" class="wind" aria-hidden="true" hidden transition:persist="wind" transition:animate="none"></canvas>
+
+<script>
+  import { onPageLoad } from '../../scripts/page.ts';
+  const allowed = matchMedia('(min-width: 900px) and (hover: hover) and (prefers-reduced-motion: no-preference)');
+  let renderer: Promise<typeof import('../../scripts/wind.ts')> | undefined;
+  const idle = window.requestIdleCallback ?? ((task: () => void) => setTimeout(task, 1));
+  function sync() {
+    const canvas = document.querySelector<HTMLCanvasElement>('#wind');
+    if (canvas && allowed.matches) {
+      renderer ??= import('../../scripts/wind.ts');
+      renderer.then((wind) => wind.mountWind(canvas));
+    } else {
+      renderer?.then((wind) => wind.unmountWind());
+    }
+  }
+  onPageLoad(() => idle(sync));
+  allowed.addEventListener('change', sync);
+</script>
+
+<style>
+  .wind {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+  }
+  @media print {
+    .wind {
+      display: none !important;
+    }
+  }
+</style>

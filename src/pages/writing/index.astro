@@ -8,7 +8,7 @@ const years = [...new Set(posts.map((post) => post.data.date.getUTCFullYear()))]
 const number = (post: (typeof posts)[number]) => String(posts.indexOf(post) + 1).padStart(2, '0');
 ---
 
-<Base title="Writing" active="writing">
+<Base title="Writing" active="writing" wind>
   <div class="wrap">
     <header class="page-head">
       <p class="eyebrow">Archive</p>

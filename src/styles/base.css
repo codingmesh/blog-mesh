@@ -41,12 +41,13 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 32px;
   scrollbar-gutter: stable;
+  /* The paper is on the root so the wind canvas can sit between it and the page. */
+  background: var(--paper);
 }
 body {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  background: var(--paper);
   color: var(--ink);
   font: 17px/1.65 var(--sans);
   -webkit-font-smoothing: antialiased;
