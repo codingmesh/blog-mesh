@@ -1,0 +1,33 @@
+<!-- A two-pixel line along the top edge that fills with the accent as the article body scrolls past. -->
+<div class="read-line" aria-hidden="true" data-pagefind-ignore>
+  <span></span>
+</div>
+<script>
+  import { onPageLoad } from '../../scripts/page';
+  import { initReadingLine } from '../../scripts/reading-progress';
+  onPageLoad(initReadingLine);
+</script>
+
+<style>
+  .read-line {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .read-line span {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+  }
+  @media print {
+    .read-line {
+      display: none !important;
+    }
+  }
+</style>

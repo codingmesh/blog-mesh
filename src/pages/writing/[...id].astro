@@ -4,6 +4,7 @@ import '../../styles/prose.css';
 import Base from '../../layouts/Base.astro';
 import CodeWindows from '../../components/content/CodeWindows.astro';
 import Comments from '../../components/content/Comments.astro';
+import ReadingLine from '../../components/content/ReadingLine.astro';
 import SourceLine from '../../components/content/SourceLine.astro';
 import TableOfContents from '../../components/content/TableOfContents.astro';
 import { mdxComponents } from '../../components/content/mdx-components';
@@ -19,18 +20,21 @@ export async function getStaticPaths() {
     seen.set(post.id, post.collection);
   }
   return posts.map((post) => {
-    const siblings = posts.filter((candidate) => candidate.collection === post.collection && candidate.id !== post.id);
+    const kin = posts.filter((candidate) => candidate.collection === post.collection);
+    const siblings = kin.filter((candidate) => candidate.id !== post.id);
     const next =
       siblings.find((candidate) => candidate.data.tags.some((tag) => post.data.tags.includes(tag))) || siblings[0];
-    return { params: { id: post.id }, props: { post, next } };
+    const number = String(kin.findIndex((candidate) => candidate.id === post.id) + 1).padStart(2, '0');
+    return { params: { id: post.id }, props: { post, next, number } };
   });
 }
 
 interface Props {
   post: Post;
   next?: Post;
+  number: string;
 }
-const { post, next } = Astro.props;
+const { post, next, number } = Astro.props;
 const { Content, headings } = await render(post);
 const toc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 const note = isNote(post);
@@ -38,6 +42,7 @@ const label = formatLabel(post);
 const listHref = note ? '/notes/' : '/writing/';
 const source = note ? undefined : post.data.source;
 const topic = post.data.tags[0];
+const transitionName = `title-${post.collection}-${post.id}`;
 ---
 
 <Base
@@ -46,10 +51,19 @@ const topic = post.data.tags[0];
   active={note ? 'notes' : 'writing'}
   article
   publishedAt={post.data.date}
+  image={`/og/${post.id}.png`}
 >
+  <ReadingLine />
   <article class="article wrap" data-pagefind-body>
     <header class="article-head">
+      <span class="entry-num" aria-hidden="true">
+        {number}
+      </span>
       <p class="eyebrow">
+        <span class="crumb-num">
+          {number}
+          <span> / </span>
+        </span>
         <a href={listHref} data-pagefind-ignore>
           {topic || (note ? 'Notes' : 'Writing')}
         </a>
@@ -59,7 +73,9 @@ const topic = post.data.tags[0];
           {label}
         </span>
       </p>
-      <h1 data-pagefind-meta="title">{post.data.title}</h1>
+      <h1 data-pagefind-meta="title" transition:name={transitionName}>
+        {post.data.title}
+      </h1>
       <p class="lede" data-pagefind-meta="description">
         {post.data.description}
       </p>
@@ -113,6 +129,7 @@ const topic = post.data.tags[0];
     position: relative;
   }
   .article-head {
+    position: relative;
     padding: 72px 0 40px;
   }
   .article-head .eyebrow {
@@ -121,12 +138,39 @@ const topic = post.data.tags[0];
   .article-head .eyebrow a:hover {
     text-decoration: underline;
   }
+  /* The entry's index numeral, large and faint, in the top right of the header on wide screens. */
+  .entry-num {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 60px;
+    font: 500 128px/1 var(--mono);
+    letter-spacing: -0.06em;
+    color: var(--line);
+    pointer-events: none;
+    user-select: none;
+  }
+  .crumb-num {
+    display: inline;
+  }
+  @media (min-width: 900px) {
+    .entry-num {
+      display: block;
+    }
+    .crumb-num {
+      display: none;
+    }
+    .article-head h1 {
+      max-width: 15ch;
+    }
+  }
   .article-head h1 {
     font-size: clamp(36px, 5.4vw, 58px);
     line-height: 1.02;
     letter-spacing: -0.035em;
     margin: 0 0 20px;
     overflow-wrap: anywhere;
+    position: relative;
   }
   .lede {
     font-size: 21px;
@@ -240,6 +284,7 @@ const topic = post.data.tags[0];
   }
   @media print {
     .article-end,
+    .entry-num,
     .article :global(.article-toc),
     .article :global(.mobile-toc) {
       display: none !important;

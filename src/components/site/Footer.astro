@@ -1,14 +1,19 @@
 ---
 import { site } from '../../config';
+/** A colophon: what the site is set in and built with, plus the feed and the year. */
 ---
 
-<footer class="foot wrap" data-pagefind-ignore>
-  <span>
-    {site.wordmark} <span class="sep">·</span> <a href="/rss.xml">RSS</a>
-  </span>
-  <span>
-    © {new Date().getFullYear()} {site.name}
-  </span>
+<footer class="foot wrap" data-pagefind-ignore transition:animate="none">
+  <p class="colophon">
+    Set in IBM Plex Sans and Mono. Built with <a href="https://astro.build/">Astro</a> and edited with{' '}
+    <a href="https://keystatic.com/">Keystatic</a>. Source on <a href={`https://github.com/${site.repo}`}>GitHub</a>.
+  </p>
+  <p class="foot-meta">
+    <a href="/rss.xml">RSS</a>
+    <span>
+      © {new Date().getFullYear()} {site.name}
+    </span>
+  </p>
 </footer>
 
 <style>
@@ -18,19 +23,33 @@ import { site } from '../../config';
     border-top: 1px solid var(--ink);
     display: flex;
     justify-content: space-between;
-    gap: 16px;
-    font: 13px/1.6 var(--mono);
+    align-items: baseline;
+    gap: 32px;
+    font: 13px/1.7 var(--mono);
     color: var(--muted);
   }
-  .sep {
-    margin: 0 4px;
+  .colophon {
+    max-width: 56ch;
+  }
+  .foot a {
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+    text-underline-offset: 3px;
   }
   .foot a:hover {
     color: var(--accent);
+    text-decoration-color: currentColor;
   }
-  @media (max-width: 540px) {
+  .foot-meta {
+    display: flex;
+    gap: 18px;
+    flex-shrink: 0;
+  }
+  @media (max-width: 600px) {
     .foot {
       margin: 64px auto 40px;
+      flex-direction: column;
+      gap: 12px;
     }
   }
   @media print {

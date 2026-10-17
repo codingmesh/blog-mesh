@@ -12,8 +12,9 @@ import Icon from '../Icon.astro';
 </button>
 
 <script>
+  import { onPageLoad } from '../../scripts/page';
   import { initThemeToggle } from '../../scripts/theme';
-  initThemeToggle();
+  onPageLoad(initThemeToggle);
 </script>
 
 <style>

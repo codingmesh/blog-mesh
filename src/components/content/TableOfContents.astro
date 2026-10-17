@@ -35,8 +35,9 @@ const { headings, variant } = Astro.props;
 )}
 
 <script>
+  import { onPageLoad } from '../../scripts/page';
   import { initTableOfContents } from '../../scripts/toc';
-  initTableOfContents();
+  onPageLoad(() => initTableOfContents());
 </script>
 
 <style>

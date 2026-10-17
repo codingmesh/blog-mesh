@@ -55,8 +55,9 @@ const topics = [...new Set((await getArticles()).flatMap((post) => post.data.tag
 </dialog>
 
 <script>
+  import { onPageLoad } from '../../scripts/page';
   import { initSearch } from '../../scripts/search';
-  initSearch();
+  onPageLoad(initSearch);
 </script>
 
 <style>

@@ -2,7 +2,8 @@
 import { formatDate, postUrl, readingTime, type Post } from '../../lib/content';
 /**
  * One entry in an index. With a `number` it is a numbered table-of-contents row; without one it is a plain row.
- * The `note` variant is a single line with the date on the right.
+ * The `note` variant is a single line with the date on the right. Titles carry a view-transition name so the
+ * clicked title morphs into the article headline.
  */
 interface Props {
   post: Post;
@@ -13,20 +14,28 @@ interface Props {
 const { post, number, variant = 'index', heading = 'h2' } = Astro.props;
 const Heading = heading;
 const topic = post.data.tags[0];
+const transitionName = `title-${post.collection}-${post.id}`;
 ---
 
 {variant === 'note' ? (
   <li class="note-row archive-item" data-tags={JSON.stringify(post.data.tags)}>
     <a href={postUrl(post)}>
-      <Heading class="note-title">{post.data.title}</Heading>
+      <Heading class="note-title" transition:name={transitionName}>
+        {post.data.title}
+      </Heading>
       <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
     </a>
   </li>
 ) : (
   <li class:list={['index-row', 'archive-item', { numbered: !!number }]} data-tags={JSON.stringify(post.data.tags)}>
-    {number && <span class="num">{number}</span>}
+    {number && (
+      <span class="num" aria-hidden="true">
+        <span class="num-text">{number}</span>
+        <span class="num-arrow">→</span>
+      </span>
+    )}
     <div>
-      <Heading class="index-title">
+      <Heading class="index-title" transition:name={transitionName}>
         <a href={postUrl(post)}>{post.data.title}</a>
       </Heading>
       <p class="index-summary">{post.data.description}</p>
@@ -50,10 +59,37 @@ const topic = post.data.tags[0];
   .index-row.numbered {
     grid-template-columns: 72px minmax(0, 1fr);
   }
+  /* The numeral becomes an arrow while the row is hovered or its link focused. */
   .num {
+    position: relative;
+    display: block;
     font: 500 15px/1.2 var(--mono);
     color: var(--accent);
     padding-top: 10px;
+  }
+  .num-text,
+  .num-arrow {
+    display: block;
+    transition:
+      opacity 160ms var(--ease),
+      transform 200ms var(--ease);
+  }
+  .num-arrow {
+    position: absolute;
+    left: 0;
+    top: 10px;
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  .index-row:hover .num-text,
+  .index-row:focus-within .num-text {
+    opacity: 0;
+    transform: translateX(6px);
+  }
+  .index-row:hover .num-arrow,
+  .index-row:focus-within .num-arrow {
+    opacity: 1;
+    transform: translateX(0);
   }
   .index-title {
     font-size: 34px;
@@ -105,6 +141,9 @@ const topic = post.data.tags[0];
     }
     .num {
       padding: 0;
+    }
+    .num-arrow {
+      top: 0;
     }
     .index-title {
       font-size: 28px;

@@ -55,8 +55,9 @@ const number = (post: (typeof posts)[number]) => String(posts.indexOf(post) + 1)
 </Base>
 
 <script>
+  import { onPageLoad } from '../../scripts/page';
   import { initTopicFilters } from '../../scripts/filters';
-  initTopicFilters();
+  onPageLoad(initTopicFilters);
 </script>
 
 <style>
@@ -88,7 +89,8 @@ const number = (post: (typeof posts)[number]) => String(posts.indexOf(post) + 1)
   }
   .archive-year {
     margin: 40px 0 0;
-    padding-bottom: 6px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
   }
   .archive-group:first-of-type .archive-year {
     margin-top: 28px;

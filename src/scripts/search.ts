@@ -3,7 +3,23 @@ import { highlightRanges, matchIndex, type IndexEntry } from './search-match';
 type SearchData = { url: string; meta: { title?: string; description?: string }; excerpt: string };
 type Pagefind = { search: (query: string) => Promise<{ results: { data: () => Promise<SearchData> }[] }> };
 
+// The shortcut is bound once for the whole session and always targets the dialog on the current page.
+let shortcutBound = false;
+function bindShortcut() {
+  if (shortcutBound) return;
+  shortcutBound = true;
+  document.addEventListener('keydown', (event) => {
+    if (!(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== 'k') return;
+    event.preventDefault();
+    const dialog = document.querySelector<HTMLDialogElement>('#search-dialog');
+    if (!dialog) return;
+    if (dialog.open) dialog.close();
+    else document.querySelector<HTMLButtonElement>('#search-open')?.click();
+  });
+}
+
 export function initSearch() {
+  bindShortcut();
   const dialog = document.querySelector<HTMLDialogElement>('#search-dialog');
   const input = document.querySelector<HTMLInputElement>('#search-input');
   const status = document.querySelector<HTMLElement>('#search-status');
@@ -52,13 +68,6 @@ export function initSearch() {
       event.clientY > rect.bottom
     )
       close();
-  });
-  document.addEventListener('keydown', (event) => {
-    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-      event.preventDefault();
-      if (dialog!.open) close();
-      else open();
-    }
   });
   // Results stay ordinary links: Tab, Enter, and modifier-click keep native behavior. Arrows move focus.
   dialog.addEventListener('keydown', (event) => {

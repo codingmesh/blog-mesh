@@ -1,17 +1,21 @@
 ---
+import Icon from '../Icon.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import { site } from '../../config';
-/** Name and focus on the left, navigation on the right. The search entry is a button that opens the dialog. */
+/** Mark, name, and focus on the left; navigation, search, and theme on the right. */
 interface Props {
   active?: string;
 }
 const { active } = Astro.props;
 ---
 
-<header class="top wrap" data-pagefind-ignore>
+<header class="top wrap" data-pagefind-ignore transition:animate="none">
   <a class="name" href="/">
-    {site.name}
-    <small>{site.focus}</small>
+    <span class="mark" aria-hidden="true"></span>
+    <span class="name-text">
+      {site.name}
+      <small>{site.focus}</small>
+    </span>
   </a>
   <nav aria-label="Main navigation">
     <a href="/writing/" aria-current={active === 'writing' ? 'page' : undefined}>
@@ -25,13 +29,16 @@ const { active } = Astro.props;
     </a>
     <button
       type="button"
+      class="search-trigger"
       id="search-open"
       aria-label="Search writing and notes"
       aria-haspopup="dialog"
       aria-controls="search-dialog"
       title="Search (⌘K / Ctrl+K)"
     >
-      Search
+      <Icon name="search" size={15} />
+      <span>Search</span>
+      <kbd>⌘K</kbd>
     </button>
     <ThemeToggle />
   </nav>
@@ -46,10 +53,25 @@ const { active } = Astro.props;
     padding: 28px 0 0;
   }
   .name {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
     font-weight: 600;
     font-size: 17px;
     letter-spacing: -0.01em;
     line-height: 1.3;
+  }
+  .mark {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    background: var(--accent);
+    margin-top: 5px;
+    flex-shrink: 0;
+    transition: transform 160ms var(--ease);
+  }
+  .name:hover .mark {
+    transform: rotate(45deg);
   }
   .name small {
     display: block;
@@ -68,8 +90,21 @@ const { active } = Astro.props;
     color: var(--muted);
     padding-top: 1px;
   }
-  nav a,
-  nav button {
+  nav a {
+    padding: 4px 0;
+    line-height: 1.6;
+  }
+  nav a:hover {
+    color: var(--ink);
+  }
+  nav a[aria-current='page'] {
+    color: var(--ink);
+    box-shadow: inset 0 -2px 0 var(--accent);
+  }
+  .search-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     padding: 4px 0;
     border: 0;
     background: transparent;
@@ -77,36 +112,47 @@ const { active } = Astro.props;
     color: inherit;
     line-height: 1.6;
   }
-  nav a:hover,
-  nav button:hover {
+  .search-trigger:hover {
     color: var(--ink);
   }
-  nav a[aria-current='page'] {
-    color: var(--ink);
-    box-shadow: inset 0 -2px 0 var(--accent);
+  .search-trigger kbd {
+    margin-left: 2px;
   }
   @media (max-width: 600px) {
     .top {
       padding-top: 20px;
       align-items: center;
     }
-    .name small {
+    .name small,
+    .search-trigger kbd,
+    .search-trigger span {
       display: none;
+    }
+    .name {
+      align-items: center;
+    }
+    .mark {
+      margin-top: 0;
     }
     nav {
       gap: 14px;
       font-size: 14px;
+    }
+    .search-trigger {
+      width: 40px;
+      height: 40px;
+      justify-content: center;
     }
   }
   @media (max-width: 400px) {
     /* Narrow phones: name on the first row, navigation on its own row below. */
     .top {
       flex-wrap: wrap;
-      row-gap: 2px;
+      row-gap: 0;
     }
     nav {
       width: 100%;
-      gap: 16px;
+      gap: 14px;
       padding-top: 0;
     }
   }

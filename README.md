@@ -92,6 +92,8 @@ Light palette: `#faf8f3` paper, `#141414` ink, `#6a675f` muted, `#1f6b4f` accent
 
 Code always sits in a dark panel, in both themes: a slim bar with a centered language or filename label and a copy button, Plex Mono at 14px on desktop and 13px on phones, horizontal scrolling, and print styles. Highlighted lines use a green tint across the full scrollable width; copied text is unaffected. The traffic-light dots remain in the markup but are not shown.
 
+A few crafted details sit on top of those rules. Pages navigate with Astro's client router, so the title you click morphs into the article headline and pages crossfade; both are off under reduced motion. Articles carry their index numeral large and faint in the header on wide screens and show a two-pixel green reading line along the top edge that fills as the body scrolls past. Hovering an index row turns its numeral into an arrow. The header has a small green mark and a search entry with its ⌘K hint, the footer is a colophon, and the 404 page is entry 00. Every post has a generated social card at `/og/<id>.png`, rendered at build time with Satori from the Fontsource Plex files, and the site card at `/og/site.png` serves the other pages. Scripts register through `src/scripts/page.ts` so they run again after each client-side navigation without piling up listeners.
+
 ## Comments, analytics, and feeds
 
 - **Comments** use giscus on GitHub Discussions and render only when `PUBLIC_GISCUS_REPO`, `PUBLIC_GISCUS_REPO_ID`, and `PUBLIC_GISCUS_CATEGORY_ID` are set. Enable Discussions on the repository, install the giscus app, and copy the ids from https://giscus.app into the environment. The embed follows the site theme.

@@ -1,6 +1,7 @@
 <!-- Live region for copy feedback plus the script that builds window chrome around every code block. -->
 <p class="sr-only" id="copy-status" role="status" aria-live="polite"></p>
 <script>
+  import { onPageLoad } from '../../scripts/page';
   import { initCodeWindows } from '../../scripts/code-windows';
-  initCodeWindows();
+  onPageLoad(() => initCodeWindows());
 </script>

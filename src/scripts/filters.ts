@@ -1,3 +1,5 @@
+import { pageSignal } from './page.ts';
+
 /** Topic filtering for the archive. The pure part is tested; the DOM part keeps URL state in sync. */
 export type Tagged = { tags: string[] };
 
@@ -54,6 +56,6 @@ export function initTopicFilters() {
   }
   buttons.forEach((button) => button.addEventListener('click', () => select(button.dataset.tag || '')));
   document.querySelector('#filter-reset')?.addEventListener('click', () => select(''));
-  window.addEventListener('popstate', () => apply(currentTag()));
+  window.addEventListener('popstate', () => apply(currentTag()), { signal: pageSignal('filters') });
   apply(currentTag());
 }

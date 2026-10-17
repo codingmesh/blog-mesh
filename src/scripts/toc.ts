@@ -1,3 +1,5 @@
+import { pageSignal } from './page.ts';
+
 /** Marks the table-of-contents link for the heading nearest the top of the viewport. */
 export function initTableOfContents(selector = '.article-toc a') {
   const links = [...document.querySelectorAll<HTMLAnchorElement>(selector)];
@@ -24,7 +26,7 @@ export function initTableOfContents(selector = '.article-toc a') {
         scheduled = false;
       });
     },
-    { passive: true },
+    { passive: true, signal: pageSignal('toc') },
   );
   update();
 }
