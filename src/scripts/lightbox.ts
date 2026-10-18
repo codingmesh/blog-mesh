@@ -12,14 +12,22 @@ export function initLightbox(dialog = document.querySelector<HTMLDialogElement>(
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let source: HTMLImageElement | null = null;
 
-  const transition = (change: () => void) => {
-    if (reduced.matches || !document.startViewTransition) {
+  // Only one element may carry the name at a time, so it passes from the image leaving to the image arriving
+  // inside the change; both having it would abort the transition.
+  const transition = (from: HTMLImageElement, to: HTMLImageElement, change: () => void) => {
+    const move = () => {
       change();
+      from.style.viewTransitionName = '';
+      to.style.viewTransitionName = 'figure';
+    };
+    if (reduced.matches || !document.startViewTransition) {
+      move();
+      to.style.viewTransitionName = '';
       return;
     }
-    if (source) source.style.viewTransitionName = 'figure';
-    document.startViewTransition(change).finished.finally(() => {
-      if (source) source.style.viewTransitionName = '';
+    from.style.viewTransitionName = 'figure';
+    document.startViewTransition(move).finished.finally(() => {
+      to.style.viewTransitionName = '';
     });
   };
   const open = (link: HTMLAnchorElement) => {
@@ -28,9 +36,15 @@ export function initLightbox(dialog = document.querySelector<HTMLDialogElement>(
     image.src = link.href;
     image.alt = source.alt;
     caption.textContent = link.parentElement?.querySelector('figcaption')?.textContent ?? '';
-    transition(() => dialog.showModal());
+    transition(source, image, () => dialog.showModal());
   };
-  const close = () => transition(() => dialog.close());
+  const close = () => {
+    if (!source) {
+      dialog.close();
+      return;
+    }
+    transition(image, source, () => dialog.close());
+  };
 
   const signal = pageSignal('lightbox');
   // Capture phase, so the click is claimed before the client router treats the link as a navigation.
