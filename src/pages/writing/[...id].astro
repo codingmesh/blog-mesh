@@ -199,18 +199,25 @@ const transitionName = `title-${post.collection}-${post.id}`;
   .article :global(.mobile-toc) {
     display: block;
   }
-  @media (min-width: 1240px) {
+  /* Laptops from 1100px get a narrower rail (720px column + 2 × 186px fits in 1092px); from 1240px the full one. */
+  @media (min-width: 1100px) {
     /* Spans the article from the title to the end so the sticky block inside can follow the reader. */
     .article :global(.article-toc) {
       display: block;
       position: absolute;
-      left: calc(100% + 56px);
+      left: calc(100% + 36px);
       top: 72px;
       bottom: 0;
-      width: 200px;
+      width: 150px;
     }
     .article :global(.mobile-toc) {
       display: none;
+    }
+  }
+  @media (min-width: 1240px) {
+    .article :global(.article-toc) {
+      left: calc(100% + 56px);
+      width: 200px;
     }
   }
   .article-end {

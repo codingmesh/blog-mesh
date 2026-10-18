@@ -1,7 +1,7 @@
 /**
- * Theme toggle. Light is the default; the pre-paint choice lives in an inline script in Base.astro.
- * This module wires the button, re-applies the stored theme after client-side navigation,
- * and announces changes for anything that needs to follow (comments embed).
+ * Theme toggle. A stored choice wins, then the system preference, then light; the pre-paint choice lives in an
+ * inline script in Base.astro with the same rule. This module wires the button, re-applies the theme after
+ * client-side navigation, and announces changes for anything that needs to follow (comments embed).
  */
 export type Theme = 'light' | 'dark';
 
@@ -10,11 +10,12 @@ export function currentTheme(): Theme {
 }
 
 export function storedTheme(): Theme {
+  let preference: string | null = null;
   try {
-    return localStorage.getItem('theme') === 'dark' ? 'dark' : 'light';
-  } catch {
-    return 'light';
-  }
+    preference = localStorage.getItem('theme');
+  } catch {}
+  if (preference === 'dark' || preference === 'light') return preference;
+  return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
 export function applyTheme(theme: Theme) {

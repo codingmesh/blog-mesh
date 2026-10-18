@@ -1,5 +1,6 @@
 ---
 import { formatDate, postUrl, readingTime, type Post } from '../../lib/content';
+import { site } from '../../config';
 /**
  * One entry in a list. The `row` variant is a date and a title, the `latest` variant adds the reading time, the topic,
  * and the one-line description. Titles carry a view-transition name so the clicked title morphs into the headline.
@@ -14,7 +15,11 @@ const Heading = heading;
 const topic = post.data.tags[0];
 const transitionName = `title-${post.collection}-${post.id}`;
 const date = post.data.date;
+// Desktop rows align on the numeric form; phones, where the date sits over the title, read a month name.
 const yearMonth = `${date.getUTCFullYear()} · ${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
+const monthYear = new Intl.DateTimeFormat(site.locale, { month: 'short', year: 'numeric', timeZone: 'UTC' }).format(
+  date,
+);
 ---
 
 {variant === 'latest' ? (
@@ -39,7 +44,10 @@ const yearMonth = `${date.getUTCFullYear()} · ${String(date.getUTCMonth() + 1).
   </article>
 ) : (
   <li class="row archive-item" data-tags={JSON.stringify(post.data.tags)}>
-    <time datetime={date.toISOString()}>{yearMonth}</time>
+    <time datetime={date.toISOString()}>
+      <span class="date-wide">{yearMonth}</span>
+      <span class="date-narrow">{monthYear}</span>
+    </time>
     <Heading class="row-title" transition:name={transitionName}>
       <a href={postUrl(post)}>{post.data.title}</a>
     </Heading>
@@ -63,6 +71,9 @@ const yearMonth = `${date.getUTCFullYear()} · ${String(date.getUTCMonth() + 1).
   }
   .row-length {
     text-align: right;
+  }
+  .date-narrow {
+    display: none;
   }
   .row-title {
     margin: 0;
@@ -128,6 +139,12 @@ const yearMonth = `${date.getUTCFullYear()} · ${String(date.getUTCMonth() + 1).
     }
     .row time {
       line-height: 1.4;
+    }
+    .date-wide {
+      display: none;
+    }
+    .date-narrow {
+      display: inline;
     }
     .row-length {
       display: none;

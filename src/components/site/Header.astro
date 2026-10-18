@@ -141,6 +141,12 @@ const { active, crumb } = Astro.props;
       gap: 14px;
       font-size: 14px;
     }
+    /* Thumb-sized links, level with the 40px buttons beside them. */
+    nav a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+    }
     .search-trigger {
       width: 40px;
       height: 40px;

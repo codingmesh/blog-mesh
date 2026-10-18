@@ -72,13 +72,16 @@ const imageUrl = new URL(image, Astro.site);
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={imageUrl} />
     <script is:inline>
-      // Light is the default. A stored choice of dark wins; the system preference is not consulted.
+      // A stored choice wins. Without one, the system preference decides; light is the default.
       (() => {
         let preference;
         try {
           preference = localStorage.getItem('theme');
         } catch {}
-        const theme = preference === 'dark' ? 'dark' : 'light';
+        if (preference !== 'dark' && preference !== 'light') {
+          preference = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        const theme = preference;
         const meta = document.querySelector('meta[name="theme-color"]');
         document.documentElement.dataset.theme = theme;
         meta.content = meta.dataset[theme];

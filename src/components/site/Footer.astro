@@ -54,6 +54,12 @@ import { site } from '../../config';
       flex-direction: column;
       gap: 12px;
     }
+    /* Thumb-sized links; the padding is pulled back so the text keeps its line. */
+    .foot a {
+      display: inline-block;
+      padding: 9px 0;
+      margin: -9px 0;
+    }
   }
   @media print {
     .foot {

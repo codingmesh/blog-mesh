@@ -397,10 +397,11 @@ class Wind {
     gl.uniform2f(f.loc('Origin'), left / scale, top / scale);
     gl.uniform2f(f.loc('Step'), cellW / scale, cellH / 2 / scale);
     gl.uniform2f(f.loc('PaneSize'), width, height);
-    // One field with two soft masks. The reading column dims to a quarter over a 320px fade; the field is
-    // strongest around the page head and settles to about a third below it; ripples pass through both.
+    // One field with two soft masks. The reading column dims to about a tenth over a 320px fade so the glyphs
+    // stay behind the headline rather than through it; the field is strongest around the page head and settles
+    // to about a third below it; ripples pass through both.
     const rect = this.column.getBoundingClientRect();
-    gl.uniform4f(f.loc('Column'), rect.x + rect.width / 2, rect.width / 2 + 24, 320, 0.25);
+    gl.uniform4f(f.loc('Column'), rect.x + rect.width / 2, rect.width / 2 + 24, 320, 0.1);
     const head = (this.head ?? this.column).getBoundingClientRect();
     gl.uniform4f(f.loc('Head'), head.bottom + 48, 260, 0.35, 0.6);
     gl.uniform1f(f.loc('Pass'), 0.9);

@@ -180,7 +180,7 @@
   box-sizing: border-box;
   text-align: right;
   font-size: 12px;
-  color: var(--gutter, #5e625f);
+  color: var(--gutter, #7a7e7b);
   user-select: none;
 }
 .prose pre .line:empty::after {
@@ -540,14 +540,17 @@
   .prose pre {
     font-size: 13px;
   }
-  .prose pre[data-gutter] .line {
-    grid-template-columns: 40px minmax(0, 1fr);
-  }
+  /* A narrower gutter; the note and wrapped continuation lines follow it so the code column stays aligned. */
   .prose pre[data-gutter] .line::before {
+    width: 40px;
     padding-right: 10px;
   }
   .prose pre[data-gutter] .line-note {
     padding-left: 40px;
+  }
+  .prose pre[data-wrap][data-gutter] .line {
+    padding-left: 40px;
+    text-indent: -40px;
   }
   .prose blockquote {
     font-size: 17px;
@@ -555,8 +558,9 @@
   .code-tool span {
     display: none;
   }
+  /* Icon-only on phones, sized for a thumb. */
   .code-tool {
-    padding: 9px;
+    padding: 13px;
   }
 }
 @media print {
