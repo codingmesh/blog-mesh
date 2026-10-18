@@ -100,11 +100,7 @@ h1 {
   font-weight: 700;
   letter-spacing: -0.02em;
 }
-h1,
-h2,
-h3 {
-  text-wrap: balance;
-}
+/* Headings fill the line and break only where they must; no balancing, which wraps early to even out lines. */
 p {
   text-wrap: pretty;
 }
