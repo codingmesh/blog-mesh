@@ -172,3 +172,7 @@ Type: IBM Plex gave way to one family in three faces, Source Serif 4 for reading
 ### Feed and the sample page
 
 A check of the feed after the new blocks found that readers got doubled math text (the MathML and its TeX source), empty heading anchors, root-relative image and video URLs, a bare caption where each diagram had been, and no label on model turns. `src/lib/feed-html.ts` now rewrites math to its TeX source in code, replaces each diagram with a pointer to the article, drops the anchors, and makes media and links absolute against the site URL; the sanitizer admits video with controls and strips the copy buttons; model turns render "Model" server-side and the script swaps in the transcript's model name. The fixture article was published as "How this site renders things", an honest tour of the blocks, so readers can discover them.
+
+### The contents list that scrolled away
+
+The owner reported that the side contents list looked like a dummy: it did not update and scrolled out of view. The tracking script was working, but the list was positioned absolutely at the top of the article, which overrode the sticky rule, so the highlight changed where no one could see it. The nav now spans the article's height and a sticky block inside it follows the reader; the last section is marked current at the end of the page even when its heading never reaches the top.

@@ -153,11 +153,13 @@ const transitionName = `title-${post.collection}-${post.id}`;
     display: block;
   }
   @media (min-width: 1240px) {
+    /* Spans the article from the title to the end so the sticky block inside can follow the reader. */
     .article :global(.article-toc) {
       display: block;
       position: absolute;
       left: calc(100% + 56px);
       top: 72px;
+      bottom: 0;
       width: 200px;
     }
     .article :global(.mobile-toc) {

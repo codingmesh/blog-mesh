@@ -13,15 +13,18 @@ const { headings, variant } = Astro.props;
 
 {variant === 'side' ? (
   <nav class="article-toc" aria-label="Table of contents" data-pagefind-ignore>
-    <h2 class="toc-label">On this page</h2>
-    <ol>
-      <span class="toc-marker" aria-hidden="true" />
-      {headings.map((heading) => (
-        <li class:list={{ 'toc-sub': heading.depth === 3 }}>
-          <a href={`#${heading.slug}`}>{heading.text}</a>
-        </li>
-      ))}
-    </ol>
+    {/* The nav spans the article's height; this inner block is what sticks while the body scrolls. */}
+    <div class="toc-sticky">
+      <h2 class="toc-label">On this page</h2>
+      <ol>
+        <span class="toc-marker" aria-hidden="true" />
+        {headings.map((heading) => (
+          <li class:list={{ 'toc-sub': heading.depth === 3 }}>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))}
+      </ol>
+    </div>
   </nav>
 ) : (
   <details class="mobile-toc" data-pagefind-ignore>
@@ -46,11 +49,16 @@ const { headings, variant } = Astro.props;
 
 <style>
   .article-toc {
-    position: sticky;
-    top: 32px;
     font-size: 14px;
     line-height: 1.5;
     color: var(--muted);
+  }
+  .toc-sticky {
+    position: sticky;
+    top: 40px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    scrollbar-width: none;
   }
   .toc-label {
     margin: 0 0 8px;

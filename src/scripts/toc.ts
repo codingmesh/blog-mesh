@@ -11,6 +11,9 @@ export function initTableOfContents(selector = '.article-toc a') {
   const update = () => {
     let current = headings[0].id;
     for (const heading of headings) if (heading.getBoundingClientRect().top <= 150) current = heading.id;
+    // At the end of the page the last section is current even if its heading never reaches the top.
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2)
+      current = headings[headings.length - 1].id;
     links.forEach((link) => {
       const active = decodeURIComponent(link.hash.slice(1)) === current;
       if (active) {
