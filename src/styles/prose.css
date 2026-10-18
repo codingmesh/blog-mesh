@@ -195,9 +195,9 @@
   margin: 0;
   border: 0;
   border-radius: 0;
-  /* A clear gap between the label row and the first line, and room below the last one. */
-  padding-top: 24px;
-  padding-bottom: 36px;
+  /* About 20px between the label row and the first line, and room below the last one. */
+  padding-top: 16px;
+  padding-bottom: 32px;
 }
 .prose .code-block pre:focus-visible {
   outline-offset: -3px;
@@ -229,7 +229,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  padding: 24px calc(var(--code-pad) - 8px) 0 var(--code-pad);
+  padding: 16px calc(var(--code-pad) - 8px) 0 var(--code-pad);
   color: var(--panel-muted);
 }
 .code-tab {

@@ -3,7 +3,7 @@
    Font family variables (--font-serif, --font-sans, --font-mono) are injected by Astro's <Font /> components. */
 :root {
   /* Paper is a bright cream with warm ivory as the inset surface; dark paper is warm charcoal. The code panel is
-     always the charcoal, a hairline darker than the dark page so it still reads as a panel there. */
+     the charcoal on light pages and a step lighter than the page in dark mode. */
   --paper: #fffcf0;
   --ink: #1f1e1d;
   --muted: #6b675f;
@@ -39,8 +39,9 @@
   --soft: #262523;
   --accent: #7cc6a4;
   --accent-ink: #9ad6ba;
-  --panel: #181716;
-  --panel-line: #302e2b;
+  /* On the dark page the panel is a step lighter than the paper, as in the reference, not darker. */
+  --panel: #272625;
+  --panel-line: #353331;
   color-scheme: dark;
 }
 @media (max-width: 600px) {
