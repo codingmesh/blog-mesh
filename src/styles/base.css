@@ -295,7 +295,12 @@ kbd {
     width: 100%;
   }
 }
-/* Theme change as an ink wipe: the new page is revealed by a growing circle instead of the default crossfade. */
+/* Theme change as an ink wipe: the new page is revealed by a growing circle instead of the default crossfade.
+   The header, footer, and titles normally carry their own transition groups for page navigation; during the wipe
+   they must be part of the single page snapshot, or they switch on their own and break the circle. */
+html.theme-wipe body * {
+  view-transition-name: none !important;
+}
 html.theme-wipe::view-transition-old(root),
 html.theme-wipe::view-transition-new(root) {
   animation: none;

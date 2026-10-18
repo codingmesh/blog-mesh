@@ -45,11 +45,13 @@ function switchTheme(next: Theme, origin: HTMLElement) {
   const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
   root.classList.add('theme-wipe');
   const transition = document.startViewTransition(() => applyTheme(next));
+  // A circle's area grows with the square of its radius, so a gentle ease-out keeps the reveal at an even pace
+  // from the corner to the far side of the page instead of finishing in a rush.
   transition.ready
     .then(() =>
       root.animate(
         { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
-        { duration: 520, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)', pseudoElement: '::view-transition-new(root)' },
+        { duration: 900, easing: 'cubic-bezier(0.3, 0.1, 0.3, 1)', pseudoElement: '::view-transition-new(root)' },
       ),
     )
     .catch(() => {});
