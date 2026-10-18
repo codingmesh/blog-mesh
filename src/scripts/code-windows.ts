@@ -134,9 +134,6 @@ export function initCodeWindows(
     bar.append(tab, tools);
     tools.append(wrapButton, copyButton);
 
-    // Offer wrapping only when a line actually overflows.
-    if (pre.scrollWidth <= pre.clientWidth && !('wrap' in pre.dataset)) wrapButton.hidden = true;
-
     // Long blocks start folded with a control that states the full length.
     if (lineCount > FOLD_AFTER) {
       shell.classList.add('is-folded');
