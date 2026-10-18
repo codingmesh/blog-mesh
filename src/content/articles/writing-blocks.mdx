@@ -53,6 +53,23 @@ digraph {
 }
 ```
 
+A Mermaid fence works the same way and covers more diagram types. This one is a sequence diagram.
+
+```mermaid caption="The same check as a sequence, drawn from a mermaid fence at build time."
+sequenceDiagram
+  participant S as Scheduler
+  participant C as Check
+  participant R as Report
+  S->>C: run
+  alt updates found
+    C->>R: updates
+  else no updates
+    C->>R: nothing new
+  else check failed
+    C-->>R: failure, with cause
+  end
+```
+
 ## A conversation
 
 <Transcript model="Claude" date="Oct 14, 2026">

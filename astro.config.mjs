@@ -66,8 +66,8 @@ export default defineConfig({
     },
   },
   markdown: {
-    // `dot` fences are diagrams, rendered by rehypeDiagrams rather than highlighted.
-    syntaxHighlight: { type: 'shiki', excludeLangs: ['dot', 'math'] },
+    // `dot` and `mermaid` fences are diagrams, rendered by rehypeDiagrams rather than highlighted.
+    syntaxHighlight: { type: 'shiki', excludeLangs: ['dot', 'mermaid', 'math'] },
     shikiConfig: {
       themes: { light: 'github-light-high-contrast', dark: 'github-dark-high-contrast' },
       wrap: false,

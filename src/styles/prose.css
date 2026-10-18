@@ -400,9 +400,25 @@
   view-transition-name: none;
 }
 
-/* Diagrams rendered from dot fences at build time. */
+/* Diagrams rendered from dot and mermaid fences at build time. Mermaid diagrams (Pele) read their colors and font
+   from these properties, so one SVG follows the light, dark, and print themes. */
 .prose .diagram {
   margin: 28px 0;
+  --pele-bg: var(--soft);
+  --pele-fg: var(--ink);
+  --pele-muted: var(--muted);
+  --pele-line: var(--muted);
+  --pele-surface: var(--paper);
+  --pele-surface-alt: var(--soft);
+  --pele-border: var(--muted);
+  --pele-accent: var(--accent);
+  --pele-critical: var(--accent-ink);
+  --pele-font: var(--sans);
+  --pele-font-mono: var(--mono);
+  --pele-radius: var(--radius);
+  --pele-title-weight: 600;
+  --pele-heading-weight: 600;
+  --pele-bold-weight: 600;
 }
 .prose .diagram-frame {
   padding: 20px 24px;
@@ -417,7 +433,8 @@
   height: auto;
   margin-inline: auto;
 }
-.prose .diagram text {
+/* Graphviz labels are measured in Courier and drawn in the site's mono; Pele's SVG sets its own font. */
+.prose .diagram svg:not(.pele) text {
   font-family: var(--mono);
 }
 

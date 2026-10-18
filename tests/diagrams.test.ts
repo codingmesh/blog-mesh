@@ -1,6 +1,19 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { diagramDefaults, styleDot, themeSvg } from '../src/lib/diagrams.ts';
+import { diagramDefaults, renderMermaid, styleDot, themeSvg } from '../src/lib/diagrams.ts';
+
+test('renderMermaid returns a themeable SVG and reports syntax errors as a build failure', () => {
+  const element = renderMermaid('flowchart LR\n  A[Draft] --> B[Published]', 'diagram-1-');
+  assert.ok(element);
+  assert.equal(element.tagName, 'svg');
+  const classes = element.properties.className as string[];
+  assert.ok(classes.includes('pele') && classes.includes('pele-flowchart'));
+  const html = JSON.stringify(element);
+  assert.ok(html.includes('var(--pele-fg'), 'colors come from custom properties, not literals');
+  assert.ok(html.includes('var(--pele-font'), 'font comes from a custom property');
+  assert.ok(html.includes('Published'), 'labels are kept');
+  assert.throws(() => renderMermaid('flowchart LR\n  A --> ', 'diagram-2-'), /Mermaid diagram could not be rendered/);
+});
 
 test('styleDot inserts the site defaults after the opening brace and leaves the graph intact', () => {
   const styled = styleDot('digraph G {\n  a -> b;\n}');

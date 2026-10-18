@@ -1,12 +1,38 @@
 import type { Element, Root } from 'hast';
 import { fromHtml } from 'hast-util-from-html';
+import { PeleError, render as renderPele } from 'pele';
 import { visit } from 'unist-util-visit';
 
 /**
  * Diagrams from text, rendered at build time. A ```dot fence holds a Graphviz graph; the build renders it to SVG
  * with Graphviz compiled to WebAssembly (no browser, no service), restyles it in the site's tokens, and inlines it
- * as a figure. Fence meta accepts `caption="..."` and `title="..."` (the accessible name).
+ * as a figure. A ```mermaid fence holds a Mermaid diagram, rendered by Pele, whose SVG reads its colors and font
+ * from `--pele-*` custom properties that the stylesheet maps to the theme. Fence meta accepts `caption="..."` and
+ * `title="..."` (the accessible name).
  */
+
+/** The width a diagram can use inside the column once the frame's padding is taken, so wide layouts adapt. */
+const frameWidth = 672;
+
+/**
+ * Renders a Mermaid diagram to an SVG element. Pele measures labels with a built-in width table outside a browser;
+ * the stylesheet then draws them in the site's sans, so `--pele-font` must stay a face of similar width.
+ */
+export function renderMermaid(source: string, idPrefix: string): Element | undefined {
+  let svg: string;
+  try {
+    svg = renderPele(source, { maxWidth: frameWidth, idPrefix }).svg;
+  } catch (error) {
+    if (error instanceof PeleError) throw new Error(`Mermaid diagram could not be rendered: ${error.message}`);
+    throw error;
+  }
+  const root = fromHtml(svg, { fragment: true, space: 'svg' });
+  const element = root.children.find((child): child is Element => child.type === 'element' && child.tagName === 'svg');
+  if (!element) return undefined;
+  // Pele describes the SVG as a document; here it is a single picture with a label, like the dot diagrams.
+  delete element.properties.ariaRoleDescription;
+  return element;
+}
 
 /** Tokens the SVG is drawn with, mapped afterwards to the theme's custom properties. */
 const colors = {
@@ -28,7 +54,7 @@ const tokenFor: Record<string, string> = {
 
 /**
  * Folio's defaults, inserted at the top of the graph so an author only writes nodes and edges. Layout is measured
- * with Courier, whose built-in metrics match a monospace face; the stylesheet then draws the labels in Plex Mono,
+ * with Courier, whose built-in metrics match a monospace face; the stylesheet then draws the labels in the site's mono,
  * which has the same advance width, so the text fits the boxes Graphviz sized for it.
  */
 export const diagramDefaults = [
@@ -94,7 +120,7 @@ const textOf = (node: Element): string =>
     .map((child) => (child.type === 'text' ? child.value : child.type === 'element' ? textOf(child) : ''))
     .join('');
 
-type Target = { parent: Root | Element; index: number; code: Element; meta: string };
+type Target = { parent: Root | Element; index: number; code: Element; meta: string; lang: 'dot' | 'mermaid' };
 
 export default function rehypeDiagrams() {
   let graphviz: Promise<{ dot(source: string, format: 'svg'): string }> | undefined;
@@ -106,14 +132,23 @@ export default function rehypeDiagrams() {
         (child): child is Element => child.type === 'element' && child.tagName === 'code',
       );
       const classes = (code?.properties.className as string[] | undefined) ?? [];
-      if (!code || !classes.includes('language-dot')) return;
-      targets.push({ parent, index, code, meta: String((code.data as { meta?: string } | undefined)?.meta ?? '') });
+      const lang = classes.includes('language-dot') ? 'dot' : classes.includes('language-mermaid') ? 'mermaid' : null;
+      if (!code || !lang) return;
+      const meta = String((code.data as { meta?: string } | undefined)?.meta ?? '');
+      targets.push({ parent, index, code, meta, lang });
     });
     if (!targets.length) return;
-    graphviz ??= import('@hpcc-js/wasm-graphviz').then(({ Graphviz }) => Graphviz.load());
+    if (targets.some((target) => target.lang === 'dot')) {
+      graphviz ??= import('@hpcc-js/wasm-graphviz').then(({ Graphviz }) => Graphviz.load());
+    }
     const renderer = await graphviz;
-    for (const { parent, index, code, meta } of targets) {
-      const svg = themeSvg(renderer.dot(styleDot(textOf(code)), 'svg'));
+    let count = 0;
+    for (const { parent, index, code, meta, lang } of targets) {
+      count += 1;
+      const svg =
+        lang === 'dot'
+          ? themeSvg(renderer!.dot(styleDot(textOf(code)), 'svg'))
+          : renderMermaid(textOf(code), `diagram-${count}-`);
       if (!svg) continue;
       const caption = quoted(meta, 'caption');
       svg.properties.role = 'img';

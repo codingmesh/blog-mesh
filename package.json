@@ -30,6 +30,7 @@
     "astro": "7.3.8",
     "hast-util-from-html": "^2.0.3",
     "oxc-transform-react": "^0.145.0",
+    "pele": "^1.6.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "rehype-autolink-headings": "^7.1.0",
