@@ -1,16 +1,9 @@
 ---
 import { site } from '../../config';
-/** A colophon: what the site is set in and built with, plus the feed and the year. */
+/** The feed link and the year. Third-party notices live at /third-party-notices.txt. */
 ---
 
 <footer class="foot wrap" data-pagefind-ignore transition:animate="none">
-  <p class="colophon">
-    Set in Source Serif, Source Sans, and Source Code Pro. Built with <a href="https://astro.build/">Astro</a> and
-    edited with <a href="https://keystatic.com/">Keystatic</a>. Source on{' '}
-    <a href={`https://github.com/${site.repo}`}>GitHub</a>. The wind in the margins follows{' '}
-    <a href="https://github.com/egoist/mygo/tree/main/examples/wind">MyGo's example</a> (
-    <a href="/third-party-notices.txt">notices</a>).
-  </p>
   <p class="foot-meta">
     <a href="/rss.xml">RSS</a>
     <span>
@@ -24,15 +17,8 @@ import { site } from '../../config';
     margin: 96px auto 48px;
     padding-top: 24px;
     border-top: 1px solid var(--ink);
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 32px;
     font: 13px/1.7 var(--mono);
     color: var(--muted);
-  }
-  .colophon {
-    max-width: 56ch;
   }
   .foot a {
     text-decoration: underline;
@@ -46,13 +32,11 @@ import { site } from '../../config';
   .foot-meta {
     display: flex;
     gap: 18px;
-    flex-shrink: 0;
+    margin: 0;
   }
   @media (max-width: 600px) {
     .foot {
       margin: 64px auto 40px;
-      flex-direction: column;
-      gap: 12px;
     }
     /* Thumb-sized links; the padding is pulled back so the text keeps its line. */
     .foot a {
