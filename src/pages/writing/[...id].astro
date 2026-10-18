@@ -10,6 +10,7 @@ import ReadingLine from '../../components/content/ReadingLine.astro';
 import TableOfContents from '../../components/content/TableOfContents.astro';
 import { mdxComponents } from '../../components/content/mdx-components';
 import { formatDate, formatLabel, getAllWriting, isNote, postUrl, readingTime, type Post } from '../../lib/content';
+import { site } from '../../config';
 
 export async function getStaticPaths() {
   const posts = await getAllWriting();
@@ -63,18 +64,18 @@ const transitionName = `title-${post.collection}-${post.id}`;
         {post.data.title}
       </h1>
       <meta data-pagefind-meta="description[content]" content={post.data.description} />
-      {/* One subtitle: the source for a reading note, otherwise the description. Then one line of facts. */}
-      {source ? (
-        <p class="subtitle">
+      {/* Head order per the typography standard: title, descriptive subtitle, source attribution, then the date
+          line. Each fact appears once; the body does not restate them. */}
+      {post.data.description && <p class="subtitle">{post.data.description}</p>}
+      {source && (
+        <p class="attribution">
           On{' '}
           <a href={source.url} target="_blank" rel="noopener noreferrer">
-            {source.title}
+            <i>{source.title}</i>
             <span class="sr-only"> (opens in a new tab)</span>
           </a>{' '}
           by {source.author}
         </p>
-      ) : (
-        post.data.description && <p class="subtitle">{post.data.description}</p>
       )}
       <p class="meta-line">
         <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
@@ -98,6 +99,7 @@ const transitionName = `title-${post.collection}-${post.id}`;
           firsthand experience or original experimental results.
         </p>
       )}
+      {!post.data.sample && !note && post.data.format === 'reading' && <p class="sample-note">{site.editorialNote}</p>}
       {next && (
         <a class="next" href={postUrl(next)}>
           <span class="next-label">Read next</span>
@@ -110,47 +112,53 @@ const transitionName = `title-${post.collection}-${post.id}`;
 </Base>
 
 <style>
+  /* The head and the reading text share the 620px reading column; the rail hangs outside it. */
   .article {
     position: relative;
+    --column: var(--reading);
   }
+  /* Roles and gaps from docs/typography.md, section 4: article-title, article-subtitle, article-attribution,
+     article-date; 8px title to subtitle, 16px subtitle to attribution, 36px to the date, 24px to the body. */
   .article-head {
-    padding: 64px 0 28px;
+    padding: 64px 0 24px;
   }
   .article-head h1 {
-    font-size: 44px;
-    line-height: 1.18;
-    letter-spacing: -0.02em;
+    font-size: 56px;
     margin: 0;
     overflow-wrap: anywhere;
   }
-  /* The head says each thing once: title, an italic subtitle, then the date and length in a muted line. */
   .subtitle {
-    margin: 16px 0 0;
-    max-width: 60ch;
-    font: italic 400 21px/1.4 var(--serif);
+    margin: 8px 0 0;
+    font: italic 400 22px/1.6 var(--serif);
     color: var(--ink);
     overflow-wrap: anywhere;
   }
-  .subtitle a {
+  .attribution {
+    margin: 12px 0 0;
+    font: 400 16px/1.5 var(--serif);
+    color: var(--muted);
+    overflow-wrap: anywhere;
+  }
+  .subtitle + .attribution {
+    margin-top: 16px;
+  }
+  .attribution a {
+    color: inherit;
     text-decoration: underline;
     text-decoration-color: var(--line);
     text-underline-offset: 3px;
   }
-  .subtitle a:hover {
+  .attribution a:hover {
     color: var(--accent);
     text-decoration-color: currentColor;
   }
   .meta-line {
-    margin: 32px 0 0;
-    font: 400 17px/1.6 var(--serif);
+    margin: 36px 0 0;
+    font: 400 18px/1.6 var(--serif);
     color: var(--muted);
   }
-  .meta-line time {
-    font: inherit;
-    color: inherit;
-  }
   .prose {
-    padding-top: 12px;
+    padding-top: 0;
   }
   /* The side contents list hangs in the right margin on wide screens only. */
   .article :global(.article-toc) {
@@ -159,8 +167,9 @@ const transitionName = `title-${post.collection}-${post.id}`;
   .article :global(.mobile-toc) {
     display: block;
   }
-  /* Laptops from 1100px get a narrower rail (720px column + 2 × 186px fits in 1092px); from 1240px the full one. */
-  @media (min-width: 1100px) {
+  /* Laptops from 1000px get a narrower rail (620px column + 2 × 186px fits in 992px); from 1140px the full one
+     (620px + 2 × 256px). */
+  @media (min-width: 1000px) {
     /* Spans the article from the title to the end so the sticky block inside can follow the reader. */
     .article :global(.article-toc) {
       display: block;
@@ -174,7 +183,7 @@ const transitionName = `title-${post.collection}-${post.id}`;
       display: none;
     }
   }
-  @media (min-width: 1240px) {
+  @media (min-width: 1140px) {
     .article :global(.article-toc) {
       left: calc(100% + 56px);
       width: 200px;
@@ -186,26 +195,20 @@ const transitionName = `title-${post.collection}-${post.id}`;
     border-top: 1px solid var(--line);
   }
   .sample-note {
-    font-size: 14px;
-    line-height: 1.6;
+    font: 400 16px/1.5 var(--serif);
     color: var(--muted);
     margin: 0 0 28px;
-    max-width: 60ch;
   }
   .next {
     display: block;
   }
   .next-label {
     display: block;
-    font: 400 13px/1.8 var(--mono);
+    font: 400 14px/1.6 var(--sans);
     color: var(--muted);
   }
   .next-title {
-    font-family: var(--serif);
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: -0.015em;
-    line-height: 1.3;
+    font: 600 20px/1.4 var(--serif);
   }
   .next:hover .next-title {
     color: var(--accent);
@@ -214,15 +217,18 @@ const transitionName = `title-${post.collection}-${post.id}`;
     .article-head {
       padding: 40px 0 24px;
     }
+    .article-head h1 {
+      font-size: 40px;
+    }
     .subtitle {
-      font-size: 18px;
+      font-size: 20px;
+    }
+    .subtitle + .attribution {
+      margin-top: 12px;
     }
     .meta-line {
-      margin-top: 22px;
-      font-size: 16px;
-    }
-    .article-head h1 {
-      font-size: 34px;
+      margin-top: 24px;
+      font-size: 17px;
     }
   }
   @media print {

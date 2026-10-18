@@ -79,9 +79,9 @@ const { headings, variant, markdownHref } = Astro.props;
 </script>
 
 <style>
+  /* Contents navigation and its labels are interface text in the sans (typography standard, section 2). */
   .article-toc {
-    font-size: 14px;
-    line-height: 1.5;
+    font: 400 15px/1.5 var(--sans);
     color: var(--muted);
   }
   .toc-sticky {
@@ -93,7 +93,7 @@ const { headings, variant, markdownHref } = Astro.props;
   }
   .toc-label {
     margin: 0 0 8px;
-    font: 400 13px/1.8 var(--mono);
+    font: 500 14px/1.5 var(--sans);
     color: var(--muted);
   }
   .article-toc ol {
@@ -147,7 +147,8 @@ const { headings, variant, markdownHref } = Astro.props;
     background: repeating-linear-gradient(90deg, var(--accent) 0 2px, transparent 2px 4px);
   }
   .toc-pct {
-    font: 12.5px/1.8 var(--mono);
+    font: 400 14px/1.6 var(--sans);
+    font-variant-numeric: tabular-nums;
     color: var(--muted);
     margin: 0;
     min-width: 3ch;
@@ -186,11 +187,11 @@ const { headings, variant, markdownHref } = Astro.props;
   }
   .mobile-toc {
     border-block: 1px solid var(--line);
-    margin: 0 0 32px;
+    margin: 0 0 24px;
   }
   .mobile-toc summary {
     cursor: pointer;
-    font: 400 13px/1.8 var(--mono);
+    font: 500 15px/1.4 var(--sans);
     color: var(--accent);
     min-height: 44px;
     display: flex;
@@ -216,12 +217,13 @@ const { headings, variant, markdownHref } = Astro.props;
   }
   .toc-count {
     color: var(--muted);
+    font-weight: 400;
   }
   .mobile-toc ol {
     list-style: none;
     padding: 0;
     margin: 4px 0 14px;
-    font-size: 15px;
+    font: 400 15px/1.5 var(--sans);
     color: var(--muted);
   }
   .mobile-toc li a {

@@ -29,17 +29,19 @@ export default defineConfig({
     ...(onVercel || isDev ? [keystatic()] : []),
   ],
   fonts: [
-    // Families from src/assets/fonts, per the guide in src/assets/fonts/README.md: Folio Serif for reading text,
-    // Folio Sans for titles, headings, and the interface, JetBrains Mono for code and metadata. The Folio files are
-    // variable (weight 300 to 800, optical size 16 to 48), one file per style.
+    // Local fonts: Newsreader 24pt for reading text and titles, Folio Sans for the interface,
+    // and JetBrains Mono for code and metadata. See src/assets/fonts/README.md for the role map.
     {
-      name: 'Folio Serif',
+      name: 'Newsreader',
       cssVariable: '--font-serif',
       provider: fontProviders.local(),
       options: {
         variants: [
-          { weight: '300 800', style: 'normal', src: ['./src/assets/fonts/folio/FolioSerif-Roman.woff2'] },
-          { weight: '300 800', style: 'italic', src: ['./src/assets/fonts/folio/FolioSerif-Italic.woff2'] },
+          { weight: 400, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader24pt-Regular.woff2'] },
+          { weight: 400, style: 'italic', src: ['./src/assets/fonts/newsreader/Newsreader24pt-Italic.woff2'] },
+          { weight: 500, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader24pt-Medium.woff2'] },
+          { weight: 600, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader24pt-SemiBold.woff2'] },
+          { weight: 700, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader24pt-Bold.woff2'] },
         ],
       },
       fallbacks: ['Georgia', 'Times New Roman', 'serif'],

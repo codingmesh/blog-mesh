@@ -1,16 +1,12 @@
 /* Rendered Markdown and the code panels built around it. Global because Markdown output cannot be scoped.
    Code is always a dark panel, in both themes. */
-/* Reading text is set in the serif at weight 400 (the file's own default is 300); headings, captions, and
-   interface pieces are in the sans. */
+/* Roles follow docs/typography.md: body 20/18, section heading 32/28, subsection 24/22, caption 16, code 15/14.
+   Reading text, headings, and captions are Newsreader; tables and content-block labels are the sans. */
 .prose {
-  font: 400 18px/1.65 var(--serif);
+  font: 400 20px/1.6 var(--serif);
   font-optical-sizing: auto;
   overflow-wrap: anywhere;
-  max-width: 66ch;
 }
-.prose h2,
-.prose h3,
-.prose figcaption,
 .prose .aside,
 .prose .turn,
 .prose .transcript,
@@ -24,17 +20,15 @@
   margin-top: 0;
 }
 .prose h2 {
-  font-size: 24px;
-  line-height: 1.3;
-  letter-spacing: -0.012em;
-  margin: 44px 0 12px;
+  font-size: 32px;
+  line-height: 1.2;
+  margin: 48px 0 16px;
   scroll-margin-top: 30px;
 }
 .prose h3 {
-  font-size: 20px;
-  line-height: 1.35;
-  letter-spacing: -0.01em;
-  margin: 32px 0 10px;
+  font-size: 24px;
+  line-height: 1.3;
+  margin: 32px 0 12px;
 }
 .prose p,
 .prose li {
@@ -49,8 +43,6 @@
 }
 .prose li::marker {
   color: var(--muted);
-  font-family: var(--mono);
-  font-size: 0.9em;
 }
 .prose a {
   color: var(--accent);
@@ -92,15 +84,14 @@
 .prose blockquote cite {
   display: block;
   margin-top: 8px;
-  font: 13px/1.6 var(--mono);
+  font: 400 16px/1.5 var(--serif);
   color: var(--muted);
-  font-style: normal;
 }
 .prose strong {
   font-weight: 600;
 }
 .prose code {
-  font: 0.86em/1.6 var(--mono);
+  font: 0.9em/1.6 var(--mono);
   background: var(--soft);
   border-radius: 4px;
   padding: 2px 6px;
@@ -124,10 +115,8 @@
   text-align: left;
 }
 .prose th {
-  font: 500 12px/1.6 var(--mono);
+  font-weight: 600;
   color: var(--muted);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
 }
 .prose img {
   height: auto;
@@ -139,8 +128,7 @@
 }
 .prose figcaption {
   color: var(--muted);
-  font-size: 14px;
-  line-height: 1.5;
+  font: 400 16px/1.5 var(--serif);
   margin-top: 10px;
 }
 
@@ -190,8 +178,8 @@
 }
 .prose pre .line-note {
   display: block;
-  padding: 6px var(--code-pad) 10px calc(var(--code-pad));
-  font: 13px/1.5 var(--sans);
+  padding: 6px var(--code-pad) 10px;
+  font: 400 16px/1.5 var(--serif);
   color: var(--panel-muted);
   white-space: normal;
 }
@@ -249,7 +237,7 @@
   align-items: baseline;
   justify-self: start;
   gap: 8px;
-  font: 400 13px/1 var(--sans);
+  font: 400 14px/1 var(--sans);
   color: var(--panel-muted);
   max-width: 100%;
   overflow: hidden;
@@ -261,7 +249,7 @@
   color: var(--panel-ink);
 }
 .code-tab small {
-  font-size: 12px;
+  font-size: 13px;
 }
 .code-tab small::before {
   content: '· ';
@@ -329,7 +317,7 @@
   border-top: 1px solid var(--panel-line);
   background: var(--panel);
   color: var(--panel-muted);
-  font: 500 12px/1 var(--mono);
+  font: 500 14px/1 var(--sans);
 }
 .code-fold:hover {
   color: var(--panel-ink);
@@ -454,14 +442,15 @@
 /* Footnotes, as a hairline list at the end. */
 .prose sup a {
   text-decoration: none;
-  font: 500 0.75em/1 var(--mono);
+  font: 500 0.75em/1 var(--serif);
   padding: 0 1px;
 }
 .prose .footnotes {
   margin-top: 48px;
   padding-top: 16px;
   border-top: 1px solid var(--line);
-  font-size: 15px;
+  font-size: 16px;
+  line-height: 1.5;
   color: var(--muted);
 }
 /* The footnotes heading arrives visually hidden; show it as a small label instead. */
@@ -474,7 +463,7 @@
   clip: auto;
   clip-path: none;
   white-space: normal;
-  font: 400 13px/1.8 var(--mono);
+  font: 500 14px/1.5 var(--sans);
   letter-spacing: 0;
   color: var(--muted);
 }
@@ -507,9 +496,9 @@
   overflow-x: auto;
 }
 
-@media (max-width: 540px) {
+@media (max-width: 600px) {
   .prose {
-    font-size: 17px;
+    font-size: 18px;
   }
   /* No hover on phones, so no anchors; the heading text stays flush with the body. */
   .prose .anchor {
@@ -519,14 +508,15 @@
     padding: 14px;
   }
   .prose h2 {
-    font-size: 22px;
-    margin-top: 36px;
+    font-size: 28px;
+    margin: 36px 0 12px;
   }
   .prose h3 {
-    font-size: 19px;
+    font-size: 22px;
+    margin-top: 28px;
   }
   .prose pre {
-    font-size: 13.5px;
+    font-size: 14px;
   }
   .prose blockquote {
     font-size: 17px;

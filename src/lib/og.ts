@@ -6,9 +6,9 @@ import { site } from '../config';
 import { markDataUri } from './mark';
 
 /**
- * Build-time social cards in the Folio style: paper, a green numeral or the site mark, the title in Newsreader's
- * display cut, the site name below a rule.
- * Satori reads TTF, so the fonts come from the TTF copies kept beside the WOFF2 files in src/assets/fonts.
+ * Build-time social cards: paper, a green numeral or the site mark, Newsreader 24pt titles at weight 700, and
+ * Folio Sans for the labels, as the typography standard's card scale requires. The site name sits below a rule.
+ * Satori reads TTF, so the fonts come from static TTF copies kept beside the WOFF2 files in src/assets/fonts.
  */
 const paper = '#fffcf0';
 const ink = '#1f1e1d';
@@ -19,18 +19,18 @@ const fontFile = (file: string) => resolve(process.cwd(), 'src/assets/fonts', fi
 let fonts: Promise<Font[]> | undefined;
 async function loadFonts() {
   fonts ??= Promise.all([
-    readFile(fontFile('newsreader/Newsreader60pt-SemiBold.ttf')).then((data) => ({
+    readFile(fontFile('newsreader/Newsreader24pt-Bold.ttf')).then((data) => ({
       name: 'Display',
       data: toArrayBuffer(data),
-      weight: 600 as const,
+      weight: 700 as const,
     })),
     readFile(fontFile('newsreader/Newsreader24pt-Regular.ttf')).then((data) => ({
       name: 'Serif',
       data: toArrayBuffer(data),
       weight: 400 as const,
     })),
-    readFile(fontFile('jetbrains-mono/JetBrainsMono-Regular.ttf')).then((data) => ({
-      name: 'Mono',
+    readFile(fontFile('folio/FolioSans-Regular.ttf')).then((data) => ({
+      name: 'Sans',
       data: toArrayBuffer(data),
       weight: 400 as const,
     })),
@@ -71,7 +71,7 @@ export async function renderCard({ title, kicker, number, footer }: CardInput): 
           display: 'flex',
           alignItems: 'baseline',
           gap: 24,
-          fontFamily: 'Mono',
+          fontFamily: 'Sans',
           fontSize: 26,
           color: accent,
           fontWeight: 400,
@@ -94,9 +94,8 @@ export async function renderCard({ title, kicker, number, footer }: CardInput): 
           {
             fontFamily: 'Display',
             fontSize: titleSize,
-            fontWeight: 600,
+            fontWeight: 700,
             lineHeight: 1.05,
-            letterSpacing: '-0.02em',
             maxWidth: 1000,
           },
           title,
@@ -113,8 +112,8 @@ export async function renderCard({ title, kicker, number, footer }: CardInput): 
           fontSize: 24,
         },
         [
-          el('span', { fontFamily: 'Display', fontWeight: 600 }, site.name),
-          el('span', { fontFamily: 'Mono', fontSize: 20, color: muted }, footer || site.focus),
+          el('span', { fontFamily: 'Display', fontWeight: 700 }, site.name),
+          el('span', { fontFamily: 'Sans', fontSize: 20, color: muted }, footer || site.focus),
         ],
       ),
     ],

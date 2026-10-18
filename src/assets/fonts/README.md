@@ -1,64 +1,55 @@
-# Font usage
+# Font assets
 
-## Choose a font
+The [typography standard](../../../docs/typography.md) defines the required font roles, responsive type scale, spacing, reading width, and acceptance checks. This file documents the local assets and their registration. Existing CSS differences are tracked in the standard's migration checklist.
 
-| Font                      | Use for                                                | Available weights and styles            |
-| ------------------------- | ------------------------------------------------------ | --------------------------------------- |
-| Newsreader 24pt           | Paragraphs and smaller serif headings                  | Normal: 400, 500, 600, 700; italic: 400 |
-| Newsreader Display (60pt) | Large serif titles                                     | Normal: 400, 600                        |
-| Folio Sans                | Sans-serif titles, summaries, navigation, and controls | Variable: 300–800; normal and italic    |
-| Folio Serif               | Long-form reading text                                 | Variable: 300–800; normal and italic    |
-| JetBrains Mono            | Code and metadata                                      | Variable: 100–800; normal               |
+## Registered browser fonts
 
-Newsreader's 24pt and 60pt names identify optical designs, not required CSS font sizes. Use WOFF2 files for browser text. The TTF files are used separately by the social-card renderer in `src/lib/og.ts`.
+| Family          | Files                                         | Weights            | Styles                |
+| --------------- | --------------------------------------------- | ------------------ | --------------------- |
+| Newsreader 24pt | `newsreader/Newsreader24pt-*.woff2`           | 400, 500, 600, 700 | Normal; italic at 400 |
+| Folio Sans      | `folio/FolioSans-*.woff2`                     | Variable, 300–800  | Normal and italic     |
+| JetBrains Mono  | `jetbrains-mono/JetBrainsMono-Variable.woff2` | Variable, 100–800  | Normal                |
 
-## Use the active CSS tokens
+Newsreader's normal files are `Regular` (400), `Medium` (500), `SemiBold` (600), and `Bold` (700). `Italic` is weight 400. Its `24pt` name identifies an optical design, not the CSS font size.
 
-| Token       | Currently configured font |
-| ----------- | ------------------------- |
-| `--serif`   | Folio Serif               |
-| `--display` | Folio Sans (`--sans`)     |
-| `--sans`    | Folio Sans                |
-| `--mono`    | JetBrains Mono            |
+Folio Sans supports optical sizes from 16 to 48. Declare `font-optical-sizing: auto` where automatic optical sizing is desired. Newsreader's static 24pt files do not have a variable optical-size axis.
 
-Use these tokens in component styles instead of hardcoding family names:
+Newsreader 60pt and Folio Serif remain on disk as optional assets. They are not registered for browser text. Keep their filenames distinct from active families.
 
-```css
-.title {
-  font: 600 40px/1.15 var(--display);
-}
+## Browser registration
 
-.summary {
-  font: 400 20px/1.6 var(--serif);
-}
+Register local WOFF2 files in `astro.config.mjs` with `fontProviders.local()`. Newsreader requires one variant per weight and style. Variable fonts use their supported weight range:
 
-.label {
-  font: 400 15px/1.4 var(--sans);
-}
+```js
+// A static Newsreader variant.
+{ weight: 400, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader24pt-Regular.woff2'] }
 
-.code {
-  font: 400 14px/1.6 var(--mono);
-}
+// A variable Folio Sans variant.
+{ weight: '300 800', style: 'normal', src: ['./src/assets/fonts/folio/FolioSans-Roman.woff2'] }
 ```
 
-Article paragraphs currently use 18px/1.65, decreasing to 17px at widths up to 540px. Keep paragraph text at weight 400 and use 600 for headings. Adjust title sizes in the owning page's scoped styles to accommodate narrow screens.
+Use `style: 'italic'` with the matching italic file. JetBrains Mono uses `weight: '100 800'`. Do not declare styles or weights that the selected file cannot provide.
 
-## Enable the Folio families
+The family variables are injected by the `<Font />` components in `src/layouts/Base.astro` and exposed through the aliases in `src/styles/tokens.css`:
 
-The Folio files in `folio/` are active. These are the steps that enabled them, kept for reference:
+| Font loader variable | Component family token | Family          |
+| -------------------- | ---------------------- | --------------- |
+| `--font-serif`       | `--serif`, `--display` | Newsreader 24pt |
+| `--font-sans`        | `--sans`               | Folio Sans      |
+| `--font-mono`        | `--mono`               | JetBrains Mono  |
 
-1. In `astro.config.mjs`, replace the serif and sans font registrations with local families named `Folio Serif` and `Folio Sans`. Retain their `--font-serif` and `--font-sans` CSS variables and use the existing `fontProviders.local()` variant structure.
-2. Register each family's `Roman` file with `style: 'normal'` and its `Italic` file with `style: 'italic'`. Declare `weight: '300 800'` on every variant. File paths are `./src/assets/fonts/folio/FolioSans-Roman.woff2`, `FolioSans-Italic.woff2`, `FolioSerif-Roman.woff2`, and `FolioSerif-Italic.woff2`, all in the same directory.
-3. In `src/styles/tokens.css`, update the serif and sans fallback family names to the Folio aliases, and set `--display: var(--sans)` to use Folio Sans for large titles. Keep `--mono` unchanged.
-4. Remove the unused Newsreader Display registration and its `<Font cssVariable="--font-display" />` element in `src/layouts/Base.astro`. Keep the serif and sans `<Font />` elements. Preload only the styles and weights used immediately on the page.
-5. In `src/styles/prose.css`, set article section headings to `font-family: var(--sans)`. Paragraphs retain `var(--serif)`.
+Use component tokens instead of hardcoding Astro's generated family names. `--display` resolves to `--serif`; it does not activate the stored Newsreader 60pt files.
 
-Explicitly set regular reading text to weight 400; Folio Serif's embedded default is 300. Both Folio families support optical sizes from 16 to 48. Use `font-optical-sizing: auto` when allowing the browser to adjust the optical design to the text size.
+Newsreader normal 400 and 700 are preloaded for paragraphs and titles. Folio Sans normal is preloaded for the header. Other styles and weights load when used.
 
-A starting scale for this combination is 40–52px/700 for large titles, 24–25px/600 for section headings, 18px/400 for paragraphs, and 14–15px/400 for code. Keep paragraph line height between 1.55 and 1.65. Reduce title sizes on narrow screens.
+## Social-card assets
 
-## Check the result
+The current renderer in `src/lib/og.ts` reads these local static TTF files:
 
-Check the homepage and an article with code in the browser. Confirm the computed font family, successful font requests, and loaded font state for titles, paragraphs, navigation, and code. Check regular, italic, and bold text where used, along with title wrapping on narrow screens.
+- `newsreader/Newsreader24pt-Bold.ttf`: title face at weight 700.
+- `newsreader/Newsreader24pt-Regular.ttf`: reading face at weight 400.
+- `folio/FolioSans-Regular.ttf`: label face at weight 400, a static instance of the variable file (weight 400, optical size 16) made with fontTools, because the renderer does not read variable fonts.
 
-Run `npm run build` after changing font configuration. Run `npm run check:language` after changing this guide.
+`jetbrains-mono/JetBrainsMono-Regular.ttf` is a static instance kept for cards that show technical notation; the current layout does not use it.
+
+Browser registrations and image-renderer registrations are independent. After changing a card font, verify the generated image for wrapping, clipping, and the intended weight. Asset files, renderer registration, and the typography standard must agree before migration is marked complete.

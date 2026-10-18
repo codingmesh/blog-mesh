@@ -15,14 +15,16 @@
   --panel-ink: #edeae3;
   --panel-muted: #9b968c;
   --panel-line: #353331;
-  --highlight: #2a3f36;
   --highlight-edge: #5fbf9a;
-  --serif: var(--font-serif, 'Folio Serif', Georgia, 'Times New Roman', serif);
+  --serif: var(--font-serif, 'Newsreader', Georgia, 'Times New Roman', serif);
   --sans: var(--font-sans, 'Folio Sans', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif);
-  /* Large titles are set in the sans; the display token stays so title rules need not change if that moves. */
-  --display: var(--sans);
+  /* Titles and reading text share Newsreader's text optical design. */
+  --display: var(--serif);
   --mono: var(--font-mono, 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace);
+  /* The site shell is 720px wide; article heads and reading text use the narrower reading column. Page gutters
+     are applied once, here: 24px a side, 20px at 600px and below, 16px at 360px and below. */
   --column: min(100% - 48px, 720px);
+  --reading: min(100% - 48px, 620px);
   --radius: 6px;
   --panel-radius: 16px;
   --code-pad: 32px;
@@ -41,15 +43,17 @@
   --panel-line: #302e2b;
   color-scheme: dark;
 }
-@media (max-width: 540px) {
+@media (max-width: 600px) {
   :root {
     --column: min(100% - 40px, 720px);
+    --reading: min(100% - 40px, 620px);
     --code-pad: 22px;
   }
 }
 @media (max-width: 360px) {
   :root {
     --column: calc(100% - 32px);
+    --reading: calc(100% - 32px);
   }
 }
 @media print {
@@ -66,7 +70,6 @@
     --panel-ink: black;
     --panel-muted: #444;
     --panel-line: #ccc;
-    --highlight: #eee;
     --highlight-edge: #1f6b4f;
     color-scheme: light;
   }

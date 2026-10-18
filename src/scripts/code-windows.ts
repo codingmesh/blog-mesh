@@ -1,35 +1,9 @@
 /**
- * Builds the code panel chrome around every highlighted block: a tab, wrap and copy controls, folding for long
- * blocks, and copy feedback. Line numbers, highlights, notes, and captions are already in the HTML from the
- * Shiki transformer, so the panel reads correctly without JavaScript.
+ * Builds the code panel chrome around every highlighted block: a label, wrap and copy controls, folding for long
+ * blocks, and copy feedback. Highlights, notes, and captions are already in the HTML from the Shiki transformer,
+ * so the panel reads correctly without JavaScript.
  */
-const languageLabels: Record<string, string> = {
-  typescript: 'TypeScript',
-  ts: 'TypeScript',
-  javascript: 'JavaScript',
-  js: 'JavaScript',
-  tsx: 'TSX',
-  jsx: 'JSX',
-  bash: 'Shell',
-  shell: 'Shell',
-  sh: 'Shell',
-  zsh: 'Shell',
-  python: 'Python',
-  json: 'JSON',
-  css: 'CSS',
-  html: 'HTML',
-  astro: 'Astro',
-  yaml: 'YAML',
-  yml: 'YAML',
-  md: 'Markdown',
-  mdx: 'MDX',
-};
-
 const FOLD_AFTER = 24;
-
-export function languageLabel(language: string) {
-  return languageLabels[language] || language || 'Code';
-}
 
 /**
  * The text a reader expects to copy: the lines only, never the inline notes. In a terminal block, only the
