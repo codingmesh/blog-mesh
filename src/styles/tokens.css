@@ -2,18 +2,20 @@
    Code always sits in a dark panel, so the panel tokens change little between themes.
    Font family variables (--font-serif, --font-sans, --font-mono) are injected by Astro's <Font /> components. */
 :root {
-  --paper: #faf8f3;
-  --ink: #141414;
-  --muted: #6a675f;
-  --line: #e4e0d6;
-  --soft: #f1eee6;
+  /* Paper is a bright cream with warm ivory as the inset surface; dark paper is warm charcoal. The code panel is
+     always the charcoal, a hairline darker than the dark page so it still reads as a panel there. */
+  --paper: #fffcf0;
+  --ink: #1f1e1d;
+  --muted: #6b675f;
+  --line: #e3dfd2;
+  --soft: #f0eee6;
   --accent: #1f6b4f;
   --accent-ink: #0f4a35;
-  --panel: #161817;
-  --panel-ink: #e9e7e1;
-  --panel-muted: #8b8f94;
-  --panel-line: #2a2c2a;
-  --highlight: #243f34;
+  --panel: #1f1e1d;
+  --panel-ink: #edeae3;
+  --panel-muted: #9b968c;
+  --panel-line: #353331;
+  --highlight: #2a3f36;
   --highlight-edge: #5fbf9a;
   --serif: var(--font-serif, 'Folio Serif', Georgia, 'Times New Roman', serif);
   --sans: var(--font-sans, 'Folio Sans', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif);
@@ -28,15 +30,15 @@
   color-scheme: light;
 }
 :root[data-theme='dark'] {
-  --paper: #131412;
-  --ink: #ebe8e0;
-  --muted: #9b978d;
-  --line: #2a2c29;
-  --soft: #1b1c1a;
-  --accent: #6fbf9d;
-  --accent-ink: #8fd3b5;
-  --panel: #0e0f0e;
-  --panel-line: #262826;
+  --paper: #1f1e1d;
+  --ink: #edeae3;
+  --muted: #a39e94;
+  --line: #363432;
+  --soft: #262523;
+  --accent: #7cc6a4;
+  --accent-ink: #9ad6ba;
+  --panel: #181716;
+  --panel-line: #302e2b;
   color-scheme: dark;
 }
 @media (max-width: 540px) {

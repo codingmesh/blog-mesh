@@ -42,12 +42,15 @@ export function codeText(code: HTMLElement) {
   return lines.length ? lines.map((line) => line.textContent ?? '').join('\n') : (code.textContent ?? '');
 }
 
-const icon = (path: string) =>
-  `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${path}"/></svg>`;
+// Lucide outlines (ISC): "wrap-text", "copy", and "check", drawn thin at 18px.
+const icon = (body: string) =>
+  `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
 const icons = {
-  copy: icon('M9 9h10v12H9zM5 15V3h10'),
-  check: icon('m5 12 5 5L20 7'),
-  wrap: icon('M4 6h16M4 12h10a3 3 0 0 1 0 6h-2m0 0 2-2m-2 2 2 2M4 18h5'),
+  copy: icon(
+    '<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+  ),
+  check: icon('<path d="M20 6 9 17l-5-5"/>'),
+  wrap: icon('<path d="M3 6h18"/><path d="M3 12h15a3 3 0 1 1 0 6h-4"/><path d="m16 16-2 2 2 2"/><path d="M3 18h7"/>'),
 };
 
 export function initCodeWindows(

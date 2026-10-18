@@ -10,9 +10,9 @@ import { markDataUri } from './mark';
  * display cut, the site name below a rule.
  * Satori reads TTF, so the fonts come from the TTF copies kept beside the WOFF2 files in src/assets/fonts.
  */
-const paper = '#faf8f3';
-const ink = '#141414';
-const muted = '#6a675f';
+const paper = '#fffcf0';
+const ink = '#1f1e1d';
+const muted = '#6b675f';
 const accent = '#1f6b4f';
 
 const fontFile = (file: string) => resolve(process.cwd(), 'src/assets/fonts', file);

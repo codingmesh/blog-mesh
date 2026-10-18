@@ -8,10 +8,21 @@ export const site = {
   locale: 'en-US',
   ogLocale: 'en_US',
   title: 'Mikey — Software, AI, and notes',
-  description: 'Writing code and thinking things through. Notes on software engineering, AI, and what I am learning.',
-  tagline: 'Writing code and thinking things through.',
+  description:
+    'Notes on software and AI development. Reading notes on Claude Code, agent engineering, and the decisions behind this blog.',
+  tagline: 'Notes on software and AI development.',
   focus: 'Software, AI, and reading notes',
-  themeColor: { light: '#faf8f3', dark: '#131412' },
+  editorialNote:
+    'Reading notes are prepared with AI assistance. Source claims, recommendations, and untested ideas are identified separately.',
+  about: {
+    intro:
+      'This blog collects reading notes on Claude Code and agent engineering, alongside technical notes about the site itself.',
+    scope:
+      'Longer articles examine an engineering question through a cited source. Short notes document editorial decisions and repository behavior.',
+    method:
+      'Each reading note links to the original article and names its authors. The source publication date is kept separate from the date of the note. Reported measurements belong to the source authors; suggested applications are not presented as experiments conducted for this blog.',
+  },
+  themeColor: { light: '#fffcf0', dark: '#1f1e1d' },
   repo: 'codingmesh/blog-mesh',
 } as const;
 
