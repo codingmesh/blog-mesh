@@ -22,7 +22,8 @@
   --mono: var(--font-mono, 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace);
   --column: min(100% - 48px, 720px);
   --radius: 6px;
-  --code-pad: 24px;
+  --panel-radius: 12px;
+  --code-pad: 28px;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   color-scheme: light;
 }
@@ -41,7 +42,7 @@
 @media (max-width: 540px) {
   :root {
     --column: min(100% - 40px, 720px);
-    --code-pad: 18px;
+    --code-pad: 20px;
   }
 }
 @media (max-width: 360px) {

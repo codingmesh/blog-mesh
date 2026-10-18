@@ -144,7 +144,8 @@
   margin-top: 10px;
 }
 
-/* Code panels. The transformer supplies gutter, highlights, notes, and captions; the script adds the bar. */
+/* Code panels: one quiet surface. The language label and the tools sit inside the panel's top padding; the
+   transformer supplies gutter, highlights, notes, and captions, and the script adds the label and tools. */
 .prose pre {
   max-width: 100%;
   overflow-x: auto;
@@ -152,9 +153,10 @@
   scrollbar-color: var(--panel-line) transparent;
   background: var(--panel);
   color: var(--panel-ink);
-  border-radius: var(--radius);
-  padding: 18px 0;
-  font: 14px/1.75 var(--mono);
+  border: 1px solid var(--panel-line);
+  border-radius: var(--panel-radius);
+  padding: 22px 0 24px;
+  font: 14px/1.6 var(--mono);
   tab-size: 2;
 }
 .prose pre code {
@@ -167,7 +169,7 @@
 .prose pre .line {
   display: block;
   padding-inline: var(--code-pad);
-  min-height: 1.75em;
+  min-height: 1.6em;
 }
 .prose pre[data-gutter] .line {
   padding-left: 0;
@@ -221,7 +223,9 @@
 }
 .prose .code-block pre {
   margin: 0;
+  border: 0;
   border-radius: 0;
+  padding-top: 8px;
 }
 .prose .code-block pre:focus-visible {
   outline-offset: -3px;
@@ -234,31 +238,32 @@
   background-color: var(--panel) !important;
 }
 .code-figure figcaption {
-  padding: 10px 16px 12px;
+  padding: 12px var(--code-pad) 14px;
   margin: 0;
   background: var(--panel);
-  border-top: 1px solid var(--panel-line);
+  border: 1px solid var(--panel-line);
+  border-top: 0;
   color: var(--panel-muted);
-  border-radius: 0 0 var(--radius) var(--radius);
+  border-radius: 0 0 var(--panel-radius) var(--panel-radius);
 }
 .code-block {
-  border-radius: var(--radius);
+  border: 1px solid var(--panel-line);
+  border-radius: var(--panel-radius);
   overflow: hidden;
   background: var(--panel);
   position: relative;
 }
 .code-figure .code-block {
-  border-radius: var(--radius) var(--radius) 0 0;
+  border-bottom: 0;
+  border-radius: var(--panel-radius) var(--panel-radius) 0 0;
 }
-/* The bar: the title (file name or language) on the left like a tab, the tools on the right. */
+/* The top of the panel: a small muted label (file name or language) on the left, icon tools on the right.
+   No divider and no second background; it is part of the same surface as the code. */
 .code-bar {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  padding: 0 8px 0 6px;
-  min-height: 40px;
-  border-bottom: 1px solid var(--panel-line);
-  background: var(--panel-bar, color-mix(in srgb, var(--panel) 80%, #ffffff 4%));
+  padding: 14px calc(var(--code-pad) - 8px) 0 var(--code-pad);
   color: var(--panel-muted);
 }
 .code-tab {
@@ -266,37 +271,51 @@
   align-items: baseline;
   justify-self: start;
   gap: 8px;
-  padding: 11px 12px;
-  font: 500 12.5px/1 var(--mono);
-  color: var(--panel-ink);
+  font: 400 13px/1 var(--sans);
+  color: var(--panel-muted);
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.code-tab.has-title b {
+  font-weight: 500;
+  color: var(--panel-ink);
+}
 .code-tab small {
-  font-size: 11.5px;
-  font-weight: 400;
-  color: var(--panel-muted);
+  font-size: 12px;
+}
+.code-tab small::before {
+  content: '· ';
 }
 .code-tools {
   display: flex;
-  gap: 2px;
+  gap: 4px;
   justify-self: end;
+  /* Pull the icons up so they sit level with the label rather than below it. */
+  margin-top: -6px;
 }
 .code-tool {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
   border: 0;
   background: transparent;
   color: var(--panel-muted);
-  font: 500 12px/1 var(--mono);
-  padding: 9px 10px;
-  border-radius: 6px;
+  border-radius: 8px;
   transition:
     color 140ms var(--ease),
     background-color 140ms var(--ease);
+}
+.code-tool span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 .code-tool:hover,
 .code-tool[aria-pressed='true'] {
@@ -310,7 +329,7 @@
   flex-shrink: 0;
 }
 .code-block.is-folded pre {
-  max-height: calc(24 * 1.75em + 36px);
+  max-height: calc(24 * 1.6em + 36px);
   overflow-y: hidden;
 }
 .code-block.is-folded pre::after {
@@ -546,12 +565,13 @@
   .prose blockquote {
     font-size: 17px;
   }
-  .code-tool span {
-    display: none;
-  }
-  /* Icon-only on phones, sized for a thumb. */
+  /* Sized for a thumb. */
   .code-tool {
-    padding: 13px;
+    width: 40px;
+    height: 40px;
+  }
+  .code-tools {
+    margin-top: -10px;
   }
 }
 @media print {

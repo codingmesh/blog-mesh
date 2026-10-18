@@ -43,7 +43,7 @@ export function codeText(code: HTMLElement) {
 }
 
 const icon = (path: string) =>
-  `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${path}"/></svg>`;
+  `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${path}"/></svg>`;
 const icons = {
   copy: icon('M9 9h10v12H9zM5 15V3h10'),
   check: icon('m5 12 5 5L20 7'),
@@ -83,6 +83,7 @@ export function initCodeWindows(
     wrapButton.innerHTML = `${icons.wrap}<span>Wrap</span>`;
     wrapButton.setAttribute('aria-pressed', String('wrap' in pre.dataset));
     wrapButton.setAttribute('aria-label', `Toggle line wrapping for code block ${index + 1}`);
+    wrapButton.title = 'Wrap long lines';
     wrapButton.addEventListener('click', () => {
       const on = pre.toggleAttribute('data-wrap');
       wrapButton.setAttribute('aria-pressed', String(on));
@@ -96,6 +97,7 @@ export function initCodeWindows(
       'aria-label',
       terminal ? `Copy the commands of block ${index + 1}` : `Copy code block ${index + 1}`,
     );
+    copyButton.title = terminal ? 'Copy the commands' : 'Copy';
     let timer: ReturnType<typeof setTimeout>;
     copyButton.addEventListener('click', async () => {
       clearTimeout(timer);

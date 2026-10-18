@@ -1,6 +1,19 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { commandOf, parseCodeMeta } from '../src/lib/code-meta.ts';
+import { codeMetaTransformer, commandOf, parseCodeMeta } from '../src/lib/code-meta.ts';
+
+test('the gutter appears only where highlighted lines or a note refer to line numbers', () => {
+  const gutterFor = (raw: string | undefined, lineCount = 12) => {
+    const node = { type: 'element', tagName: 'pre', properties: {}, children: [] };
+    const context = { options: { meta: { __raw: raw } }, lines: Array.from({ length: lineCount }) };
+    (codeMetaTransformer().pre as (this: unknown, node: unknown) => void).call(context, node);
+    return 'data-gutter' in node.properties;
+  };
+  assert.equal(gutterFor(undefined), false, 'a long plain block has no numbers');
+  assert.equal(gutterFor('{2,5-7}'), true, 'highlighted lines bring numbers');
+  assert.equal(gutterFor('note="Why this line"'), true, 'a note brings numbers');
+  assert.equal(gutterFor('{2} terminal'), false, 'terminal blocks never number');
+});
 
 test('fence meta yields a tab title and the exact highlighted lines', () => {
   const meta = parseCodeMeta('title="src/check.ts" {2,5-7}');
