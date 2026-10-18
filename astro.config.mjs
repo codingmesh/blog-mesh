@@ -29,43 +29,31 @@ export default defineConfig({
     ...(onVercel || isDev ? [keystatic()] : []),
   ],
   fonts: [
-    // Newsreader (SIL OFL) in its text optical size for reading text and section headings, and its display size
-    // for page titles; JetBrains Mono (SIL OFL) for code and metadata. Both are files in src/assets/fonts.
-    // Source Sans 3 from Fontsource remains for interface labels only.
+    // Families from src/assets/fonts, per the guide in src/assets/fonts/README.md: Folio Serif for reading text,
+    // Folio Sans for titles, headings, and the interface, JetBrains Mono for code and metadata. The Folio files are
+    // variable (weight 300 to 800, optical size 16 to 48), one file per style.
     {
-      name: 'Newsreader',
+      name: 'Folio Serif',
       cssVariable: '--font-serif',
       provider: fontProviders.local(),
       options: {
         variants: [
-          { weight: 400, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader24pt-Regular.woff2'] },
-          { weight: 400, style: 'italic', src: ['./src/assets/fonts/newsreader/Newsreader24pt-Italic.woff2'] },
-          { weight: 500, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader24pt-Medium.woff2'] },
-          { weight: 600, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader24pt-SemiBold.woff2'] },
-          { weight: 700, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader24pt-Bold.woff2'] },
+          { weight: '300 800', style: 'normal', src: ['./src/assets/fonts/folio/FolioSerif-Roman.woff2'] },
+          { weight: '300 800', style: 'italic', src: ['./src/assets/fonts/folio/FolioSerif-Italic.woff2'] },
         ],
       },
       fallbacks: ['Georgia', 'Times New Roman', 'serif'],
     },
     {
-      name: 'Newsreader Display',
-      cssVariable: '--font-display',
+      name: 'Folio Sans',
+      cssVariable: '--font-sans',
       provider: fontProviders.local(),
       options: {
         variants: [
-          { weight: 400, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader60pt-Regular.woff2'] },
-          { weight: 600, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader60pt-SemiBold.woff2'] },
+          { weight: '300 800', style: 'normal', src: ['./src/assets/fonts/folio/FolioSans-Roman.woff2'] },
+          { weight: '300 800', style: 'italic', src: ['./src/assets/fonts/folio/FolioSans-Italic.woff2'] },
         ],
       },
-      fallbacks: ['Georgia', 'Times New Roman', 'serif'],
-    },
-    {
-      name: 'Source Sans 3',
-      cssVariable: '--font-sans',
-      provider: fontProviders.fontsource(),
-      weights: [400, 500, 600],
-      styles: ['normal'],
-      subsets: ['latin'],
       fallbacks: ['-apple-system', 'Segoe UI', 'Helvetica', 'Arial', 'sans-serif'],
     },
     {
