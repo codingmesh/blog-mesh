@@ -225,7 +225,9 @@
   margin: 0;
   border: 0;
   border-radius: 0;
-  padding-top: 8px;
+  /* A clear gap between the label row and the first line, and room below the last one. */
+  padding-top: 18px;
+  padding-bottom: 32px;
 }
 .prose .code-block pre:focus-visible {
   outline-offset: -3px;
@@ -263,7 +265,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  padding: 14px calc(var(--code-pad) - 8px) 0 var(--code-pad);
+  padding: 20px calc(var(--code-pad) - 8px) 0 var(--code-pad);
   color: var(--panel-muted);
 }
 .code-tab {
@@ -271,7 +273,7 @@
   align-items: baseline;
   justify-self: start;
   gap: 8px;
-  font: 400 13px/1 var(--sans);
+  font: 400 12.5px/1 var(--mono);
   color: var(--panel-muted);
   max-width: 100%;
   overflow: hidden;
@@ -293,7 +295,7 @@
   gap: 4px;
   justify-self: end;
   /* Pull the icons up so they sit level with the label rather than below it. */
-  margin-top: -6px;
+  margin-top: -10px;
 }
 .code-tool {
   display: inline-flex;

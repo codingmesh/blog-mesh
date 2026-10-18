@@ -71,8 +71,10 @@ export function initCodeWindows(
     tab.innerHTML = pre.dataset.title ? `<b></b><small></small>` : `<b></b>`;
     const primary = tab.querySelector('b')!;
     const terminal = 'terminal' in pre.dataset;
-    primary.textContent = pre.dataset.title || (terminal ? 'Terminal' : languageLabel(language));
-    if (pre.dataset.title) tab.querySelector('small')!.textContent = terminal ? 'Terminal' : languageLabel(language);
+    // The label is the fence's own language id, lowercase, as a reader sees it in the source: "sh", "yaml", "ts".
+    const languageId = terminal ? 'terminal' : language.toLowerCase() || 'code';
+    primary.textContent = pre.dataset.title || languageId;
+    if (pre.dataset.title) tab.querySelector('small')!.textContent = languageId;
 
     const tools = document.createElement('div');
     tools.className = 'code-tools';
