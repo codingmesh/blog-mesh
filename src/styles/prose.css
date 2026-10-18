@@ -1,13 +1,11 @@
 /* Rendered Markdown and the code panels built around it. Global because Markdown output cannot be scoped.
    Code is always a dark panel, in both themes. */
-/* Reading text is set in the serif; headings, captions, and interface pieces stay in the sans. */
+/* Reading text and section headings are set in the serif; captions and interface pieces stay in the sans. */
 .prose {
   font: 18px/1.65 var(--serif);
   overflow-wrap: anywhere;
   max-width: 66ch;
 }
-.prose h2,
-.prose h3,
 .prose figcaption,
 .prose .aside,
 .prose .turn,

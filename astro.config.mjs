@@ -29,33 +29,58 @@ export default defineConfig({
     ...(onVercel || isDev ? [keystatic()] : []),
   ],
   fonts: [
-    // Three faces from one family, self-hosted at build time from Fontsource: Source Serif 4 for reading text,
-    // Source Sans 3 for headings and interface, Source Code Pro for code and metadata.
+    // Newsreader (SIL OFL) in its text optical size for reading text and section headings, and its display size
+    // for page titles; JetBrains Mono (SIL OFL) for code and metadata. Both are files in src/assets/fonts.
+    // Source Sans 3 from Fontsource remains for interface labels only.
     {
-      name: 'Source Serif 4',
+      name: 'Newsreader',
       cssVariable: '--font-serif',
-      provider: fontProviders.fontsource(),
-      weights: [400, 600],
-      styles: ['normal', 'italic'],
-      subsets: ['latin'],
+      provider: fontProviders.local(),
+      options: {
+        variants: [
+          { weight: 400, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader24pt-Regular.woff2'] },
+          { weight: 400, style: 'italic', src: ['./src/assets/fonts/newsreader/Newsreader24pt-Italic.woff2'] },
+          { weight: 500, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader24pt-Medium.woff2'] },
+          { weight: 600, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader24pt-SemiBold.woff2'] },
+          { weight: 700, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader24pt-Bold.woff2'] },
+        ],
+      },
+      fallbacks: ['Georgia', 'Times New Roman', 'serif'],
+    },
+    {
+      name: 'Newsreader Display',
+      cssVariable: '--font-display',
+      provider: fontProviders.local(),
+      options: {
+        variants: [
+          { weight: 400, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader60pt-Regular.woff2'] },
+          { weight: 600, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader60pt-SemiBold.woff2'] },
+        ],
+      },
       fallbacks: ['Georgia', 'Times New Roman', 'serif'],
     },
     {
       name: 'Source Sans 3',
       cssVariable: '--font-sans',
       provider: fontProviders.fontsource(),
-      weights: [400, 500, 600, 700],
-      styles: ['normal', 'italic'],
+      weights: [400, 500, 600],
+      styles: ['normal'],
       subsets: ['latin'],
       fallbacks: ['-apple-system', 'Segoe UI', 'Helvetica', 'Arial', 'sans-serif'],
     },
     {
-      name: 'Source Code Pro',
+      name: 'JetBrains Mono',
       cssVariable: '--font-mono',
-      provider: fontProviders.fontsource(),
-      weights: [400, 500],
-      styles: ['normal'],
-      subsets: ['latin'],
+      provider: fontProviders.local(),
+      options: {
+        variants: [
+          {
+            weight: '100 800',
+            style: 'normal',
+            src: ['./src/assets/fonts/jetbrains-mono/JetBrainsMono-Variable.woff2'],
+          },
+        ],
+      },
       fallbacks: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace'],
     },
   ],

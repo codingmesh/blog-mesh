@@ -55,8 +55,9 @@ const imageUrl = new URL(image, Astro.site);
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <Font cssVariable="--font-serif" preload={[{ weight: 400, style: 'normal', subset: 'latin' }]} />
-    <Font cssVariable="--font-sans" preload={[{ weight: 600, style: 'normal', subset: 'latin' }]} />
+    <Font cssVariable="--font-serif" preload={[{ weight: 400, style: 'normal' }]} />
+    <Font cssVariable="--font-display" preload={[{ weight: 600, style: 'normal' }]} />
+    <Font cssVariable="--font-sans" />
     <Font cssVariable="--font-mono" />
     <link rel="alternate" type="application/rss+xml" title={`${site.name}'s writing and notes`} href="/rss.xml" />
     <meta property="og:title" content={pageTitle} />

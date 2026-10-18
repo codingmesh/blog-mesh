@@ -6,33 +6,33 @@ import { site } from '../config';
 import { markDataUri } from './mark';
 
 /**
- * Build-time social cards in the Folio style: paper, a green numeral or the site mark, the title in Plex,
- * the site name below a rule.
- * Fonts are read from the Fontsource packages, which ship WOFF files Satori can consume.
+ * Build-time social cards in the Folio style: paper, a green numeral or the site mark, the title in Newsreader's
+ * display cut, the site name below a rule.
+ * Satori reads TTF, so the fonts come from the TTF copies kept beside the WOFF2 files in src/assets/fonts.
  */
 const paper = '#faf8f3';
 const ink = '#141414';
 const muted = '#6a675f';
 const accent = '#1f6b4f';
 
-const fontFile = (pkg: string, file: string) => resolve(process.cwd(), 'node_modules/@fontsource', pkg, 'files', file);
+const fontFile = (file: string) => resolve(process.cwd(), 'src/assets/fonts', file);
 let fonts: Promise<Font[]> | undefined;
 async function loadFonts() {
   fonts ??= Promise.all([
-    readFile(fontFile('source-sans-3', 'source-sans-3-latin-700-normal.woff')).then((data) => ({
-      name: 'Sans',
+    readFile(fontFile('newsreader/Newsreader60pt-SemiBold.ttf')).then((data) => ({
+      name: 'Display',
       data: toArrayBuffer(data),
-      weight: 700 as const,
+      weight: 600 as const,
     })),
-    readFile(fontFile('source-sans-3', 'source-sans-3-latin-400-normal.woff')).then((data) => ({
-      name: 'Sans',
+    readFile(fontFile('newsreader/Newsreader24pt-Regular.ttf')).then((data) => ({
+      name: 'Serif',
       data: toArrayBuffer(data),
       weight: 400 as const,
     })),
-    readFile(fontFile('source-code-pro', 'source-code-pro-latin-500-normal.woff')).then((data) => ({
+    readFile(fontFile('jetbrains-mono/JetBrainsMono-Regular.ttf')).then((data) => ({
       name: 'Mono',
       data: toArrayBuffer(data),
-      weight: 500 as const,
+      weight: 400 as const,
     })),
   ]);
   return fonts;
@@ -62,7 +62,7 @@ export async function renderCard({ title, kicker, number, footer }: CardInput): 
       background: paper,
       color: ink,
       padding: '72px 80px 64px',
-      fontFamily: 'Sans',
+      fontFamily: 'Serif',
     },
     [
       el(
@@ -74,7 +74,7 @@ export async function renderCard({ title, kicker, number, footer }: CardInput): 
           fontFamily: 'Mono',
           fontSize: 26,
           color: accent,
-          fontWeight: 500,
+          fontWeight: 400,
         },
         [
           number
@@ -91,7 +91,14 @@ export async function renderCard({ title, kicker, number, footer }: CardInput): 
         { display: 'flex', flex: 1, alignItems: 'center' },
         el(
           'div',
-          { fontSize: titleSize, fontWeight: 700, lineHeight: 1.05, letterSpacing: '-0.03em', maxWidth: 1000 },
+          {
+            fontFamily: 'Display',
+            fontSize: titleSize,
+            fontWeight: 600,
+            lineHeight: 1.05,
+            letterSpacing: '-0.02em',
+            maxWidth: 1000,
+          },
           title,
         ),
       ),
@@ -106,7 +113,7 @@ export async function renderCard({ title, kicker, number, footer }: CardInput): 
           fontSize: 24,
         },
         [
-          el('span', { fontWeight: 700 }, site.name),
+          el('span', { fontFamily: 'Display', fontWeight: 600 }, site.name),
           el('span', { fontFamily: 'Mono', fontSize: 20, color: muted }, footer || site.focus),
         ],
       ),
