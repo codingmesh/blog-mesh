@@ -22,13 +22,13 @@ const { active, crumb } = Astro.props;
   </p>
   <nav aria-label="Main navigation">
     <a href="/writing/" aria-current={active === 'writing' ? 'page' : undefined}>
-      Writing
+      Writing <kbd aria-hidden="true">W</kbd>
     </a>
     <a href="/notes/" aria-current={active === 'notes' ? 'page' : undefined}>
-      Notes
+      Notes <kbd aria-hidden="true">N</kbd>
     </a>
     <a href="/about/" aria-current={active === 'about' ? 'page' : undefined}>
-      About
+      About <kbd aria-hidden="true">A</kbd>
     </a>
     <button
       type="button"
@@ -36,15 +36,21 @@ const { active, crumb } = Astro.props;
       id="search-open"
       aria-haspopup="dialog"
       aria-controls="search-dialog"
-      title="Search (⌘K / Ctrl+K)"
+      title="Search (S, or ⌘K / Ctrl+K)"
     >
       <Icon name="search" size={15} />
       <span class="search-text">Search</span>
-      <kbd>⌘K</kbd>
+      <kbd>S</kbd>
     </button>
     <ThemeToggle />
   </nav>
 </header>
+
+<script>
+  import { onPageLoad } from '../../scripts/page';
+  import { initShortcuts } from '../../scripts/shortcuts';
+  onPageLoad(initShortcuts);
+</script>
 
 <style>
   .top {
@@ -104,6 +110,16 @@ const { active, crumb } = Astro.props;
   }
   .search-trigger kbd {
     margin-left: 2px;
+  }
+  /* Key hints: visible on pointer screens where a keyboard is likely, hidden on phones. */
+  nav a kbd {
+    margin-left: 4px;
+    vertical-align: 1px;
+  }
+  @media (max-width: 600px), (hover: none) {
+    nav a kbd {
+      display: none;
+    }
   }
   @media (max-width: 600px) {
     .top {

@@ -1,18 +1,23 @@
 ---
 import type { MarkdownHeading } from 'astro';
 /**
- * The section headings of an article. The side list has a marker that slides to the current section; the inline
- * version is a collapsed disclosure above the body.
+ * The article's apparatus. The side variant is a sticky rail with the section list (a marker slides to the
+ * current section), reading progress, read time, and share actions; the inline variant is a collapsed
+ * disclosure above the body on narrower screens.
  */
 interface Props {
   headings: MarkdownHeading[];
   variant: 'side' | 'inline';
+  /** Read time in minutes, shown under the progress bar in the rail. */
+  minutes?: number;
+  /** Where the article's Markdown source is served, for "Copy as Markdown". */
+  markdownHref?: string;
 }
-const { headings, variant } = Astro.props;
+const { headings, variant, minutes, markdownHref } = Astro.props;
 ---
 
 {variant === 'side' ? (
-  <nav class="article-toc" aria-label="Table of contents" data-pagefind-ignore>
+  <nav class="article-toc" aria-label="Article tools" data-pagefind-ignore>
     {/* The nav spans the article's height; this inner block is what sticks while the body scrolls. */}
     <div class="toc-sticky">
       <h2 class="toc-label">On this page</h2>
@@ -24,6 +29,31 @@ const { headings, variant } = Astro.props;
           </li>
         ))}
       </ol>
+      <div class="toc-progress" aria-hidden="true">
+        <span class="toc-bar">
+          <i />
+        </span>
+        <span class="toc-pct">0%</span>
+      </div>
+      {minutes && <p class="toc-read">{minutes} min read</p>}
+      <h2 class="toc-label toc-share-label">Share</h2>
+      <ul class="toc-actions">
+        <li>
+          <button type="button" data-share="link">
+            Copy link
+          </button>
+        </li>
+        {markdownHref && (
+          <li>
+            <button type="button" data-share="markdown" data-href={markdownHref}>
+              Copy as Markdown
+            </button>
+          </li>
+        )}
+        <li>
+          <a href="/rss.xml">RSS</a>
+        </li>
+      </ul>
     </div>
   </nav>
 ) : (
@@ -44,7 +74,11 @@ const { headings, variant } = Astro.props;
 <script>
   import { onPageLoad } from '../../scripts/page';
   import { initTableOfContents } from '../../scripts/toc';
-  onPageLoad(() => initTableOfContents());
+  import { initShare } from '../../scripts/share';
+  onPageLoad(() => {
+    initTableOfContents();
+    initShare();
+  });
 </script>
 
 <style>
@@ -84,17 +118,75 @@ const { headings, variant } = Astro.props;
       transform 300ms var(--ease),
       height 300ms var(--ease);
   }
-  .article-toc a {
+  .article-toc ol a {
     display: block;
     padding: 4px 0 4px 12px;
     transition: color 140ms var(--ease);
   }
-  .article-toc a:hover,
-  .article-toc a[aria-current='location'] {
+  .article-toc ol a:hover,
+  .article-toc ol a[aria-current='location'] {
     color: var(--ink);
   }
   .toc-sub a {
     padding-left: 24px;
+  }
+  /* Progress as a dotted bar that fills with the accent, with the percentage beside it. */
+  .toc-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 18px 0 2px;
+  }
+  .toc-bar {
+    position: relative;
+    flex: 1;
+    height: 8px;
+    background: repeating-linear-gradient(90deg, var(--line) 0 2px, transparent 2px 4px);
+  }
+  .toc-bar i {
+    position: absolute;
+    inset: 0;
+    width: var(--read-progress, 0%);
+    background: repeating-linear-gradient(90deg, var(--accent) 0 2px, transparent 2px 4px);
+  }
+  .toc-pct,
+  .toc-read {
+    font: 12.5px/1.8 var(--mono);
+    color: var(--muted);
+    margin: 0;
+    min-width: 3ch;
+  }
+  .toc-share-label {
+    margin-top: 28px;
+  }
+  .toc-actions {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-left: 1px solid var(--line);
+  }
+  .toc-actions li {
+    padding: 0;
+  }
+  .toc-actions button,
+  .toc-actions a {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 4px 0 4px 12px;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 140ms var(--ease);
+  }
+  .toc-actions button:hover,
+  .toc-actions a:hover {
+    color: var(--ink);
+  }
+  .toc-actions button.is-done {
+    color: var(--accent);
   }
   .mobile-toc {
     border-block: 1px solid var(--line);

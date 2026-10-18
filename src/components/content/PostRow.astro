@@ -43,21 +43,26 @@ const yearMonth = `${date.getUTCFullYear()} · ${String(date.getUTCMonth() + 1).
     <Heading class="row-title" transition:name={transitionName}>
       <a href={postUrl(post)}>{post.data.title}</a>
     </Heading>
+    <span class="row-length">{post.collection === 'notes' ? 'note' : `${readingTime(post.body)} min`}</span>
   </li>
 )}
 
 <style>
   .row {
     display: grid;
-    grid-template-columns: 92px minmax(0, 1fr);
+    grid-template-columns: 92px minmax(0, 1fr) auto;
     gap: 0 20px;
     align-items: baseline;
     padding: 7px 0;
   }
-  .row time {
+  .row time,
+  .row-length {
     font: 13px/1.8 var(--mono);
     color: var(--muted);
     white-space: nowrap;
+  }
+  .row-length {
+    text-align: right;
   }
   .row-title {
     margin: 0;
@@ -123,6 +128,9 @@ const yearMonth = `${date.getUTCFullYear()} · ${String(date.getUTCMonth() + 1).
     }
     .row time {
       line-height: 1.4;
+    }
+    .row-length {
+      display: none;
     }
     .latest-title {
       font-size: 23px;

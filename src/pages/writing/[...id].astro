@@ -7,7 +7,6 @@ import Comments from '../../components/content/Comments.astro';
 import BackToTop from '../../components/content/BackToTop.astro';
 import Lightbox from '../../components/content/Lightbox.astro';
 import ReadingLine from '../../components/content/ReadingLine.astro';
-import SourceLine from '../../components/content/SourceLine.astro';
 import TableOfContents from '../../components/content/TableOfContents.astro';
 import { mdxComponents } from '../../components/content/mdx-components';
 import { formatDate, formatLabel, getAllWriting, isNote, postUrl, readingTime, type Post } from '../../lib/content';
@@ -65,25 +64,46 @@ const transitionName = `title-${post.collection}-${post.id}`;
         {post.data.title}
       </h1>
       <meta data-pagefind-meta="description[content]" content={post.data.description} />
-      <p class="meta-line">
-        <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
-        <i>·</i>
-        <span class="nowrap">{readingTime(post.body)} minute read</span>
-        {topic && (
-          <>
-            <i>·</i>
-            {note ? topic : <a href={`/writing/?tag=${encodeURIComponent(topic)}`}>{topic}</a>}
-          </>
+      <dl class="fields">
+        {source && (
+          <div>
+            <dt>Source</dt>
+            <dd>
+              <a href={source.url} target="_blank" rel="noopener noreferrer">
+                {source.title}
+                <span class="sr-only"> (opens in a new tab)</span>
+              </a>
+              , by {source.author}
+            </dd>
+          </div>
         )}
-        <i>·</i>
-        <span class="nowrap">
-          {post.data.sample ? 'Sample ' : ''}
-          {label}
-        </span>
-      </p>
-      {source && <SourceLine source={source} />}
+        <div>
+          <dt>Topic</dt>
+          <dd>
+            {topic && (note ? topic : <a href={`/writing/?tag=${encodeURIComponent(topic)}`}>{topic}</a>)}
+            {topic && ' · '}
+            {post.data.sample ? 'sample ' : ''}
+            {label}
+          </dd>
+        </div>
+        <div>
+          <dt>Published</dt>
+          <dd>
+            <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+            {' · '}
+            {readingTime(post.body)} min read
+          </dd>
+        </div>
+      </dl>
     </header>
-    {toc.length > 1 && <TableOfContents headings={toc} variant="side" />}
+    {toc.length > 1 && (
+      <TableOfContents
+        headings={toc}
+        variant="side"
+        minutes={readingTime(post.body)}
+        markdownHref={`${postUrl(post).replace(/\/$/, '')}.md`}
+      />
+    )}
     {toc.length > 1 && <TableOfContents headings={toc} variant="inline" />}
     <div class="prose">
       <Content components={mdxComponents} />
@@ -122,16 +142,43 @@ const transitionName = `title-${post.collection}-${post.id}`;
     margin: 0 0 10px;
     overflow-wrap: anywhere;
   }
-  .meta-line {
-    margin: 0;
-    font: 13px/1.8 var(--mono);
-    color: var(--muted);
+  /* Metadata as labeled fields: one glance, nothing to parse. */
+  .fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px 28px;
+    margin: 22px 0 0;
+    max-width: 66ch;
   }
-  .meta-line i {
-    font-style: normal;
-    margin: 0 6px;
+  .fields div {
+    min-width: 0;
+  }
+  .fields dt {
+    font: 500 11.5px/1.6 var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     color: var(--muted);
-    opacity: 0.55;
+    margin-bottom: 4px;
+  }
+  .fields dd {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+  .fields dd time {
+    font: inherit;
+    color: inherit;
+  }
+  .fields dd a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+    text-underline-offset: 3px;
+  }
+  .fields dd a:hover {
+    text-decoration-color: currentColor;
   }
   .meta-line a {
     color: var(--accent);
