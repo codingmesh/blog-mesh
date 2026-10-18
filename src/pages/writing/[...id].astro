@@ -42,7 +42,6 @@ const note = isNote(post);
 const label = formatLabel(post);
 const listHref = note ? '/notes/' : '/writing/';
 const source = note ? undefined : post.data.source;
-const topic = post.data.tags[0];
 const transitionName = `title-${post.collection}-${post.id}`;
 ---
 
@@ -64,45 +63,27 @@ const transitionName = `title-${post.collection}-${post.id}`;
         {post.data.title}
       </h1>
       <meta data-pagefind-meta="description[content]" content={post.data.description} />
-      <dl class="fields">
-        {source && (
-          <div>
-            <dt>Source</dt>
-            <dd>
-              <a href={source.url} target="_blank" rel="noopener noreferrer">
-                {source.title}
-                <span class="sr-only"> (opens in a new tab)</span>
-              </a>
-              , by {source.author}
-            </dd>
-          </div>
-        )}
-        <div>
-          <dt>Topic</dt>
-          <dd>
-            {topic && (note ? topic : <a href={`/writing/?tag=${encodeURIComponent(topic)}`}>{topic}</a>)}
-            {topic && ' · '}
-            {post.data.sample ? 'sample ' : ''}
-            {label}
-          </dd>
-        </div>
-        <div>
-          <dt>Published</dt>
-          <dd>
-            <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
-            {' · '}
-            {readingTime(post.body)} min read
-          </dd>
-        </div>
-      </dl>
+      {/* One subtitle: the source for a reading note, otherwise the description. Then one line of facts. */}
+      {source ? (
+        <p class="subtitle">
+          On{' '}
+          <a href={source.url} target="_blank" rel="noopener noreferrer">
+            {source.title}
+            <span class="sr-only"> (opens in a new tab)</span>
+          </a>{' '}
+          by {source.author}
+        </p>
+      ) : (
+        post.data.description && <p class="subtitle">{post.data.description}</p>
+      )}
+      <p class="meta-line">
+        <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+        {' · '}
+        {readingTime(post.body)} minute read
+      </p>
     </header>
     {toc.length > 1 && (
-      <TableOfContents
-        headings={toc}
-        variant="side"
-        minutes={readingTime(post.body)}
-        markdownHref={`${postUrl(post).replace(/\/$/, '')}.md`}
-      />
+      <TableOfContents headings={toc} variant="side" markdownHref={`${postUrl(post).replace(/\/$/, '')}.md`} />
     )}
     {toc.length > 1 && <TableOfContents headings={toc} variant="inline" />}
     <div class="prose">
@@ -136,58 +117,37 @@ const transitionName = `title-${post.collection}-${post.id}`;
     padding: 64px 0 28px;
   }
   .article-head h1 {
-    font-size: 36px;
+    font-size: 44px;
     line-height: 1.18;
     letter-spacing: -0.02em;
-    margin: 0 0 10px;
+    margin: 0;
     overflow-wrap: anywhere;
   }
-  /* Metadata as labeled fields: one glance, nothing to parse. */
-  .fields {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px 28px;
-    margin: 22px 0 0;
-    max-width: 66ch;
-  }
-  .fields div {
-    min-width: 0;
-  }
-  .fields dt {
-    font: 500 11.5px/1.6 var(--mono);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 4px;
-  }
-  .fields dd {
-    margin: 0;
-    font-size: 15px;
-    line-height: 1.5;
+  /* The head says each thing once: title, an italic subtitle, then the date and length in a muted line. */
+  .subtitle {
+    margin: 16px 0 0;
+    max-width: 60ch;
+    font: italic 400 21px/1.4 var(--serif);
     color: var(--ink);
     overflow-wrap: anywhere;
   }
-  .fields dd time {
-    font: inherit;
-    color: inherit;
-  }
-  .fields dd a {
-    color: var(--accent);
+  .subtitle a {
     text-decoration: underline;
     text-decoration-color: var(--line);
     text-underline-offset: 3px;
   }
-  .fields dd a:hover {
+  .subtitle a:hover {
+    color: var(--accent);
     text-decoration-color: currentColor;
   }
-  .meta-line a {
-    color: var(--accent);
-    text-decoration: underline;
-    text-decoration-color: var(--line);
-    text-underline-offset: 3px;
+  .meta-line {
+    margin: 32px 0 0;
+    font: 400 17px/1.6 var(--serif);
+    color: var(--muted);
   }
-  .meta-line a:hover {
-    text-decoration: underline;
+  .meta-line time {
+    font: inherit;
+    color: inherit;
   }
   .prose {
     padding-top: 12px;
@@ -241,6 +201,7 @@ const transitionName = `title-${post.collection}-${post.id}`;
     color: var(--muted);
   }
   .next-title {
+    font-family: var(--serif);
     font-size: 20px;
     font-weight: 600;
     letter-spacing: -0.015em;
@@ -253,8 +214,15 @@ const transitionName = `title-${post.collection}-${post.id}`;
     .article-head {
       padding: 40px 0 24px;
     }
+    .subtitle {
+      font-size: 18px;
+    }
+    .meta-line {
+      margin-top: 22px;
+      font-size: 16px;
+    }
     .article-head h1 {
-      font-size: 29px;
+      font-size: 34px;
     }
   }
   @media print {

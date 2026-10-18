@@ -2,18 +2,16 @@
 import type { MarkdownHeading } from 'astro';
 /**
  * The article's apparatus. The side variant is a sticky rail with the section list (a marker slides to the
- * current section), reading progress, read time, and share actions; the inline variant is a collapsed
+ * current section), reading progress, and share actions; the inline variant is a collapsed
  * disclosure above the body on narrower screens.
  */
 interface Props {
   headings: MarkdownHeading[];
   variant: 'side' | 'inline';
-  /** Read time in minutes, shown under the progress bar in the rail. */
-  minutes?: number;
   /** Where the article's Markdown source is served, for "Copy as Markdown". */
   markdownHref?: string;
 }
-const { headings, variant, minutes, markdownHref } = Astro.props;
+const { headings, variant, markdownHref } = Astro.props;
 ---
 
 {variant === 'side' ? (
@@ -35,7 +33,6 @@ const { headings, variant, minutes, markdownHref } = Astro.props;
         </span>
         <span class="toc-pct">0%</span>
       </div>
-      {minutes && <p class="toc-read">{minutes} min read</p>}
       <h2 class="toc-label toc-share-label">Share</h2>
       <ul class="toc-actions">
         <li>
@@ -149,8 +146,7 @@ const { headings, variant, minutes, markdownHref } = Astro.props;
     width: var(--read-progress, 0%);
     background: repeating-linear-gradient(90deg, var(--accent) 0 2px, transparent 2px 4px);
   }
-  .toc-pct,
-  .toc-read {
+  .toc-pct {
     font: 12.5px/1.8 var(--mono);
     color: var(--muted);
     margin: 0;
