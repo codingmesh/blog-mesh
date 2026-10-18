@@ -145,7 +145,7 @@
 }
 
 /* Code panels: one quiet surface. The language label and the tools sit inside the panel's top padding; the
-   transformer supplies gutter, highlights, notes, and captions, and the script adds the label and tools. */
+   transformer supplies highlights, notes, and captions, and the script adds the label and tools. */
 .prose pre {
   max-width: 100%;
   overflow-x: auto;
@@ -155,58 +155,45 @@
   color: var(--panel-ink);
   border: 1px solid var(--panel-line);
   border-radius: var(--panel-radius);
-  padding: 22px 0 24px;
-  font: 14px/1.6 var(--mono);
+  padding: 28px 0 32px;
+  font: 15px/1.6 var(--mono);
   tab-size: 2;
+}
+/* Code panels and figures keep clear space from the text on both sides; island wrappers need a box for the
+   same spacing rule to apply to them. */
+.prose .code-block,
+.prose .code-figure,
+.prose > pre {
+  margin-block: 28px;
+}
+.prose > astro-island {
+  display: block;
 }
 .prose pre code {
   display: grid;
   padding: 0;
   background: transparent;
   font: inherit;
-  counter-reset: line;
 }
 .prose pre .line {
   display: block;
   padding-inline: var(--code-pad);
   min-height: 1.6em;
 }
-.prose pre[data-gutter] .line {
-  padding-left: 0;
-}
-/* The gutter numeral is an inline block at the start of the line, so tokens keep flowing as text. */
-.prose pre[data-gutter] .line::before {
-  content: counter(line);
-  counter-increment: line;
-  display: inline-block;
-  width: 52px;
-  padding-right: 16px;
-  box-sizing: border-box;
-  text-align: right;
-  font-size: 12px;
-  color: var(--gutter, #7a7e7b);
-  user-select: none;
-}
 .prose pre .line:empty::after {
   content: ' ';
 }
+/* Highlighted lines: a faint wash and a thin edge, quiet enough that the code stays the subject. */
 .prose pre .line.highlighted {
-  background: var(--highlight);
+  background: color-mix(in srgb, var(--highlight-edge) 9%, transparent);
   box-shadow: inset 2px 0 0 var(--highlight-edge);
-}
-.prose pre .line.highlighted::before {
-  color: var(--highlight-edge);
 }
 .prose pre .line-note {
   display: block;
-  background: var(--highlight);
-  padding: 4px var(--code-pad) 10px calc(var(--code-pad));
+  padding: 6px var(--code-pad) 10px calc(var(--code-pad));
   font: 13px/1.5 var(--sans);
-  color: #bfe3d3;
+  color: var(--panel-muted);
   white-space: normal;
-}
-.prose pre[data-gutter] .line-note {
-  padding-left: 52px;
 }
 .prose pre .line-note::before {
   content: '\2014  ';
@@ -216,18 +203,13 @@
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
-/* Wrapped continuation lines hang under the code, not under the gutter. */
-.prose pre[data-wrap][data-gutter] .line {
-  padding-left: 52px;
-  text-indent: -52px;
-}
 .prose .code-block pre {
   margin: 0;
   border: 0;
   border-radius: 0;
   /* A clear gap between the label row and the first line, and room below the last one. */
-  padding-top: 18px;
-  padding-bottom: 32px;
+  padding-top: 24px;
+  padding-bottom: 36px;
 }
 .prose .code-block pre:focus-visible {
   outline-offset: -3px;
@@ -239,14 +221,9 @@
 .prose .astro-code {
   background-color: var(--panel) !important;
 }
+/* A caption sits under the panel as ordinary figure text, not inside it. */
 .code-figure figcaption {
-  padding: 12px var(--code-pad) 14px;
-  margin: 0;
-  background: var(--panel);
-  border: 1px solid var(--panel-line);
-  border-top: 0;
-  color: var(--panel-muted);
-  border-radius: 0 0 var(--panel-radius) var(--panel-radius);
+  margin: 10px 0 0;
 }
 .code-block {
   border: 1px solid var(--panel-line);
@@ -256,8 +233,7 @@
   position: relative;
 }
 .code-figure .code-block {
-  border-bottom: 0;
-  border-radius: var(--panel-radius) var(--panel-radius) 0 0;
+  margin-block: 0;
 }
 /* The top of the panel: a small muted label (file name or language) on the left, icon tools on the right.
    No divider and no second background; it is part of the same surface as the code. */
@@ -265,7 +241,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  padding: 20px calc(var(--code-pad) - 8px) 0 var(--code-pad);
+  padding: 24px calc(var(--code-pad) - 8px) 0 var(--code-pad);
   color: var(--panel-muted);
 }
 .code-tab {
@@ -273,7 +249,7 @@
   align-items: baseline;
   justify-self: start;
   gap: 8px;
-  font: 400 12.5px/1 var(--mono);
+  font: 400 13px/1 var(--sans);
   color: var(--panel-muted);
   max-width: 100%;
   overflow: hidden;
@@ -359,7 +335,7 @@
   color: var(--panel-ink);
 }
 
-/* Terminal blocks: a prompt per command, muted output, no gutter. */
+/* Terminal blocks: a prompt per command, muted output. */
 .prose pre[data-terminal] .line.output span,
 .prose pre[data-terminal] .line.output {
   color: color-mix(in srgb, var(--panel-ink) 72%, var(--panel)) !important;
@@ -550,19 +526,7 @@
     font-size: 19px;
   }
   .prose pre {
-    font-size: 13px;
-  }
-  /* A narrower gutter; the note and wrapped continuation lines follow it so the code column stays aligned. */
-  .prose pre[data-gutter] .line::before {
-    width: 40px;
-    padding-right: 10px;
-  }
-  .prose pre[data-gutter] .line-note {
-    padding-left: 40px;
-  }
-  .prose pre[data-wrap][data-gutter] .line {
-    padding-left: 40px;
-    text-indent: -40px;
+    font-size: 13.5px;
   }
   .prose blockquote {
     font-size: 17px;

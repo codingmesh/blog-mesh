@@ -2,17 +2,20 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { codeMetaTransformer, commandOf, parseCodeMeta } from '../src/lib/code-meta.ts';
 
-test('the gutter appears only where highlighted lines or a note refer to line numbers', () => {
-  const gutterFor = (raw: string | undefined, lineCount = 12) => {
-    const node = { type: 'element', tagName: 'pre', properties: {}, children: [] };
+test('the pre carries the fence facts the stylesheet and script read, and never a gutter', () => {
+  const propsFor = (raw: string | undefined, lineCount = 12) => {
+    const node = { type: 'element', tagName: 'pre', properties: {} as Record<string, unknown>, children: [] };
     const context = { options: { meta: { __raw: raw } }, lines: Array.from({ length: lineCount }) };
     (codeMetaTransformer().pre as (this: unknown, node: unknown) => void).call(context, node);
-    return 'data-gutter' in node.properties;
+    return node.properties;
   };
-  assert.equal(gutterFor(undefined), false, 'a long plain block has no numbers');
-  assert.equal(gutterFor('{2,5-7}'), true, 'highlighted lines bring numbers');
-  assert.equal(gutterFor('note="Why this line"'), true, 'a note brings numbers');
-  assert.equal(gutterFor('{2} terminal'), false, 'terminal blocks never number');
+  assert.deepEqual(propsFor(undefined), { 'data-lines': '12' });
+  assert.deepEqual(propsFor('title="a.ts" {2,5-7} wrap'), {
+    'data-title': 'a.ts',
+    'data-wrap': '',
+    'data-lines': '12',
+  });
+  assert.deepEqual(propsFor('terminal', 3), { 'data-lines': '3', 'data-terminal': '' });
 });
 
 test('fence meta yields a tab title and the exact highlighted lines', () => {

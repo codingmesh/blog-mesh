@@ -67,13 +67,11 @@ export function codeMetaTransformer() {
   return {
     name: 'blog-mesh:code-meta',
     pre(this: TransformerContext, node: HastElement) {
-      const { title, wrap, terminal, lines, note } = metaOf(this);
+      const { title, wrap, terminal } = metaOf(this);
       if (title) node.properties['data-title'] = title;
       if (wrap) node.properties['data-wrap'] = '';
       node.properties['data-lines'] = String(this.lines.length);
       if (terminal) node.properties['data-terminal'] = '';
-      // Line numbers appear only where the text refers to them: blocks with highlighted lines or a note.
-      else if (lines.size || note) node.properties['data-gutter'] = '';
     },
     line(this: TransformerContext, node: HastElement, line: number) {
       const meta = metaOf(this);
