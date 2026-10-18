@@ -66,12 +66,6 @@ export function initCodeWindows(
     bar.className = 'code-bar';
     bar.setAttribute('data-pagefind-ignore', '');
 
-    // The three window lights are decoration for the eye only.
-    const lights = document.createElement('span');
-    lights.className = 'code-lights';
-    lights.setAttribute('aria-hidden', 'true');
-    lights.innerHTML = '<i></i><i></i><i></i>';
-
     const tab = document.createElement('span');
     tab.className = pre.dataset.title ? 'code-tab has-title' : 'code-tab';
     tab.innerHTML = pre.dataset.title ? `<b></b><small></small>` : `<b></b>`;
@@ -109,9 +103,6 @@ export function initCodeWindows(
         await navigator.clipboard.writeText(codeText(code));
         copyButton.innerHTML = `${icons.check}<span>Copied</span>`;
         copyButton.classList.add('is-done');
-        code.classList.remove('flash');
-        void code.offsetWidth;
-        code.classList.add('flash');
         if (status) status.textContent = `Code block ${index + 1} copied.`;
       } catch {
         const range = document.createRange();
@@ -136,7 +127,7 @@ export function initCodeWindows(
     pre.setAttribute('aria-label', `Code example ${index + 1}, scroll horizontally to read`);
     pre.before(shell);
     shell.append(bar, pre);
-    bar.append(lights, tab, tools);
+    bar.append(tab, tools);
     tools.append(wrapButton, copyButton);
 
     // Offer wrapping only when a line actually overflows.
