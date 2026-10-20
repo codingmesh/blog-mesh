@@ -11,28 +11,21 @@ import { site } from '../config';
       <p>{site.tagline}</p>
     </header>
     <div class="prose">
-      <p>
-        This is my corner of the internet for questions from things I read, ideas from writing code, and topics worth a
-        second look.
-      </p>
-      <p>
-        Articles make room for longer arguments. Notes hold smaller ideas that are still developing. The goal is to
-        leave useful context for other readers and for my future self.
-      </p>
+      <p>{site.about.intro}</p>
+      <p>{site.about.scope}</p>
       <h2>About this blog</h2>
       <p>
         This site focuses on software and reading notes. You can switch between light and dark themes, search the
         archive, or subscribe through <a href="/rss.xml">RSS</a>.
       </p>
+      <h2>Sources and interpretation</h2>
+      <p>{site.about.method}</p>
       <p>
-        The first reading notes draw on engineering articles from claude.dev. Each one links to its source and separates
-        the author's claims from additional reflections.
+        The reading list starts with engineering articles from <a href="https://claude.dev/blog/">claude.dev</a>. The{' '}
+        <a href="/writing/a-note-is-a-question/">editorial method</a> explains how those sources are used.
       </p>
     </div>
-    <aside class="about-note">
-      This is a preview profile, without a verified biography or contact details. The sample notes were prepared with AI
-      assistance and do not represent experiments personally conducted by the site owner.
-    </aside>
+    <aside class="about-note">{site.editorialNote}</aside>
   </div>
 </Base>
 

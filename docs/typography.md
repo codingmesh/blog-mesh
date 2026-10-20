@@ -161,17 +161,17 @@ A typography change is complete only when:
 
 Current migration status:
 
-| Area                                                                                  | Status                                                                                                                                |
-| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| Local Newsreader 24pt, Folio Sans, and JetBrains Mono files and browser registrations | Available                                                                                                                             |
-| Newsreader normal 400/700 and Folio Sans normal preloads                              | Configured                                                                                                                            |
-| Newsreader titles and reading text                                                    | Done on article pages: body, section and subsection headings, captions, footnotes, citations                                          |
-| Normal tracking throughout headings and labels                                        | Done in the shared heading rules and article pages; index and about pages still set their own tracking                                |
-| 620px article column                                                                  | Done; the rail appears from 1000px (narrow) and 1140px (full)                                                                         |
-| Unified 600px typography breakpoint                                                   | Done for tokens, prose, and article pages                                                                                             |
-| Article title / subtitle / date scale                                                 | Done: 56/40, 22/20 italic, 16 attribution, 18/17 date, with the section 4 gaps                                                        |
-| Editorial metadata, footer, captions, and content-block role consistency              | Footer, captions, footnotes, contents rail, and code labels done; `Aside` and `Transcript` labels, index rows, and about page pending |
-| Mono restricted to technical notation                                                 | Done on article pages, rail, footer, and footnotes; index rows and content-block labels pending                                       |
-| Social-card supporting labels                                                         | Done; labels use a static Folio Sans 400 TTF                                                                                          |
+| Area                                                                                  | Status                                                                                       |
+| ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Local Newsreader 24pt, Folio Sans, and JetBrains Mono files and browser registrations | Available                                                                                    |
+| Newsreader normal 400/700 and Folio Sans normal preloads                              | Configured                                                                                   |
+| Newsreader titles and reading text                                                    | Done on article pages: body, section and subsection headings, captions, footnotes, citations |
+| Normal tracking throughout headings and labels                                        | Done                                                                                         |
+| 620px article column                                                                  | Done; the rail appears from 1000px (narrow) and 1140px (full)                                |
+| Unified 600px typography breakpoint                                                   | Done for tokens, prose, and article pages                                                    |
+| Article title / subtitle / date scale                                                 | Done: 56/40, 22/20 italic, 16 attribution, 18/17 date, with the section 4 gaps               |
+| Editorial metadata, footer, captions, and content-block role consistency              | Done except `Aside` and `Transcript` labels, which keep their own mono scale                 |
+| Mono restricted to technical notation                                                 | Done except `Aside` and `Transcript` labels                                                  |
+| Social-card supporting labels                                                         | Done; labels use a static Folio Sans 400 TTF                                                 |
 
 The checklist is a snapshot, not an exception to the standard. Update it as implementation work is verified. Font roles or scale changes must update this document first, followed by the implementation and asset guide as needed.

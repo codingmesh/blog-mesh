@@ -1,9 +1,9 @@
 ---
 import { formatDate, postUrl, readingTime, type Post } from '../../lib/content';
-import { site } from '../../config';
 /**
  * One entry in a list. The `row` variant is a date and a title, the `latest` variant adds the reading time, the topic,
  * and the one-line description. Titles carry a view-transition name so the clicked title morphs into the headline.
+ * Dates use the site's formatter in the entry-meta role, as on article pages.
  */
 interface Props {
   post: Post;
@@ -15,11 +15,6 @@ const Heading = heading;
 const topic = post.data.tags[0];
 const transitionName = `title-${post.collection}-${post.id}`;
 const date = post.data.date;
-// Desktop rows align on the numeric form; phones, where the date sits over the title, read a month name.
-const yearMonth = `${date.getUTCFullYear()} · ${String(date.getUTCMonth() + 1).padStart(2, '0')}`;
-const monthYear = new Intl.DateTimeFormat(site.locale, { month: 'short', year: 'numeric', timeZone: 'UTC' }).format(
-  date,
-);
 ---
 
 {variant === 'latest' ? (
@@ -44,10 +39,7 @@ const monthYear = new Intl.DateTimeFormat(site.locale, { month: 'short', year: '
   </article>
 ) : (
   <li class="row archive-item" data-tags={JSON.stringify(post.data.tags)}>
-    <time datetime={date.toISOString()}>
-      <span class="date-wide">{yearMonth}</span>
-      <span class="date-narrow">{monthYear}</span>
-    </time>
+    <time datetime={date.toISOString()}>{formatDate(date)}</time>
     <Heading class="row-title" transition:name={transitionName}>
       <a href={postUrl(post)}>{post.data.title}</a>
     </Heading>
@@ -56,31 +48,27 @@ const monthYear = new Intl.DateTimeFormat(site.locale, { month: 'short', year: '
 )}
 
 <style>
+  /* Roles: entry-meta for the date and length, entry-title for the title, featured-title and summary for Latest. */
   .row {
     display: grid;
-    grid-template-columns: 92px minmax(0, 1fr) auto;
+    grid-template-columns: 7.5em minmax(0, 1fr) auto;
     gap: 0 20px;
     align-items: baseline;
     padding: 7px 0;
   }
   .row time,
   .row-length {
-    font: 13px/1.8 var(--mono);
+    font: 400 16px/1.5 var(--serif);
+    font-variant-numeric: tabular-nums;
     color: var(--muted);
     white-space: nowrap;
   }
   .row-length {
     text-align: right;
   }
-  .date-narrow {
-    display: none;
-  }
   .row-title {
     margin: 0;
-    font-size: 17px;
-    font-weight: 400;
-    line-height: 1.5;
-    letter-spacing: 0;
+    font: 400 20px/1.5 var(--serif);
     overflow-wrap: anywhere;
   }
   .row-title a {
@@ -96,9 +84,7 @@ const monthYear = new Intl.DateTimeFormat(site.locale, { month: 'short', year: '
   }
   .latest-title {
     margin: 0 0 6px;
-    font-size: 26px;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
+    font: 600 28px/1.25 var(--serif);
     overflow-wrap: anywhere;
   }
   .latest-title a:hover,
@@ -107,18 +93,16 @@ const monthYear = new Intl.DateTimeFormat(site.locale, { month: 'short', year: '
   }
   .latest-when {
     margin: 0 0 10px;
-    font: 13px/1.8 var(--mono);
+    font: 400 16px/1.5 var(--serif);
     color: var(--muted);
   }
   .latest-when i {
     font-style: normal;
     margin: 0 6px;
-    color: var(--muted);
-    opacity: 0.55;
   }
   .latest-summary {
     margin: 0;
-    font: 18px/1.6 var(--serif);
+    font: 400 20px/1.6 var(--serif);
     color: var(--muted);
     max-width: 54ch;
   }
@@ -140,17 +124,14 @@ const monthYear = new Intl.DateTimeFormat(site.locale, { month: 'short', year: '
     .row time {
       line-height: 1.4;
     }
-    .date-wide {
-      display: none;
-    }
-    .date-narrow {
-      display: inline;
-    }
     .row-length {
       display: none;
     }
     .latest-title {
-      font-size: 23px;
+      font-size: 24px;
+    }
+    .latest-summary {
+      font-size: 18px;
     }
   }
 </style>

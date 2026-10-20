@@ -155,29 +155,9 @@ kbd {
 }
 
 /* Shared text pieces */
-.eyebrow {
-  font: 500 13px/1.6 var(--mono);
-  color: var(--accent);
-}
-.eyebrow span {
-  color: var(--muted);
-}
-.meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 18px;
-  font: 13px/1.6 var(--mono);
-  color: var(--muted);
-}
-.meta b {
-  font-weight: 500;
-  color: var(--accent);
-}
 .label {
-  font: 500 12px/1.6 var(--mono);
+  font: 500 14px/1.5 var(--sans);
   color: var(--muted);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
 }
 .section-head {
   display: flex;
@@ -186,9 +166,10 @@ kbd {
   gap: 16px;
   margin: 40px 0 14px;
 }
+/* Section names on index pages are interface labels (typography standard, section 2). */
 .section-title {
   margin: 0;
-  font: 400 17px/1.5 var(--sans);
+  font: 500 14px/1.5 var(--sans);
   color: var(--muted);
 }
 .section-head a {
@@ -232,8 +213,7 @@ kbd {
   background: var(--accent);
   color: var(--paper);
   border-radius: var(--radius);
-  font-weight: 600;
-  font-size: 15px;
+  font: 500 15px/1.4 var(--sans);
   white-space: nowrap;
 }
 .primary-link:hover {
@@ -242,8 +222,7 @@ kbd {
 }
 .reading-disclosure,
 .empty-copy {
-  font-size: 14px;
-  line-height: 1.6;
+  font: 400 14px/1.6 var(--sans);
   color: var(--muted);
   max-width: 60ch;
 }
@@ -253,19 +232,30 @@ kbd {
 .empty-copy {
   padding: 24px 0;
 }
+/* Archive, about, and error pages: page-title and summary roles, 8px apart. */
 .page-head {
   padding: 64px 0 28px;
 }
 .page-head h1 {
-  font-size: 34px;
-  letter-spacing: -0.025em;
-  line-height: 1.2;
-  margin: 0 0 10px;
+  font-size: 44px;
+  line-height: 1.15;
+  margin: 0 0 8px;
 }
 .page-head p {
   color: var(--muted);
-  font: 18px/1.55 var(--serif);
+  font: 400 20px/1.6 var(--serif);
   max-width: 50ch;
+}
+@media (max-width: 600px) {
+  .page-head {
+    padding: 48px 0 24px;
+  }
+  .page-head h1 {
+    font-size: 36px;
+  }
+  .page-head p {
+    font-size: 18px;
+  }
 }
 .nowrap {
   white-space: nowrap;

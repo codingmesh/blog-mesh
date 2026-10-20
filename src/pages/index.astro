@@ -56,9 +56,7 @@ const [latest, ...rest] = articles;
         </ul>
       </section>
     )}
-    <p class="reading-disclosure">
-      These sample reading notes draw on claude.dev. Sources and personal reflections are clearly separated.
-    </p>
+    <p class="reading-disclosure">{site.editorialNote}</p>
   </div>
 </Base>
 
@@ -67,15 +65,15 @@ const [latest, ...rest] = articles;
     padding: 72px 0 40px;
     border-bottom: 1px solid var(--line);
   }
+  /* home-title and summary roles from the typography standard. */
   .hero h1 {
-    font-size: 40px;
+    font-size: 48px;
     line-height: 1.15;
-    letter-spacing: -0.025em;
-    margin: 0 0 10px;
+    margin: 0 0 8px;
     max-width: 18ch;
   }
   .hero p {
-    font: 19px/1.55 var(--serif);
+    font: 400 20px/1.6 var(--serif);
     color: var(--muted);
     max-width: 46ch;
   }
@@ -96,10 +94,10 @@ const [latest, ...rest] = articles;
       padding: 48px 0 32px;
     }
     .hero h1 {
-      font-size: 32px;
+      font-size: 36px;
     }
     .hero p {
-      font-size: 17px;
+      font-size: 18px;
     }
   }
 </style>
