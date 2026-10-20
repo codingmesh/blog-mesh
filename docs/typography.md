@@ -170,8 +170,8 @@ Current migration status:
 | 620px article column                                                                  | Done; the rail appears from 1000px (narrow) and 1140px (full)                                |
 | Unified 600px typography breakpoint                                                   | Done for tokens, prose, and article pages                                                    |
 | Article title / subtitle / date scale                                                 | Done: 56/40, 22/20 italic, 16 attribution, 18/17 date, with the section 4 gaps               |
-| Editorial metadata, footer, captions, and content-block role consistency              | Done except `Aside` and `Transcript` labels, which keep their own mono scale                 |
-| Mono restricted to technical notation                                                 | Done except `Aside` and `Transcript` labels                                                  |
+| Editorial metadata, footer, captions, and content-block role consistency              | Done                                                                                         |
+| Mono restricted to technical notation                                                 | Done                                                                                         |
 | Social-card supporting labels                                                         | Done; labels use a static Folio Sans 400 TTF                                                 |
 
 The checklist is a snapshot, not an exception to the standard. Update it as implementation work is verified. Font roles or scale changes must update this document first, followed by the implementation and asset guide as needed.

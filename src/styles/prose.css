@@ -7,9 +7,6 @@
   font-optical-sizing: auto;
   overflow-wrap: anywhere;
 }
-.prose .aside,
-.prose .turn,
-.prose .transcript,
 .prose table {
   font-family: var(--sans);
 }
