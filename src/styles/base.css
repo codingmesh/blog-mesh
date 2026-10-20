@@ -114,7 +114,8 @@ time {
   font-variant-numeric: tabular-nums;
 }
 kbd {
-  font-size: 11px;
+  font-size: 12px;
+  line-height: 1.4;
   border: 1px solid var(--line);
   border-radius: 4px;
   padding: 1px 6px;
