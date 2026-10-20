@@ -109,15 +109,17 @@ import Island from '../islands/OutcomeExplorer';
     border-style: dashed;
     border-color: var(--accent);
   }
+  /* Status text is supporting UI in the sans; only the code identifier is mono. The caption is figure text. */
   .outcome-result {
     display: block;
     margin-top: 18px;
-    font: 14px/1.6 var(--mono);
+    font: 400 14px/1.6 var(--sans);
     color: var(--muted);
     text-align: center;
     min-height: 1.6em;
   }
   .outcome-result code {
+    font: 0.9em var(--mono);
     color: var(--accent);
   }
   .outcome-result q {
@@ -125,11 +127,11 @@ import Island from '../islands/OutcomeExplorer';
   }
   .outcome-explorer figcaption {
     color: var(--muted);
-    font-size: 13px;
+    font: 400 16px/1.5 var(--serif);
     text-align: center;
     margin-top: 14px;
   }
-  @media (max-width: 540px) {
+  @media (max-width: 600px) {
     .outcome-explorer {
       padding: 14px;
     }

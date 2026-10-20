@@ -247,7 +247,17 @@ kbd {
   font: 400 20px/1.6 var(--serif);
   max-width: 50ch;
 }
+.nowrap {
+  white-space: nowrap;
+}
+/* The one typography breakpoint. */
 @media (max-width: 600px) {
+  .section-head {
+    margin-top: 52px;
+  }
+  .reading-disclosure {
+    margin-top: 44px;
+  }
   .page-head {
     padding: 48px 0 24px;
   }
@@ -256,26 +266,6 @@ kbd {
   }
   .page-head p {
     font-size: 18px;
-  }
-}
-.nowrap {
-  white-space: nowrap;
-}
-@media (max-width: 540px) {
-  .section-head {
-    margin-top: 52px;
-  }
-  .reading-disclosure {
-    margin-top: 44px;
-  }
-  .page-head {
-    padding: 44px 0 28px;
-  }
-  .page-head h1 {
-    font-size: 38px;
-  }
-  .page-head p {
-    font-size: 17px;
   }
 }
 @media print {

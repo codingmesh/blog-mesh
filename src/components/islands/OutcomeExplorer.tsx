@@ -67,7 +67,9 @@ export default function OutcomeExplorer() {
             <code>describe(result)</code> returns <q>{describe(current.result)}</q>
           </>
         ) : (
-          'Select an outcome to see what describe() returns.'
+          <>
+            Select an outcome to see what <code>describe()</code> returns.
+          </>
         )}
       </output>
       <figcaption id="outcome-caption">An empty result and a failed check are different outcomes.</figcaption>
