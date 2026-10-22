@@ -259,7 +259,7 @@ class Wind {
     sheet.width = 16 * cellW;
     sheet.height = Math.ceil(charset.length / 16) * cellW * 2;
     const ctx = sheet.getContext('2d')!;
-    ctx.font = `400 ${Math.round(9 * scale)}px "Source Code Pro", Menlo, Consolas, monospace`;
+    ctx.font = `400 ${Math.round(9 * scale)}px "JetBrains Mono", Menlo, Consolas, monospace`;
     ctx.fillStyle = 'white';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -543,7 +543,7 @@ export async function mountWind(canvas: HTMLCanvasElement) {
     return;
   }
   current?.destroy();
-  await document.fonts.load('9px "Source Code Pro"').catch(() => undefined);
+  await document.fonts.load('9px "JetBrains Mono"').catch(() => undefined);
   current = new Wind(canvas, column, head);
 }
 
