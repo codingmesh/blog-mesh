@@ -40,7 +40,7 @@ The family variables are injected by the `<Font />` components in `src/layouts/B
 
 Use component tokens instead of hardcoding Astro's generated family names. `--display` resolves to `--serif`; it does not activate the stored Newsreader 60pt files.
 
-Newsreader normal 400 and 700 are preloaded for paragraphs and titles. Folio Sans normal is preloaded for the header. Other styles and weights load when used.
+Newsreader normal 400 and 700 are preloaded for paragraphs and titles, and italic 400 for the article subtitle, which sits above the fold. Folio Sans normal is preloaded for the header. Other styles and weights load when used.
 
 ## Social-card assets
 
