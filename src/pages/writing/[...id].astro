@@ -3,7 +3,6 @@ import { render } from 'astro:content';
 import '../../styles/prose.css';
 import Base from '../../layouts/Base.astro';
 import CodeWindows from '../../components/content/CodeWindows.astro';
-import Comments from '../../components/content/Comments.astro';
 import BackToTop from '../../components/content/BackToTop.astro';
 import Lightbox from '../../components/content/Lightbox.astro';
 import ReadingLine from '../../components/content/ReadingLine.astro';
@@ -112,7 +111,6 @@ const transitionName = `title-${post.collection}-${post.id}`;
         </a>
       )}
     </footer>
-    <Comments />
   </article>
 </Base>
 

@@ -111,7 +111,8 @@ const { active, crumb } = Astro.props;
   .search-trigger kbd {
     margin-left: 2px;
   }
-  /* Key hints: visible on pointer screens where a keyboard is likely, hidden on phones. */
+  /* Key hints: visible on pointer screens where a keyboard is likely, hidden on phones and when the reader has
+     turned the shortcuts off (About page). */
   nav a kbd {
     margin-left: 4px;
     vertical-align: 1px;
@@ -120,6 +121,9 @@ const { active, crumb } = Astro.props;
     nav a kbd {
       display: none;
     }
+  }
+  :global(html[data-shortcuts='off']) nav kbd {
+    display: none;
   }
   @media (max-width: 600px) {
     .top {

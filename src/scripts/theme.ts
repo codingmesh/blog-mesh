@@ -1,7 +1,7 @@
 /**
  * Theme toggle. A stored choice wins, then the system preference, then light; the pre-paint choice lives in an
  * inline script in Base.astro with the same rule. This module wires the button, re-applies the theme after
- * client-side navigation, and announces changes for anything that needs to follow (comments embed).
+ * client-side navigation, and announces changes for anything that needs to follow (the wind, for one).
  */
 export type Theme = 'light' | 'dark';
 

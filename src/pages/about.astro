@@ -18,6 +18,15 @@ import { site } from '../config';
         This site focuses on software and reading notes. You can switch between light and dark themes, search the
         archive, or subscribe through <a href="/rss.xml">RSS</a>.
       </p>
+      <p>
+        Single keys move around the site: <kbd>W</kbd> writing, <kbd>N</kbd> notes, <kbd>A</kbd> about, <kbd>S</kbd>{' '}
+        search, and <kbd>T</kbd> theme. They are ignored while you type. If they get in the way of your keyboard or
+        speech software, turn them off here; the choice stays in this browser.
+      </p>
+      <label class="shortcut-switch">
+        <input type="checkbox" id="shortcut-switch" checked />
+        Keyboard shortcuts on
+      </label>
       <h2>Sources and interpretation</h2>
       <p>{site.about.method}</p>
       <p>
@@ -29,7 +38,33 @@ import { site } from '../config';
   </div>
 </Base>
 
+<script>
+  import { onPageLoad } from '../scripts/page';
+  import { shortcutsEnabled, setShortcutsEnabled } from '../scripts/shortcuts';
+  onPageLoad(() => {
+    const box = document.querySelector<HTMLInputElement>('#shortcut-switch');
+    if (!box) return;
+    box.checked = shortcutsEnabled();
+    box.addEventListener('change', () => setShortcutsEnabled(box.checked));
+  });
+</script>
+
 <style>
+  /* A control, in the sans, with a thumb-sized target. */
+  .shortcut-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 40px;
+    font: 500 15px/1.4 var(--sans);
+    cursor: pointer;
+  }
+  .shortcut-switch input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: var(--accent);
+  }
   .about-note {
     margin: 48px 0 0;
     padding: 18px 0 0;
