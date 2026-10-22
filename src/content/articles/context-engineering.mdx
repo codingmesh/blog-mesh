@@ -5,12 +5,13 @@ date: "2026-10-14"
 format: reading
 tags: ["Context engineering"]
 featured: false
-sample: true
+sample: false
 source:
   title: "The new rules of context engineering for Claude 5 generation models"
   url: https://claude.dev/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models/
   author: "Thariq Shihipar"
 ---
+
 
 ## What the article says
 
@@ -20,13 +21,13 @@ source:
 
 These are claims and recommendations from the [original article](https://claude.dev/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models/), not findings from an experiment conducted for this note.
 
-## What I take from it
+## Applying the idea to project instructions
 
 Project instructions tend to grow one incident at a time. A naming mistake adds a rule. An overly broad change adds another. Each addition has a reason, but the collection can lose its boundaries.
 
-I want to know why a rule exists, which failure it addresses, and what would justify removing it. Instructions have a maintenance cost, even when that cost never shows up as a compiler error.
+For each rule, ask why it exists, which failure it addresses, and what would justify removing it. Instructions have a maintenance cost, even when that cost never shows up as a compiler error.
 
-For a blog repository, I would give each requirement a clear home. Stable editorial conventions belong in the project overview. Article structure belongs in a content template. Publishing steps belong in a dedicated guide. The argument of the article being written belongs in the current task. The overview helps readers find the details without repeating them everywhere.
+For a blog repository, one possible organization gives each requirement a clear home. Stable editorial conventions belong in the project overview. Article structure belongs in a content template. Publishing steps belong in a dedicated guide. The argument of the article being written belongs in the current task. The overview helps readers find the details without repeating them everywhere. This is a proposed organization, not a description of a migration performed for this note.
 
 Some rules deserve to stay explicit, including traceable citations and a ban on invented firsthand experience. Editing should make the requirements clearer. A long rule that prevents a recurring mistake may still earn its place.
 
@@ -34,4 +35,4 @@ Some rules deserve to stay explicit, including traceable citations and a ban on 
 
 The article describes experience with particular products and models. It does not establish that every model benefits from fewer instructions.
 
-Before adopting a shorter version, I would keep the original and compare both on representative tasks, looking for omissions, misunderstandings, and extra human rework. This note does not include a controlled comparison.
+Before adopting a shorter version, keep the original and compare both on representative tasks, looking for omissions, misunderstandings, and extra human rework. This note does not include a controlled comparison. The reported 80% reduction is a result from the source team's evaluations, not a target for every project's instruction files.

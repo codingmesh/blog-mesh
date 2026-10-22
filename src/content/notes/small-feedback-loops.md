@@ -1,21 +1,34 @@
 ---
-title: "Build something you can discuss"
-description: "Turn a big question into a small, observable result that helps you make the next decision."
-date: "2026-10-14"
-tags: ["Development practice"]
-sample: true
+title: What this blog checks before publishing
+description: The repository checks behind the articles, and the editorial questions those checks cannot answer.
+date: 2026-10-14
+tags:
+  - Development practice
+draft: false
+sample: false
 ---
 
-Starting a blog brings several decisions at once: the homepage, topic organization, comments, search, and deployment. They all matter, but considering them together can make the first step hard to choose.
+These commands and behaviors are documented in the [repository](https://github.com/codingmesh/blog-mesh), rather than taken from a sample run.
 
-## Make the next step concrete
+## Four checks with different jobs
 
-Start with one realistic article containing paragraphs, code, and a diagram. Put it on an actual page and read it on a phone before settling on the type size and content width.
+```sh
+npm run check
+npm test
+npm run build
+npm run check:links
+```
 
-That version does not need every feature. It needs enough real content to expose layout problems. Placeholder headings cannot tell us whether a long code sample will overflow or whether paragraphs will feel crowded.
+`check` runs the US English guard, formatting validation, and Astro's diagnostics. The language guard detects certain non-English characters and locale mismatches; it does not establish that a sentence is good English or factually correct.
 
-## Give exploration a stopping point
+`test` runs the existing suites for behavior such as publication filtering, content schemas, and search matching. Publication filtering excludes drafts and future-dated entries. A future-dated article becomes eligible on a later build; changing the clock does not update already generated pages.
 
-“Keep improving” has no natural finish line. “The article is readable on a phone, long code scrolls horizontally, and navigation works with a keyboard” gives us things we can check.
+`build` renders the site and generates the Pagefind search index. `check:links` then verifies internal links and asset references against the build output. It does not fetch external sources or verify that a cited page supports an article's claims.
 
-Answer the immediate question, then expand the scope. Let feedback shape the next iteration instead of fitting every possibility into the first version.
+## What still needs a person to read it
+
+A valid content file can cite the wrong author. A working link can point to an article that never made the claimed measurement. A successful build cannot distinguish a real conversation from an invented transcript.
+
+For a reading note, verification therefore includes opening the original source and comparing its claims with the summary. For a page change, a focused browser check confirms that the title, attribution, code, and navigation are readable in the rendered result.
+
+There are no sample pass counts here: results belong to a particular run. The useful record is the command, its actual outcome, and any remaining limitation.

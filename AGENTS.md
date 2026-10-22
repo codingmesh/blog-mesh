@@ -16,6 +16,7 @@
 - Browser behavior lives in `src/scripts/*.ts` modules imported by components. Keep pure logic in exported functions so it can be tested; keep DOM wiring in an `init*` function.
 - Interactive React components live in `src/components/islands/` and are exposed to MDX through an Astro wrapper registered in `src/components/content/mdx-components.ts`. An island must render meaningful HTML without JavaScript and should hydrate with `client:visible` unless it is above the fold.
 - Site identity and copy come from `src/config.ts`. Environment-specific values come from `.env`; see `.env.example`.
+- Typography must follow `docs/typography.md` for font roles, the responsive type scale, tracking, spacing, and reading width. Asset registration details live in `src/assets/fonts/README.md`.
 - Run `npm run format` before committing. CI runs `npm run check`, `npm test`, `npm run build`, and `npm run check:links`.
 
 ## Testing

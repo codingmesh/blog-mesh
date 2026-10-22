@@ -1,25 +1,29 @@
 ---
-title: "A useful note starts with a good question"
-description: "A reading note does not need a finished conclusion. An unresolved question can be worth keeping."
-date: "2026-10-14"
-tags: ["Writing and thinking"]
-sample: true
+title: Keep source claims separate from recommendations
+description: How this blog distinguishes an author's results, editorial interpretation, and ideas that have not been tested.
+date: 2026-10-14
+tags:
+  - Writing and thinking
+draft: false
+sample: false
 ---
 
-After reading an article, the easiest thing to write is a recap: what the author said, which examples they used, and where they landed.
+The reading notes on this site use three distinct kinds of statements. Keeping them separate lets a reader decide what the evidence supports.
 
-A week later, the original article may be the fastest place to find those details. The extra value in a note might be the question I could not answer at the time.
+## Source claims
 
-## Leave room for a question
+The opening section summarizes a linked original article and names its authors. The original publication date appears in the body; the date above belongs to this note. A result reported by an article stays attributed to that article's authors.
 
-Here is a simple structure to try:
+For example, the [note on project instructions](/writing/context-engineering/) describes a prompt reduction reported by the Claude Code team. That result does not mean this blog ran the same evaluation, and it does not set a reduction target for another repository.
 
-- **What did I think before reading?** Record the starting assumption.
-- **What made me pause?** Point to a specific argument, rather than simply calling the article insightful.
-- **What evidence is still missing?** Turn a tentative conclusion into something that can be checked.
+## Proposed applications
 
-An article might recommend recording failures in an automation. A useful follow-up question is what should happen if an update is delivered but its delivery record is never saved. That is more actionable than another reminder to make the system reliable.
+The application sections develop an idea for a concrete situation, such as checking a citation or organizing project rules. Conditional examples are proposals. They do not stand in for a deployment report, a recorded conversation, or personal experience supplied by the site owner.
 
-## It does not have to be finished
+The type sketch in the [automation note](/writing/agent-automations/) is labeled as an additional example. It illustrates a distinction in the data model; it is not presented as code taken from the source or an automation running behind this site.
 
-Keep the source link and the question together. Return to them when a related problem comes up in practice. An unresolved question can become the starting point for a longer article.
+## Open questions
+
+Each reading note identifies a limit or an unanswered question. Where no experiment has been run, the note says so. A suggested comparison is not a measured improvement.
+
+The notes are prepared with AI assistance and checked against their cited sources. This method makes the provenance inspectable; readers should still return to the original article before relying on a product detail or experimental result.

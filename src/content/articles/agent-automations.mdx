@@ -7,7 +7,7 @@ date: 2026-10-14
 tags:
   - Agent engineering
 draft: false
-sample: true
+sample: false
 format: reading
 featured: true
 source:
@@ -15,6 +15,8 @@ source:
   url: https://claude.dev/blog/building-effective-agent-automations/
   author: Lance Martin and CJ Avilla
 ---
+
+
 ## What the article says
 
 1. The example keeps a separate cursor for each source instead of relying on a fixed time window, reducing the chance of missing or repeating items.
@@ -23,23 +25,23 @@ source:
 
 These points summarize the [original reference implementation](https://claude.dev/blog/building-effective-agent-automations/).
 
-## What I take from it
+## Applying the idea to a reading assistant
 
 An automated summary can look complete even when it silently skips an important source. A reader sees a polished daily report, with little way to tell whether it covered everything it was supposed to check.
 
-I would treat the amount of new content and the completeness of the check as separate signals. Even when nothing deserves a notification, the run should record what it checked and whether each check succeeded.
+The amount of new content and the completeness of the check deserve separate signals. Even when nothing deserves a notification, the run should record what it checked and whether each check succeeded.
 
-For a blog-reading assistant, I would start with three outcomes: checked with updates, checked without updates, and not checked successfully. All three can appear on the same page, but they should not all become an empty array in the data. Otherwise, a network problem can look exactly like an author who stopped publishing.
+For a blog-reading assistant, three outcomes are useful: checked with updates, checked without updates, and not checked successfully. All three can appear on the same page, but they should not all become an empty array in the data. Otherwise, a network problem can look exactly like an author who stopped publishing.
 
-I would also give each article a stable identifier and track discovery, reading, drafting, and publication separately. Finding a link does not mean the full article was read. Producing a summary does not mean it is ready to publish. Explicit states make those distinctions easier to inspect.
+Tracking discovery, reading, drafting, and publication separately would also help. Finding a link does not mean the full article was read. Producing a summary does not mean it is ready to publish. Explicit states make those distinctions easier to inspect. These are proposed applications; this blog does not run such an assistant.
 
 ## A small example
 
-This type sketch extends that idea; it is not code from the original article. The highlighted union is the point: the result describes what happened, rather than returning only an array of articles.
+This standalone type sketch extends that idea; it is not code from the original article or a deployed automation. The highlighted union is the point: the result describes what happened, rather than returning only an array of articles.
 
 ```typescript {2-4} note="Three outcomes, three shapes. An empty array could never say which one happened." caption="A discriminated union keeps “nothing new” and “could not check” apart at the type level."
 type CheckResult =
-  | { status: 'updated'; articles: Article[] }
+  | { status: 'updated'; articles: { id: string; title: string }[] }
   | { status: 'unchanged'; checkedAt: Date }
   | { status: 'failed'; reason: string };
 
@@ -59,6 +61,6 @@ The interface can reflect these states directly. Readers should be able to tell 
 
 ## What still needs testing
 
-This is an engineering reference from a product team, not a reliability proof. Before adopting it, I would test three interruptions: a source becoming unavailable, a successful delivery with a lost acknowledgment, and a run stopping partway through.
+Before adopting this design, test three interruptions: a source becoming unavailable, a successful delivery with a lost acknowledgment, and a run stopping partway through. A confirmation followed by a crash before saving state can still leave uncertainty about whether to retry; the order of operations alone does not guarantee exactly-once delivery.
 
 The questions are whether the system can recover, whether it creates duplicates, and whether the user can understand its progress. This reading note does not report results from running those tests.

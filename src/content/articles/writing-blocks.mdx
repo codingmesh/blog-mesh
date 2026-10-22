@@ -4,7 +4,7 @@ description: A short tour of what an article here can hold, from captioned figur
 date: 2026-10-17
 tags:
   - Development practice
-draft: false
+draft: true
 sample: true
 format: essay
 featured: false
@@ -17,7 +17,7 @@ source:
 import demo from './writing-blocks/demo.mp4?url';
 import poster from './writing-blocks/demo-poster.jpg?url';
 
-Everything on this page is written in Markdown. Each section shows one kind of block the site can render, with the sample content kept deliberately plain so the block itself is what you see.
+This unpublished rendering fixture exercises the site's content blocks. The dialogue is illustrative, not a recorded conversation. The media remain as rendering examples.
 
 ## Figures
 
@@ -31,10 +31,7 @@ An image with alt text becomes a figure, and the alt text is its caption.[^1]
 
 ```sh terminal
 $ npm run check
-US English check passed: 126 project text files.
-- 0 errors
 $ npm test
-ℹ pass 11
 ```
 
 ## A diagram from text
@@ -72,11 +69,13 @@ sequenceDiagram
 
 ## A conversation
 
-<Transcript model="Claude" date="Oct 14, 2026">
+The following exchange is an invented example of the transcript component, not evidence of a model response.
+
+<Transcript model="Illustrative model">
   <Turn role="user">
     Review this function and tell me which of the three outcomes it cannot distinguish.
 
-    `describe(result)` from the type sketch above.
+    A function that returns only an array of articles after checking a source.
   </Turn>
   <Turn role="model">
     It cannot distinguish `unchanged` from `failed` when the caller only checks whether the array is empty. Both produce an empty page, and the reader cannot tell a quiet day from a broken fetch.
@@ -93,7 +92,7 @@ sequenceDiagram
 
 ## Math
 
-Sorting costs $O(n \log n)$ in the general case, and the bound is tight:
+For merge sort on equal halves, this recurrence gives $T(n) = \Theta(n \log n)$:
 
 $$
 T(n) = 2T\left(\tfrac{n}{2}\right) + \Theta(n)

@@ -1,0 +1,46 @@
+---
+title: Code review needs evidence and a stopping rule
+description: A reading of the Claude Code team's review process, with a practical way to distinguish useful findings from another round of edits.
+date: 2026-10-18
+tags:
+  - Development practice
+  - Agent engineering
+draft: false
+sample: false
+format: reading
+featured: false
+source:
+  title: How the Claude Code team does code review
+  url: https://claude.dev/blog/solving-code-review-at-anthropic/
+  author: Addy Osmani, Morgan Westlee Lunt, and Qing Wang
+---
+
+The useful question it raises is what evidence makes another review round worthwhile.
+
+## What the article says
+
+The authors describe an internal process that combines executable verification, automated review, security checks, risk-based human approval, and rollback. An agent's approval cannot satisfy a requirement for a human reviewer.
+
+They also describe a failure mode: reviewers and coding agents can keep generating work for each other. Their response includes limiting rounds, narrowing later reviews to changed code, and avoiding repeated findings. They evaluate reviewers using past incidents and watch for false positives on clean changes.
+
+This is an account of one team's evolving workflow. It does not establish that automated review makes human judgment unnecessary, or that the same process is available as a public product.
+
+## A review finding should change a decision
+
+For this blog, consider two hypothetical findings. One says a paragraph could sound more polished. Another points out that an article attributes an experiment to someone who never conducted it. The second finding affects whether the article is truthful; the first may only express a preference.
+
+A useful content review can ask for four pieces of information: the sentence at issue, the claim it makes, the source that contradicts or fails to support it, and a correction. That gives the editor something concrete to accept, reject, or investigate. A vague request to make the article more authoritative provides none of those handles.
+
+The same approach applies to a software change. For example, a review of a search fix could identify the query that fails, the matching rule it violates, and the smallest reproduction. That is a more useful starting point than a comment about a function name that merely sounds suspicious.
+
+## Stop when the evidence is sufficient
+
+A proposed stopping rule for a reading note is straightforward: its factual claims have traceable sources, its interpretations are labeled, and the changed page passes the relevant site checks. Another pass earns its place when a new source, an unresolved contradiction, or a substantive edit introduces a reason to look again.
+
+For a correction to one citation, that might mean reopening the original article and checking the rendered link. For a change to publication filtering, it means checking whether drafts can leak into pages, RSS, or search. The required evidence follows the behavior being changed.
+
+This proposal is narrower than adopting the source team's entire review system. It is a way to make editorial review finish with a defensible decision. No comparison of review methods was run for this note.
+
+## The remaining question
+
+A clean review can mean the work is correct, or that the reviewer missed the problem. Keeping examples of actual mistakes would make later review instructions easier to assess. For this blog, a small set of known citation errors and misleading attributions would be a useful starting point; that evaluation set has not been built.

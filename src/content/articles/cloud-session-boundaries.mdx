@@ -1,0 +1,46 @@
+---
+title: Cloud sessions isolate work, but integration still needs proof
+description: What Claude Code's cloud-session guide suggests about task boundaries, reproducible setup, and checking the combined result.
+date: 2026-10-18
+tags:
+  - Agent engineering
+  - Development practice
+draft: false
+sample: false
+format: reading
+featured: false
+source:
+  title: "Claude Code in the cloud: a field guide to cloud sessions"
+  url: https://claude.dev/blog/claude-code-in-the-cloud/
+  author: Addy Osmani
+---
+
+It is most useful as a guide to defining work that can be checked independently.
+
+## What the article says
+
+Each cloud task gets its own machine and repository branch. Repository configuration travels with the checkout; personal laptop configuration does not. The guide recommends self-contained tasks with explicit completion criteria and executable checks.
+
+Osmani reports real sessions against a fictional sample repository. The examples illustrate isolation, but also its limit: one session cannot see another session's unmerged fix. He recommends dividing work along file boundaries and choosing a sensible merge order. Idle machines can be reclaimed, so committed work matters.
+
+Those demonstrations are the author's results, not tests conducted for this blog. Their timings are examples, not estimates for a different repository.
+
+## Separate files can still share a contract
+
+Consider a hypothetical pair of changes to this site. One updates the article schema; another adds content using the new field. They touch different files, but the content depends on the schema. Running them independently does not settle whether they work together.
+
+A better task boundary would name the dependency before work begins. The schema change defines the field and its default. The content change uses that contract. After combining them, the build checks the actual collection entries against the resulting schema. A green check from either branch alone would leave part of the question unanswered.
+
+This distinction also matters for editorial work. Two reading notes can be drafted separately, but they still need a shared policy for dates, source attribution, and terminology. Isolation prevents editing collisions; an agreed contract prevents the articles from making incompatible promises to readers.
+
+## Make the handoff reproducible
+
+For a future cloud task on this repository, a useful handoff would identify the relevant content file, the original source, the expected correction, and the command that checks it. The project already records its Node.js requirement and build commands. The handoff should use those recorded requirements rather than assume the remote machine resembles a developer's laptop.
+
+For example, correcting an author's name needs the original article as evidence and a check of the rendered source line. Changing a content field also needs the collection schema and editor configuration to agree. Those are different definitions of done, even though both tasks might begin as a short text request.
+
+## Check the combined result
+
+The practical proposal is to review the final combined state: content validation, a successful build, working internal links, and a focused page inspection. A session's summary should distinguish what it changed, what it verified, and what remained blocked by another change.
+
+This note does not report a cloud deployment or a speed comparison. The unresolved question is which tasks in this repository are independent enough to delegate without spending the saved time reconciling their results.

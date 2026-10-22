@@ -5,12 +5,13 @@ date: "2026-10-14"
 format: reading
 tags: ["Development practice"]
 featured: false
-sample: true
+sample: false
 source:
   title: "Using Claude Code: Spending your effort"
   url: https://claude.dev/blog/spending-your-effort/
   author: "Thariq Shihipar"
 ---
+
 
 ## What the article says
 
@@ -20,18 +21,18 @@ source:
 
 This summarizes the [original article](https://claude.dev/blog/spending-your-effort/). It is not a universal rule across models.
 
-## What I take from it
+## Applying the idea to an editorial task
 
-Choosing an effort level also means choosing when to receive feedback. If I have not decided whether a blog homepage should emphasize the author or the writing, waiting for a fully polished implementation may delay discovering that I chose the wrong structure.
+Choosing an effort level also means choosing when to receive feedback. Consider an unsettled question about whether a blog homepage should emphasize the author or the writing. Waiting for a fully polished implementation may delay discovering that the chosen structure does not fit the goal.
 
-At that stage, I would compare two small, concrete layouts and decide which better supports the writing. The useful output is enough evidence to make the next decision.
+At that stage, comparing two small, concrete layouts could help decide which better supports the writing. The useful output is enough evidence to make the next decision.
 
-Once the direction is clear, some checks deserve their own budget. After drafting a reading note, for example, I would review whether each claim is supported by the source, whether a specific experiment has been presented as a universal conclusion, and whether my interpretation is clearly separated from the summary.
+Once the direction is clear, some checks deserve their own budget. After drafting a reading note, for example, review whether each claim is supported by the source, whether a specific experiment has been presented as a universal conclusion, and whether proposed applications are clearly separated from the summary.
 
-I would divide the work into defining the question, producing something worth discussing, and checking the important risks. Each phase needs a stopping condition. Exploration ends when there is enough information to choose; implementation ends when the agreed behavior works; verification focuses on likely sources of rework or misleading claims.
+One possible workflow divides the work into defining the question, producing something worth discussing, and checking the important risks. Each phase needs a stopping condition. Exploration ends when there is enough information to choose; implementation ends when the agreed behavior works; verification focuses on likely sources of rework or misleading claims. This is an editorial proposal, not a timing experiment.
 
 ## What still needs testing
 
-This is an engineering blog post with experimental examples. Its setup differs from an everyday project, so its timing should not be transferred directly.
+The source's benchmark runs use five attempts per task, and some runs disable production safety interventions. Its failure labels come from an approximate model judge. That setup differs from an everyday project, so its timing and category results should not be transferred directly.
 
-I would compare completion time, rework, and missed issues across similar tasks to see whether different allocations help. This note proposes that observation method; it does not claim a measured percentage of time saved.
+Compare completion time, rework, and missed issues across similar tasks to see whether different allocations help. This note proposes that observation method; it does not claim a measured percentage of time saved.
