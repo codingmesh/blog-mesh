@@ -13,6 +13,8 @@ function bindShortcut() {
     event.preventDefault();
     const dialog = document.querySelector<HTMLDialogElement>('#search-dialog');
     if (!dialog) return;
+    // Never a second modal over the lightbox.
+    if (!dialog.open && document.querySelector('dialog[open]')) return;
     if (dialog.open) dialog.close();
     else document.querySelector<HTMLButtonElement>('#search-open')?.click();
   });
@@ -39,7 +41,11 @@ export function initSearch() {
 
   function open() {
     if (dialog!.open) return;
-    previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : openButton;
+    // Opened by keyboard with nothing focused, focus returns to the trigger rather than the page body.
+    previousFocus =
+      document.activeElement instanceof HTMLElement && document.activeElement !== document.body
+        ? document.activeElement
+        : openButton;
     dialog!.showModal();
     input!.focus();
     input!.select();
@@ -58,16 +64,22 @@ export function initSearch() {
     list!.removeAttribute('aria-busy');
     previousFocus?.focus({ preventScroll: true });
   });
-  dialog.addEventListener('click', (event) => {
-    if (event.target !== dialog) return;
+  // A click on the backdrop closes the dialog, but only when the press began there too: a text selection that
+  // starts in the input and ends outside must not close it.
+  const onBackdrop = (event: MouseEvent) => {
+    if (event.target !== dialog) return false;
     const rect = dialog!.getBoundingClientRect();
-    if (
-      event.clientX < rect.left ||
-      event.clientX > rect.right ||
-      event.clientY < rect.top ||
-      event.clientY > rect.bottom
-    )
-      close();
+    return (
+      event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom
+    );
+  };
+  let pressedBackdrop = false;
+  dialog.addEventListener('pointerdown', (event) => {
+    pressedBackdrop = onBackdrop(event);
+  });
+  dialog.addEventListener('click', (event) => {
+    if (pressedBackdrop && onBackdrop(event)) close();
+    pressedBackdrop = false;
   });
   // Results stay ordinary links: Tab, Enter, and modifier-click keep native behavior. Arrows move focus.
   dialog.addEventListener('keydown', (event) => {
@@ -105,7 +117,8 @@ export function initSearch() {
         data: await Promise.all(result.results.slice(0, 8).map((item) => item.data())),
         fallback: false,
       };
-    } catch {
+    } catch (error) {
+      if (!import.meta.env.DEV) console.warn('Full-text search unavailable; using the title index.', error);
       engine = undefined;
       index ??= fetch('/search-index.json')
         .then((response) => {
@@ -140,9 +153,10 @@ export function initSearch() {
       list!.removeAttribute('aria-busy');
       return;
     }
-    status!.textContent = 'Searching…';
     list!.setAttribute('aria-busy', 'true');
     timer = setTimeout(async () => {
+      // Announced once the reader pauses, not on every keystroke.
+      status!.textContent = 'Searching…';
       try {
         const result = await search(query);
         if (current !== requestId || !dialog!.open) return;

@@ -15,7 +15,8 @@ export function initShortcuts() {
   if (bound) return;
   bound = true;
   document.addEventListener('keydown', (event) => {
-    if (event.metaKey || event.ctrlKey || event.altKey || event.isComposing || isTyping(event.target)) return;
+    if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey || event.repeat) return;
+    if (event.isComposing || isTyping(event.target)) return;
     if (document.querySelector('dialog[open]')) return;
     const key = event.key.toLowerCase();
     if (routes[key]) {

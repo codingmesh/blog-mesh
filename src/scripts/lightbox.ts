@@ -5,6 +5,7 @@ import { pageSignal } from './page.ts';
  * the browser supports it and the reader has not asked for reduced motion.
  */
 export function initLightbox(dialog = document.querySelector<HTMLDialogElement>('#lightbox')) {
+  const signal = pageSignal('lightbox');
   if (!dialog) return;
   const image = dialog.querySelector('img');
   const caption = dialog.querySelector('figcaption');
@@ -39,13 +40,16 @@ export function initLightbox(dialog = document.querySelector<HTMLDialogElement>(
       root.classList.remove('figure-morph');
     });
   };
-  const open = (link: HTMLAnchorElement) => {
-    source = link.querySelector('img');
-    if (!source) return;
+  const open = async (link: HTMLAnchorElement) => {
+    const figure = link.querySelector('img');
+    if (!figure) return;
     image.src = link.href;
-    image.alt = source.alt;
+    image.alt = figure.alt;
     caption.textContent = link.parentElement?.querySelector('figcaption')?.textContent ?? '';
-    transition(source, image, () => dialog.showModal());
+    // The morph targets the decoded full-size image, never an empty box or the previous figure.
+    await image.decode().catch(() => undefined);
+    source = figure;
+    transition(figure, image, () => dialog.showModal());
   };
   const close = () => {
     if (!source) {
@@ -55,20 +59,26 @@ export function initLightbox(dialog = document.querySelector<HTMLDialogElement>(
     transition(image, source, () => dialog.close());
   };
 
-  const signal = pageSignal('lightbox');
   // Capture phase, so the click is claimed before the client router treats the link as a navigation.
   document.addEventListener(
     'click',
     (event) => {
       const link = (event.target as Element).closest<HTMLAnchorElement>('.figure-link');
-      if (!link || event.metaKey || event.ctrlKey || event.button !== 0) return;
+      if (!link || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
       event.preventDefault();
       open(link);
     },
     { signal, capture: true },
   );
+  // The backdrop closes the dialog only when the press began on it, so a drag that ends there does not.
+  let pressedBackdrop = false;
+  dialog.addEventListener('pointerdown', (event) => {
+    pressedBackdrop = event.target === dialog;
+  });
   dialog.addEventListener('click', (event) => {
-    if (event.target === dialog || (event.target as Element).closest('.lightbox-close')) close();
+    const onBackdrop = event.target === dialog && pressedBackdrop;
+    pressedBackdrop = false;
+    if (onBackdrop || (event.target as Element).closest('.lightbox-close')) close();
   });
   dialog.addEventListener('cancel', (event) => {
     event.preventDefault();

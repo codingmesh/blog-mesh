@@ -557,6 +557,9 @@ export async function mountWind(canvas: HTMLCanvasElement) {
   }
   current?.destroy();
   await document.fonts.load('9px "JetBrains Mono"').catch(() => undefined);
+  // Another mount may have won while the font loaded, or the page may have moved on; never start a second wind.
+  if (!canvas.isConnected || current?.canvas === canvas) return;
+  current?.destroy();
   current = new Wind(canvas, column, head);
 }
 

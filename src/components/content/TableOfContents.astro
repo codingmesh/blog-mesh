@@ -20,7 +20,6 @@ const { headings, variant, markdownHref } = Astro.props;
     <div class="toc-sticky">
       <h2 class="toc-label">On this page</h2>
       <ol>
-        <span class="toc-marker" aria-hidden="true" />
         {headings.map((heading) => (
           <li class:list={{ 'toc-sub': heading.depth === 3 }}>
             <a href={`#${heading.slug}`}>{heading.text}</a>
@@ -103,9 +102,10 @@ const { headings, variant, markdownHref } = Astro.props;
     margin: 0;
     border-left: 1px solid var(--line);
   }
-  /* A 1px marker stretched to the active link's height, so the slide is transform-only. It takes its first
-     position without animating; the list is marked ready once the script has placed it. */
-  .toc-marker {
+  /* The marker is the list's own ::before: a 1px line stretched to the active link's height, so the slide is
+     transform-only. It takes its first position without animating; the list is marked ready once placed. */
+  .article-toc ol::before {
+    content: '';
     position: absolute;
     left: -1px;
     top: 0;
@@ -115,7 +115,7 @@ const { headings, variant, markdownHref } = Astro.props;
     transform: translateY(var(--toc-top, 0px)) scaleY(var(--toc-height, 0));
     transform-origin: top;
   }
-  .article-toc ol[data-ready] .toc-marker {
+  .article-toc ol[data-ready]::before {
     transition: transform var(--move) var(--ease);
   }
   .article-toc ol a {

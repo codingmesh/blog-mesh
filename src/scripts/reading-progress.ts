@@ -9,12 +9,12 @@ export function readingProgress(top: number, height: number, viewport: number) {
 
 /** Fills the ink line at the top of an article, and the rail's dotted bar and percentage, as the reader moves. */
 export function initReadingLine() {
+  const signal = pageSignal('reading-line');
   const line = document.querySelector<HTMLElement>('.read-line span');
   const body = document.querySelector<HTMLElement>('.prose');
   if (!body) return;
   const bar = document.querySelector<HTMLElement>('.toc-bar');
   const percent = document.querySelector<HTMLElement>('.toc-pct');
-  const signal = pageSignal('reading-line');
   let scheduled = false;
   const update = () => {
     const rect = body.getBoundingClientRect();

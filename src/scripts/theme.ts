@@ -26,12 +26,13 @@ export function applyTheme(theme: Theme) {
   if (button) {
     const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
     button.setAttribute('aria-label', label);
-    button.title = label;
+    button.title = `${label} (T)`;
   }
   document.dispatchEvent(new CustomEvent<Theme>('themechange', { detail: theme }));
 }
 
 /** Switches theme as an ink wipe spreading from the toggle; a plain swap where the API or the reader's settings say no. */
+let wipe = 0;
 function switchTheme(next: Theme, origin: HTMLElement) {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const root = document.documentElement;
@@ -47,6 +48,8 @@ function switchTheme(next: Theme, origin: HTMLElement) {
   const y = rect.top + rect.height / 2;
   const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
   root.classList.add('theme-wipe');
+  // A second toggle during the wipe starts a new transition; only the latest one may take the class off.
+  const token = ++wipe;
   const transition = document.startViewTransition(() => applyTheme(next));
   // A circle's area grows with the square of its radius, so a gentle ease-out keeps the reveal at an even pace
   // from the corner to the far side of the page instead of finishing in a rush.
@@ -58,7 +61,9 @@ function switchTheme(next: Theme, origin: HTMLElement) {
       ),
     )
     .catch(() => {});
-  transition.finished.finally(() => root.classList.remove('theme-wipe'));
+  transition.finished.finally(() => {
+    if (token === wipe) root.classList.remove('theme-wipe');
+  });
 }
 
 export function initThemeToggle() {
@@ -76,3 +81,11 @@ export function initThemeToggle() {
 
 // The client router swaps the root element's attributes; restore the stored theme before the new page paints.
 document.addEventListener('astro:after-swap', () => applyTheme(storedTheme()));
+// Readers who have not chosen follow the system, including when it changes while they read.
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+  let chosen: string | null = null;
+  try {
+    chosen = localStorage.getItem('theme');
+  } catch {}
+  if (chosen !== 'dark' && chosen !== 'light') applyTheme(storedTheme());
+});

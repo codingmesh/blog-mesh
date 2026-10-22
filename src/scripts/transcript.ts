@@ -1,3 +1,5 @@
+import { announce } from './announce.ts';
+
 /** Folds long model turns and copies the prompt (the user's turns) from a transcript. */
 const FOLD_AT = 360;
 
@@ -42,8 +44,10 @@ export function initTranscripts(root: ParentNode = document) {
         await navigator.clipboard.writeText(promptText(transcript));
         copy.textContent = 'Copied';
         copy.classList.add('is-done');
+        announce('Prompt copied.');
       } catch {
         copy.textContent = 'Copy unavailable';
+        announce('Copying the prompt is unavailable.');
       }
       timer = setTimeout(() => {
         copy.textContent = 'Copy prompt';

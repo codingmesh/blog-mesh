@@ -3,7 +3,20 @@
  * blocks, and copy feedback. Highlights, notes, and captions are already in the HTML from the Shiki transformer,
  * so the panel reads correctly without JavaScript.
  */
+import { announce } from './announce.ts';
+
 const FOLD_AFTER = 24;
+const WRAP_KEY = 'code-wrap';
+
+/** The reader's wrap choice, kept for the session across blocks and pages. */
+function wrapPreference(): boolean | null {
+  try {
+    const stored = sessionStorage.getItem(WRAP_KEY);
+    return stored === null ? null : stored === 'on';
+  } catch {
+    return null;
+  }
+}
 
 /**
  * The text a reader expects to copy: the lines only, never the inline notes. In a terminal block, only the
@@ -27,10 +40,8 @@ const icons = {
   wrap: icon('<path d="M3 6h18"/><path d="M3 12h15a3 3 0 1 1 0 6h-4"/><path d="m16 16-2 2 2 2"/><path d="M3 18h7"/>'),
 };
 
-export function initCodeWindows(
-  root: ParentNode = document,
-  status = document.querySelector<HTMLElement>('#copy-status'),
-) {
+export function initCodeWindows(root: ParentNode = document) {
+  const preferWrap = wrapPreference();
   root.querySelectorAll<HTMLPreElement>('.prose pre').forEach((pre, index) => {
     const code = pre.querySelector('code');
     if (!code || pre.parentElement?.classList.contains('code-block')) return;
@@ -60,12 +71,16 @@ export function initCodeWindows(
     wrapButton.type = 'button';
     wrapButton.className = 'code-tool';
     wrapButton.innerHTML = `${icons.wrap}<span>Wrap</span>`;
+    if (preferWrap !== null) pre.toggleAttribute('data-wrap', preferWrap);
     wrapButton.setAttribute('aria-pressed', String('wrap' in pre.dataset));
     wrapButton.setAttribute('aria-label', `Toggle line wrapping for code block ${index + 1}`);
     wrapButton.title = 'Wrap long lines';
     wrapButton.addEventListener('click', () => {
       const on = pre.toggleAttribute('data-wrap');
       wrapButton.setAttribute('aria-pressed', String(on));
+      try {
+        sessionStorage.setItem(WRAP_KEY, on ? 'on' : 'off');
+      } catch {}
     });
 
     const copyButton = document.createElement('button');
@@ -80,22 +95,33 @@ export function initCodeWindows(
     let timer: ReturnType<typeof setTimeout>;
     copyButton.addEventListener('click', async () => {
       clearTimeout(timer);
-      try {
-        await navigator.clipboard.writeText(codeText(code));
+      const copied = () => {
         copyButton.innerHTML = `${icons.check}<span>Copied</span>`;
         copyButton.classList.add('is-done');
-        if (status) status.textContent = `Code block ${index + 1} copied.`;
+        announce(`Code block ${index + 1} copied.`);
+      };
+      try {
+        await navigator.clipboard.writeText(codeText(code));
+        copied();
       } catch {
+        // Without clipboard access the code is selected; the legacy copy command is tried before giving up.
         const range = document.createRange();
         range.selectNodeContents(code);
         const selection = window.getSelection();
         selection?.removeAllRanges();
         selection?.addRange(range);
-        pre.focus();
-        copyButton.innerHTML = `${icons.copy}<span>Selected</span>`;
-        if (status)
-          status.textContent =
-            'Automatic copying is unavailable. The code is selected; use your keyboard shortcut to copy it.';
+        let legacy = false;
+        try {
+          legacy = document.execCommand('copy');
+        } catch {}
+        if (legacy) {
+          selection?.removeAllRanges();
+          copied();
+        } else {
+          pre.focus();
+          copyButton.innerHTML = `${icons.copy}<span>Selected</span>`;
+          announce('Automatic copying is unavailable. The code is selected; use your keyboard shortcut to copy it.');
+        }
       }
       timer = setTimeout(() => {
         copyButton.innerHTML = `${icons.copy}<span>Copy</span>`;

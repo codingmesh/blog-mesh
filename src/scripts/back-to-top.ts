@@ -6,9 +6,9 @@ export function shouldShowBackToTop(scrollY: number, viewport: number) {
 }
 
 export function initBackToTop() {
+  const signal = pageSignal('to-top');
   const control = document.querySelector<HTMLElement>('.to-top');
   if (!control) return;
-  const signal = pageSignal('to-top');
   const update = () => control.toggleAttribute('data-visible', shouldShowBackToTop(window.scrollY, window.innerHeight));
   window.addEventListener('scroll', update, { passive: true, signal });
   update();

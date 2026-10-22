@@ -27,17 +27,20 @@
     box-shadow: 0 6px 20px rgb(20 20 20 / 0.08);
     opacity: 0;
     transform: translateY(8px);
-    pointer-events: none;
+    /* Hidden from the tab order and assistive technology as well as from sight; visibility flips after the fade. */
+    visibility: hidden;
     transition:
       opacity var(--move) var(--ease),
       transform var(--move) var(--ease),
+      visibility 0s var(--move),
       color var(--fast) var(--ease),
       border-color var(--fast) var(--ease);
   }
   .to-top[data-visible] {
     opacity: 1;
     transform: none;
-    pointer-events: auto;
+    visibility: visible;
+    transition-delay: 0s;
   }
   .to-top:hover {
     color: var(--accent);

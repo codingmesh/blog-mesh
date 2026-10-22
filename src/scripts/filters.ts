@@ -1,5 +1,3 @@
-import { pageSignal } from './page.ts';
-
 /** Topic filtering for the archive. The pure part is tested; the DOM part keeps URL state in sync. */
 export type Tagged = { tags: string[] };
 
@@ -51,11 +49,12 @@ export function initTopicFilters() {
     const url = new URL(location.href);
     if (tag) url.searchParams.set('tag', tag);
     else url.searchParams.delete('tag');
-    history.pushState({}, '', url);
+    // The address is updated in place, keeping the router's own history state, so Back leaves the page
+    // rather than stepping through every filter the reader tried.
+    history.replaceState(history.state, '', url);
     apply(tag);
   }
   buttons.forEach((button) => button.addEventListener('click', () => select(button.dataset.tag || '')));
   document.querySelector('#filter-reset')?.addEventListener('click', () => select(''));
-  window.addEventListener('popstate', () => apply(currentTag()), { signal: pageSignal('filters') });
   apply(currentTag());
 }

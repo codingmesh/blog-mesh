@@ -8,47 +8,24 @@ const enabled = Boolean(repo && repoId && categoryId);
 ---
 
 {enabled && (
-  <section class="comments" aria-labelledby="comments-title" data-pagefind-ignore>
+  <section
+    class="comments"
+    aria-labelledby="comments-title"
+    data-pagefind-ignore
+    data-giscus-repo={repo}
+    data-giscus-repo-id={repoId}
+    data-giscus-category={category}
+    data-giscus-category-id={categoryId}
+  >
     <h2 id="comments-title">Comments</h2>
     <div class="giscus" />
-    <script
-      is:inline
-      src="https://giscus.app/client.js"
-      data-repo={repo}
-      data-repo-id={repoId}
-      data-category={category}
-      data-category-id={categoryId}
-      data-mapping="pathname"
-      data-strict="1"
-      data-reactions-enabled="1"
-      data-emit-metadata="0"
-      data-input-position="top"
-      data-theme="light"
-      data-lang="en"
-      data-loading="lazy"
-      crossorigin="anonymous"
-      async
-    />
   </section>
 )}
 
 <script>
-  // Keep the embed in step with the site theme: once when its frame appears, then on every change.
-  function sendTheme(theme: string) {
-    const frame = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
-    frame?.contentWindow?.postMessage({ giscus: { setConfig: { theme } } }, 'https://giscus.app');
-  }
-  function currentTheme() {
-    return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-  }
-  document.addEventListener('themechange', (event) => sendTheme((event as CustomEvent<string>).detail));
-  window.addEventListener(
-    'message',
-    (event) => {
-      if (event.origin === 'https://giscus.app' && currentTheme() === 'dark') sendTheme('dark');
-    },
-    { once: true },
-  );
+  import { onPageLoad } from '../../scripts/page';
+  import { initComments } from '../../scripts/comments';
+  onPageLoad(() => initComments());
 </script>
 
 <style>

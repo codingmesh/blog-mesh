@@ -1,7 +1,9 @@
 import { pageSignal } from './page.ts';
 
 /** Marks the table-of-contents link for the heading nearest the top of the viewport and slides the marker to it. */
-export function initTableOfContents(selector = '.article-toc a') {
+export function initTableOfContents(selector = '.article-toc ol a') {
+  // Taken first so the previous page's listeners stop even when this page has no contents.
+  const signal = pageSignal('toc');
   const links = [...document.querySelectorAll<HTMLAnchorElement>(selector)];
   const headings = links
     .map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1))))
@@ -35,7 +37,6 @@ export function initTableOfContents(selector = '.article-toc a') {
       scheduled = false;
     });
   };
-  const signal = pageSignal('toc');
   window.addEventListener('scroll', schedule, { passive: true, signal });
   // Link positions move when the window resizes or a late font arrives.
   window.addEventListener('resize', schedule, { passive: true, signal });
