@@ -97,13 +97,13 @@ import Island from '../islands/OutcomeExplorer';
   .outcome-list button[aria-pressed='true'] span {
     color: var(--paper);
   }
+  /* Button text is the control role; the action beneath it is supporting text. */
   .outcome-list strong {
-    font-size: 14px;
-    font-weight: 600;
+    font: 500 15px/1.4 var(--sans);
   }
   .outcome-list span {
     color: var(--muted);
-    font-size: 12.5px;
+    font: 400 14px/1.5 var(--sans);
   }
   .outcome-incomplete button {
     border-style: dashed;
@@ -150,31 +150,17 @@ import Island from '../islands/OutcomeExplorer';
       top: 50%;
       bottom: auto;
     }
+    /* Label over action, left aligned, so neither wraps on a phone. */
     .outcome-list button {
-      grid-template-columns: auto 1fr;
-      justify-content: space-between;
       text-align: left;
-      align-items: center;
-      gap: 12px;
-      padding: 12px;
-    }
-    .outcome-list span {
-      text-align: right;
+      gap: 2px;
+      padding: 12px 14px;
     }
     .outcome-origin {
       margin-left: 0;
-      font-size: 14px;
     }
     .outcome-origin::after {
       left: 12px;
-    }
-  }
-  @media (max-width: 360px) {
-    .outcome-list button {
-      grid-template-columns: 1fr;
-    }
-    .outcome-list span {
-      text-align: left;
     }
   }
   @media print {

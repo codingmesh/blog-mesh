@@ -63,7 +63,6 @@
 .prose blockquote {
   border-left: 2px solid var(--accent);
   padding: 6px 0 6px 24px;
-  font-size: 19px;
   line-height: 1.6;
 }
 .prose blockquote p {
@@ -246,7 +245,7 @@
   color: var(--panel-ink);
 }
 .code-tab small {
-  font-size: 13px;
+  font-size: inherit;
 }
 .code-tab small::before {
   content: '· ';
@@ -519,9 +518,6 @@
   }
   .prose pre {
     font-size: 14px;
-  }
-  .prose blockquote {
-    font-size: 17px;
   }
   /* Sized for a thumb. */
   .code-tool {

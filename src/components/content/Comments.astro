@@ -33,12 +33,22 @@ const enabled = Boolean(repo && repoId && categoryId);
 )}
 
 <script>
-  // Keep the embed in step with the site theme.
-  document.addEventListener('themechange', (event) => {
+  // Keep the embed in step with the site theme: once when its frame appears, then on every change.
+  function sendTheme(theme: string) {
     const frame = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
-    const theme = (event as CustomEvent<string>).detail;
     frame?.contentWindow?.postMessage({ giscus: { setConfig: { theme } } }, 'https://giscus.app');
-  });
+  }
+  function currentTheme() {
+    return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+  }
+  document.addEventListener('themechange', (event) => sendTheme((event as CustomEvent<string>).detail));
+  window.addEventListener(
+    'message',
+    (event) => {
+      if (event.origin === 'https://giscus.app' && currentTheme() === 'dark') sendTheme('dark');
+    },
+    { once: true },
+  );
 </script>
 
 <style>
@@ -46,9 +56,8 @@ const enabled = Boolean(repo && repoId && categoryId);
     margin-top: 64px;
   }
   .comments h2 {
-    font: 500 13px/1.6 var(--mono);
+    font: 500 14px/1.5 var(--sans);
     color: var(--muted);
-    letter-spacing: 0;
     margin-bottom: 16px;
   }
 </style>
