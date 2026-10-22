@@ -4,7 +4,6 @@
    Reading text, headings, and captions are Newsreader; tables and content-block labels are the sans. */
 .prose {
   font: 400 20px/1.6 var(--serif);
-  font-optical-sizing: auto;
   overflow-wrap: anywhere;
 }
 .prose table {
@@ -88,8 +87,11 @@
 .prose strong {
   font-weight: 600;
 }
+/* Inline code keeps the weight of its surroundings, so code inside a heading or bold text matches it. */
 .prose code {
-  font: 0.9em/1.6 var(--mono);
+  font-family: var(--mono);
+  font-size: 0.9em;
+  line-height: 1.6;
   background: var(--soft);
   border-radius: 4px;
   padding: 2px 6px;
@@ -440,7 +442,7 @@
 /* Footnotes, as a hairline list at the end. */
 .prose sup a {
   text-decoration: none;
-  font: 500 0.75em/1 var(--serif);
+  font: 400 0.75em/1 var(--serif);
   padding: 0 1px;
 }
 .prose .footnotes {

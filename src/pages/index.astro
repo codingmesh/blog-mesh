@@ -12,7 +12,14 @@ const heroSub = site.description.startsWith(site.tagline)
 const [latest, ...rest] = articles;
 ---
 
-<Base wind>
+<Base
+  wind
+  preload={[
+    { weight: 400, style: 'normal' },
+    { weight: 600, style: 'normal' },
+    { weight: 700, style: 'normal' },
+  ]}
+>
   <div class="wrap">
     <header class="hero">
       <h1>{site.tagline}</h1>

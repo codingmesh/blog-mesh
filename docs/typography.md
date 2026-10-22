@@ -139,7 +139,7 @@ The `--font-*` variables come from Astro's font loader. Treat the tokens above a
 Implementation ownership:
 
 - `astro.config.mjs`: local files, weights, styles, and fallback registration.
-- `src/layouts/Base.astro`: font declarations and preloads. Preload only faces needed above the fold: Newsreader normal 400 and 700, Newsreader italic 400 for the article subtitle, and Folio Sans normal for the header. Secondary weights load when used.
+- `src/layouts/Base.astro`: font declarations and preloads. Preload only faces needed above the fold on that page: Newsreader normal 400 and 700 everywhere, italic 400 on article pages for the subtitle, 600 on the home page for the featured title, and the three Folio Sans interface weights. Pages pass their list through the layout's `preload` prop. Secondary weights load when used.
 - `src/styles/tokens.css`: shared family, size, and reading-width tokens.
 - `src/styles/base.css`: document defaults and shared text roles.
 - `src/styles/prose.css`: article text, headings, lists, quotations, and code.
@@ -164,7 +164,7 @@ Current migration status:
 | Area                                                                                  | Status                                                                                       |
 | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
 | Local Newsreader 24pt, Folio Sans, and JetBrains Mono files and browser registrations | Available                                                                                    |
-| Newsreader normal 400/700, italic 400, and Folio Sans normal preloads                 | Configured; italic 400 added so the subtitle no longer shifts the prose when it arrives      |
+| Per-page preloads: Newsreader 400/700, italic 400 on articles, 600 on the home page   | Configured; Folio Sans 400/500/600 statics preloaded everywhere                              |
 | Newsreader titles and reading text                                                    | Done on article pages: body, section and subsection headings, captions, footnotes, citations |
 | Normal tracking throughout headings and labels                                        | Done                                                                                         |
 | 620px article column                                                                  | Done; the rail appears from 1000px (narrow) and 1140px (full)                                |

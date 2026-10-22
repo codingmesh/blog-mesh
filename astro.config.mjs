@@ -39,7 +39,6 @@ export default defineConfig({
         variants: [
           { weight: 400, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader24pt-Regular.woff2'] },
           { weight: 400, style: 'italic', src: ['./src/assets/fonts/newsreader/Newsreader24pt-Italic.woff2'] },
-          { weight: 500, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader24pt-Medium.woff2'] },
           { weight: 600, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader24pt-SemiBold.woff2'] },
           { weight: 700, style: 'normal', src: ['./src/assets/fonts/newsreader/Newsreader24pt-Bold.woff2'] },
         ],
@@ -51,8 +50,13 @@ export default defineConfig({
       cssVariable: '--font-sans',
       provider: fontProviders.local(),
       options: {
+        // Static Latin instances of the variable file, one per weight the interface uses: each is a fifth of the
+        // size of the full variable font. Italic stays variable; no interface text is italic today.
         variants: [
-          { weight: '300 800', style: 'normal', src: ['./src/assets/fonts/folio/FolioSans-Roman.woff2'] },
+          { weight: 400, style: 'normal', src: ['./src/assets/fonts/folio/FolioSans-Regular.woff2'] },
+          { weight: 500, style: 'normal', src: ['./src/assets/fonts/folio/FolioSans-Medium.woff2'] },
+          { weight: 600, style: 'normal', src: ['./src/assets/fonts/folio/FolioSans-SemiBold.woff2'] },
+          { weight: 700, style: 'normal', src: ['./src/assets/fonts/folio/FolioSans-Bold.woff2'] },
           { weight: '300 800', style: 'italic', src: ['./src/assets/fonts/folio/FolioSans-Italic.woff2'] },
         ],
       },
@@ -63,11 +67,12 @@ export default defineConfig({
       cssVariable: '--font-mono',
       provider: fontProviders.local(),
       options: {
+        // Code is set at one weight, so a static Latin instance replaces the variable file at a third of the size.
         variants: [
           {
-            weight: '100 800',
+            weight: 400,
             style: 'normal',
-            src: ['./src/assets/fonts/jetbrains-mono/JetBrainsMono-Variable.woff2'],
+            src: ['./src/assets/fonts/jetbrains-mono/JetBrainsMono-Regular.woff2'],
           },
         ],
       },

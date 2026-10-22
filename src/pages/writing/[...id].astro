@@ -54,6 +54,11 @@ const transitionName = `title-${post.collection}-${post.id}`;
   article
   publishedAt={post.data.date}
   image={`/og/${post.id}.png`}
+  preload={[
+    { weight: 400, style: 'normal' },
+    { weight: 400, style: 'italic' },
+    { weight: 700, style: 'normal' },
+  ]}
 >
   <ReadingLine />
   <BackToTop />

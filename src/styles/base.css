@@ -51,7 +51,9 @@ body {
   color: var(--ink);
   font: 17px/1.65 var(--sans);
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  /* Never a faked bold or italic (typography standard, section 3): where no real face exists, the nearest real
+     one is used instead. Kerning and ligatures are on by default, so no rendering hint is needed. */
+  font-synthesis: none;
 }
 main {
   flex: 1;

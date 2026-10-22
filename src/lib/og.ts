@@ -7,7 +7,8 @@ import { markDataUri } from './mark';
 
 /**
  * Build-time social cards: paper, a green numeral or the site mark, Newsreader 24pt titles at weight 700, and
- * Folio Sans for the labels, as the typography standard's card scale requires. The site name sits below a rule.
+ * Folio Sans for the labels and the site name, as the typography standard's card scale requires. The site name
+ * sits below a rule.
  * Satori reads TTF, so the fonts come from static TTF copies kept beside the WOFF2 files in src/assets/fonts.
  */
 const paper = '#fffcf0';
@@ -24,15 +25,15 @@ async function loadFonts() {
       data: toArrayBuffer(data),
       weight: 700 as const,
     })),
-    readFile(fontFile('newsreader/Newsreader24pt-Regular.ttf')).then((data) => ({
-      name: 'Serif',
-      data: toArrayBuffer(data),
-      weight: 400 as const,
-    })),
     readFile(fontFile('folio/FolioSans-Regular.ttf')).then((data) => ({
       name: 'Sans',
       data: toArrayBuffer(data),
       weight: 400 as const,
+    })),
+    readFile(fontFile('folio/FolioSans-SemiBold.ttf')).then((data) => ({
+      name: 'Sans',
+      data: toArrayBuffer(data),
+      weight: 600 as const,
     })),
   ]);
   return fonts;
@@ -62,7 +63,7 @@ export async function renderCard({ title, kicker, number, footer }: CardInput): 
       background: paper,
       color: ink,
       padding: '72px 80px 64px',
-      fontFamily: 'Serif',
+      fontFamily: 'Sans',
     },
     [
       el(
@@ -112,7 +113,8 @@ export async function renderCard({ title, kicker, number, footer }: CardInput): 
           fontSize: 24,
         },
         [
-          el('span', { fontFamily: 'Display', fontWeight: 700 }, site.name),
+          // The site-name role, as in the page header: Folio Sans 600.
+          el('span', { fontFamily: 'Sans', fontWeight: 600, fontSize: 22 }, site.name),
           el('span', { fontFamily: 'Sans', fontSize: 20, color: muted }, footer || site.focus),
         ],
       ),
