@@ -46,7 +46,9 @@
   text-decoration: underline;
   text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
   text-decoration-thickness: 1px;
-  transition: text-decoration-color 150ms var(--ease);
+  transition:
+    color var(--fast) var(--ease),
+    text-decoration-color var(--fast) var(--ease);
 }
 .prose a:hover {
   color: var(--accent-ink);
@@ -268,8 +270,8 @@
   color: var(--panel-muted);
   border-radius: 8px;
   transition:
-    color 140ms var(--ease),
-    background-color 140ms var(--ease);
+    color var(--fast) var(--ease),
+    background-color var(--fast) var(--ease);
 }
 .code-tool span {
   position: absolute;
@@ -425,7 +427,7 @@
   text-decoration: none;
   font-weight: 400;
   opacity: 0;
-  transition: opacity 150ms var(--ease);
+  transition: opacity var(--fast) var(--ease);
 }
 .prose .anchor::before {
   content: '#';

@@ -103,22 +103,25 @@ const { headings, variant, markdownHref } = Astro.props;
     margin: 0;
     border-left: 1px solid var(--line);
   }
+  /* A 1px marker stretched to the active link's height, so the slide is transform-only. It takes its first
+     position without animating; the list is marked ready once the script has placed it. */
   .toc-marker {
     position: absolute;
     left: -1px;
     top: 0;
     width: 2px;
-    height: var(--toc-height, 0px);
+    height: 1px;
     background: var(--accent);
-    transform: translateY(var(--toc-top, 0px));
-    transition:
-      transform 300ms var(--ease),
-      height 300ms var(--ease);
+    transform: translateY(var(--toc-top, 0px)) scaleY(var(--toc-height, 0));
+    transform-origin: top;
+  }
+  .article-toc ol[data-ready] .toc-marker {
+    transition: transform var(--move) var(--ease);
   }
   .article-toc ol a {
     display: block;
     padding: 4px 0 4px 12px;
-    transition: color 140ms var(--ease);
+    transition: color var(--fast) var(--ease);
   }
   .article-toc ol a:hover,
   .article-toc ol a[aria-current='location'] {
@@ -140,10 +143,11 @@ const { headings, variant, markdownHref } = Astro.props;
     height: 8px;
     background: repeating-linear-gradient(90deg, var(--line) 0 2px, transparent 2px 4px);
   }
+  /* The fill is clipped rather than resized, so scrolling never relays out the rail. */
   .toc-bar i {
     position: absolute;
     inset: 0;
-    width: var(--read-progress, 0%);
+    clip-path: inset(0 calc(100% - var(--read-progress, 0%)) 0 0);
     background: repeating-linear-gradient(90deg, var(--accent) 0 2px, transparent 2px 4px);
   }
   .toc-pct {
@@ -176,7 +180,7 @@ const { headings, variant, markdownHref } = Astro.props;
     font: inherit;
     color: var(--muted);
     cursor: pointer;
-    transition: color 140ms var(--ease);
+    transition: color var(--fast) var(--ease);
   }
   .toc-actions button:hover,
   .toc-actions a:hover {
@@ -209,7 +213,7 @@ const { headings, variant, markdownHref } = Astro.props;
     border-right: 1.5px solid currentColor;
     border-bottom: 1.5px solid currentColor;
     transform: rotate(-45deg);
-    transition: transform 120ms var(--ease);
+    transition: transform var(--fast) var(--ease);
     flex-shrink: 0;
   }
   .mobile-toc[open] summary::before {

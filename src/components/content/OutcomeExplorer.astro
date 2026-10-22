@@ -50,7 +50,8 @@ import Island from '../islands/OutcomeExplorer';
     position: relative;
     margin: 0;
   }
-  /* Connector lines redraw toward the selected outcome: the chosen one thickens, the others recede. */
+  /* Connector lines redraw toward the selected outcome: the chosen one thickens, the others recede. The line is
+     scaled rather than resized so nothing relays out. */
   .outcome-list li::before {
     content: '';
     position: absolute;
@@ -59,18 +60,15 @@ import Island from '../islands/OutcomeExplorer';
     background: var(--accent);
     bottom: 100%;
     left: 50%;
-    transform-origin: top;
     transition:
-      opacity 260ms var(--ease),
-      width 260ms var(--ease),
-      transform 260ms var(--ease);
+      opacity var(--move) var(--ease),
+      transform var(--move) var(--ease);
   }
   .outcome-list[data-selected] li:not([data-active])::before {
     opacity: 0.3;
   }
   .outcome-list li[data-active]::before {
-    width: 2px;
-    margin-left: -0.5px;
+    transform: scaleX(2);
   }
   .outcome-list button {
     width: 100%;
@@ -149,6 +147,9 @@ import Island from '../islands/OutcomeExplorer';
       left: -17px;
       top: 50%;
       bottom: auto;
+    }
+    .outcome-list li[data-active]::before {
+      transform: scaleY(2);
     }
     /* Label over action, left aligned, so neither wraps on a phone. */
     .outcome-list button {

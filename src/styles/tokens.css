@@ -29,6 +29,10 @@
   --panel-radius: 16px;
   --code-pad: 32px;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Two motion durations: fast for color, underline, and opacity changes on hover; move for anything that
+     appears, slides, or grows. */
+  --fast: 140ms;
+  --move: 240ms;
   color-scheme: light;
 }
 :root[data-theme='dark'] {

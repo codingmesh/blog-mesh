@@ -13,21 +13,30 @@ export function initLightbox(dialog = document.querySelector<HTMLDialogElement>(
   let source: HTMLImageElement | null = null;
 
   // Only one element may carry the name at a time, so it passes from the image leaving to the image arriving
-  // inside the change; both having it would abort the transition.
+  // inside the change; both having it would abort the transition. While the morph runs, the page's other named
+  // groups (header, footer, title) are silenced by the figure-morph class so they stay under the backdrop; the
+  // images name themselves with an important style to win over that rule.
+  const name = (element: HTMLImageElement, value: string) =>
+    value
+      ? element.style.setProperty('view-transition-name', value, 'important')
+      : element.style.removeProperty('view-transition-name');
   const transition = (from: HTMLImageElement, to: HTMLImageElement, change: () => void) => {
     const move = () => {
       change();
-      from.style.viewTransitionName = '';
-      to.style.viewTransitionName = 'figure';
+      name(from, '');
+      name(to, 'figure');
     };
     if (reduced.matches || !document.startViewTransition) {
       move();
-      to.style.viewTransitionName = '';
+      name(to, '');
       return;
     }
-    from.style.viewTransitionName = 'figure';
+    const root = document.documentElement;
+    root.classList.add('figure-morph');
+    name(from, 'figure');
     document.startViewTransition(move).finished.finally(() => {
-      to.style.viewTransitionName = '';
+      name(to, '');
+      root.classList.remove('figure-morph');
     });
   };
   const open = (link: HTMLAnchorElement) => {

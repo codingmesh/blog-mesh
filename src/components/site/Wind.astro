@@ -34,6 +34,9 @@
     height: 100%;
     z-index: -1;
     pointer-events: none;
+    /* Persisting gives the canvas a transition group of its own, which would paint over the page snapshots
+       during navigation; it stays part of the root instead. */
+    view-transition-name: none !important;
   }
   @media print {
     .wind {

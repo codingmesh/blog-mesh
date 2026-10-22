@@ -71,9 +71,9 @@ a {
 a,
 button {
   transition:
-    color 140ms var(--ease),
-    background-color 140ms var(--ease),
-    border-color 140ms var(--ease);
+    color var(--fast) var(--ease),
+    background-color var(--fast) var(--ease),
+    border-color var(--fast) var(--ease);
 }
 :focus-visible {
   outline: 2px solid var(--accent);
@@ -275,9 +275,14 @@ kbd {
 }
 /* Theme change as an ink wipe: the new page is revealed by a growing circle instead of the default crossfade.
    The header, footer, and titles normally carry their own transition groups for page navigation; during the wipe
-   they must be part of the single page snapshot, or they switch on their own and break the circle. */
-html.theme-wipe body * {
+   they must be part of the single page snapshot, or they switch on their own and break the circle. The lightbox
+   morph has the same need, except for the two images, which name themselves with an important inline style. */
+html:is(.theme-wipe, .figure-morph) body * {
   view-transition-name: none !important;
+}
+/* While a theme changes, links and buttons must switch color with the page rather than fade a beat behind it. */
+html:is(.theme-wipe, .theme-swap) body * {
+  transition: none !important;
 }
 html.theme-wipe::view-transition-old(root),
 html.theme-wipe::view-transition-new(root) {

@@ -20,23 +20,26 @@ export function initTableOfContents(selector = '.article-toc a') {
         link.setAttribute('aria-current', 'location');
         if (list) {
           list.style.setProperty('--toc-top', `${link.offsetTop}px`);
-          list.style.setProperty('--toc-height', `${link.offsetHeight}px`);
+          // Unitless: the marker is 1px tall and scales to the link's height.
+          list.style.setProperty('--toc-height', `${link.offsetHeight}`);
         }
       } else link.removeAttribute('aria-current');
     });
   };
   let scheduled = false;
-  window.addEventListener(
-    'scroll',
-    () => {
-      if (scheduled) return;
-      scheduled = true;
-      requestAnimationFrame(() => {
-        update();
-        scheduled = false;
-      });
-    },
-    { passive: true, signal: pageSignal('toc') },
-  );
+  const schedule = () => {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(() => {
+      update();
+      scheduled = false;
+    });
+  };
+  const signal = pageSignal('toc');
+  window.addEventListener('scroll', schedule, { passive: true, signal });
+  // Link positions move when the window resizes or a late font arrives.
+  window.addEventListener('resize', schedule, { passive: true, signal });
   update();
+  // The marker takes its first place instantly and slides only from then on.
+  requestAnimationFrame(() => list?.setAttribute('data-ready', ''));
 }

@@ -36,7 +36,10 @@ function switchTheme(next: Theme, origin: HTMLElement) {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const root = document.documentElement;
   if (reduced || typeof document.startViewTransition !== 'function') {
+    // A plain swap: hold link and button transitions for a frame so everything changes together.
+    root.classList.add('theme-swap');
     applyTheme(next);
+    requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('theme-swap')));
     return;
   }
   const rect = origin.getBoundingClientRect();

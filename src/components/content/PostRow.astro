@@ -75,7 +75,9 @@ const date = post.data.date;
     text-decoration: underline;
     text-decoration-color: var(--line);
     text-underline-offset: 3px;
-    transition: text-decoration-color 150ms var(--ease);
+    transition:
+      color var(--fast) var(--ease),
+      text-decoration-color var(--fast) var(--ease);
   }
   .row-title a:hover,
   .row-title a:focus-visible {

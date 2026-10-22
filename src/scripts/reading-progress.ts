@@ -23,18 +23,15 @@ export function initReadingLine() {
     if (bar) bar.style.setProperty('--read-progress', `${Math.round(progress * 100)}%`);
     if (percent) percent.textContent = `${Math.round(progress * 100)}%`;
   };
-  window.addEventListener(
-    'scroll',
-    () => {
-      if (scheduled) return;
-      scheduled = true;
-      requestAnimationFrame(() => {
-        update();
-        scheduled = false;
-      });
-    },
-    { passive: true, signal },
-  );
-  window.addEventListener('resize', update, { passive: true, signal });
+  const schedule = () => {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(() => {
+      update();
+      scheduled = false;
+    });
+  };
+  window.addEventListener('scroll', schedule, { passive: true, signal });
+  window.addEventListener('resize', schedule, { passive: true, signal });
   update();
 }

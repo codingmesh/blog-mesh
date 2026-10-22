@@ -77,8 +77,8 @@ const topics = [...new Set((await getArticles()).flatMap((post) => post.data.tag
     opacity: 1;
     transform: translateY(0);
     transition:
-      opacity 180ms var(--ease),
-      transform 180ms var(--ease);
+      opacity var(--move) var(--ease),
+      transform var(--move) var(--ease);
   }
   @starting-style {
     #search-dialog[open] {
@@ -86,9 +86,9 @@ const topics = [...new Set((await getArticles()).flatMap((post) => post.data.tag
       transform: translateY(8px);
     }
   }
+  /* A plain dim: a blur over the whole viewport is costly on weak GPUs and adds little over the shade. */
   #search-dialog::backdrop {
     background: rgb(20 20 20 / 0.45);
-    backdrop-filter: blur(3px);
   }
   #search-dialog[open] {
     display: flex;

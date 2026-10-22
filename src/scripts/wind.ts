@@ -100,7 +100,20 @@ class Wind {
       },
       { signal },
     );
-    window.addEventListener('resize', () => this.guard(() => this.resize()), { signal });
+    // Resizes arrive in bursts; the canvas and atlas are rebuilt once per frame at most.
+    let resizing = false;
+    window.addEventListener(
+      'resize',
+      () => {
+        if (resizing) return;
+        resizing = true;
+        requestAnimationFrame(() => {
+          resizing = false;
+          this.guard(() => this.resize());
+        });
+      },
+      { signal },
+    );
     window.addEventListener('scroll', () => this.invalidate(), { passive: true, signal });
     document.addEventListener(
       'visibilitychange',
