@@ -48,7 +48,7 @@ const topics = [...new Set((await getArticles()).flatMap((post) => post.data.tag
   </div>
   <div class="search-bottom">
     <span id="search-mode">Full-text search</span>
-    <span>
+    <span class="search-keys">
       <kbd>↑</kbd> <kbd>↓</kbd> Navigate <kbd>esc</kbd> Close
     </span>
   </div>
@@ -242,14 +242,18 @@ const topics = [...new Set((await getArticles()).flatMap((post) => post.data.tag
     font: 400 14px/1.6 var(--sans);
     color: var(--muted);
   }
+  /* Key hints only where a keyboard is likely, matching the header. */
+  @media (max-width: 600px), (hover: none) {
+    .search-keys {
+      display: none;
+    }
+  }
   @media (max-width: 600px) {
     #search-dialog {
       padding: 18px;
       margin-top: 8vh;
     }
     .search-bottom {
-      gap: 12px;
-      flex-wrap: wrap;
       padding-top: 14px;
     }
   }
